@@ -61,9 +61,9 @@ export function useFormatoOficialHV() {
         if (datosUsuario.tipoDocumento === "C.C") {
           write(page1, "X", 82, 220, 10, fontBold);
         } else if (datosUsuario.tipoDocumento === "C.E") {
-          write(page1, "E", 115, 220, 10, fontBold);
+          write(page1, "X", 113, 220, 10, fontBold);
         } else if (datosUsuario.tipoDocumento === "PAS") {
-          write(page1, "P", 150, 220, 10, fontBold);
+          write(page1, "X", 148, 220, 10, fontBold);
         }
 
         write(page1, datosUsuario.numDocumento || "", 185, 220, fontSize + 1);
