@@ -72,12 +72,12 @@ export function useFormatoOficialHV() {
         if (["F", "Femenino"].includes(datosUsuario.sexo)) {
           write(page1, "X", 316, 220, 10, fontBold);
         } else if (["M", "Masculino"].includes(datosUsuario.sexo)) {
-          write(page1, "X", 340, 220, 10, fontBold);
+          write(page1, "X", 341, 220, 10, fontBold);
         }
 
         // Nacionalidad
         if (["colombiana", "Colombiano"].includes(datosUsuario.nacionalidad)) {
-          write(page1, "X", 381, 220, 10, fontBold);
+          write(page1, "X", 383, 220, 10, fontBold);
         } else if (datosUsuario.nacionalidad === "Extranjero") {
           write(page1, "X", 458, 208, 10, fontBold);
         }
