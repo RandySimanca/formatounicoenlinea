@@ -236,7 +236,7 @@ if (experiencias.length > 0 && pages[1]) {
     write(page, exp.emailEntidad || "", 410, yBase + 30, 8);
     write(page, exp.telefono || "", 60, yBase + 60, 10);
 
-    // 🗓️ Fechas (ajustadas para que se vean correctamente)
+    //  Fechas (ajustadas para que se vean correctamente)
     write(page, exp.fechaIngreso?.dia || "", 265, yBase + 60, 10);
     write(page, exp.fechaIngreso?.mes || "", 310, yBase + 60, 10);
     write(page, exp.fechaIngreso?.anio || "", 360, yBase + 60, 10);
@@ -254,7 +254,7 @@ if (experiencias.length > 0 && pages[1]) {
 
 
       // =======================================================
-      // 🕒 PÁGINA 3: TIEMPO TOTAL Y FIRMAS
+      //  PÁGINA 3: TIEMPO TOTAL Y FIRMAS
       // =======================================================
       const paginaFirmas = pdfDoc.getPageCount() - 1;
       if (pdfDoc.getPages()[paginaFirmas]) {
@@ -304,7 +304,7 @@ if (experiencias.length > 0 && pages[1]) {
     URL.revokeObjectURL(url);
   }
 
-  // 🧮 FUNCIÓN PARA CALCULAR TIEMPO DE EXPERIENCIA
+  //  FUNCIÓN PARA CALCULAR TIEMPO DE EXPERIENCIA
   function calcularTiempoExperiencia(experiencias) {
     let totalPublicoMeses = 0, totalPrivadoMeses = 0, totalIndependienteMeses = 0;
 
