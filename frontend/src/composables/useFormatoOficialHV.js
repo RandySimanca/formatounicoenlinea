@@ -276,7 +276,7 @@ if (experiencias.length > 0 && pages[1]) {
         const fechaHoy = new Date();
         const municipio = datosUsuario.direccionCorrespondencia?.municipio || "Bogotá";
         const ciudadFecha = `${municipio}, ${fechaHoy.toLocaleDateString("es-CO")}`;
-        write(page3, ciudadFecha, 150, 500, 10);
+        write(page3, ciudadFecha, 150, 400, 10);
       }
 
       console.log("✅ PDF llenado correctamente con todas las secciones");
