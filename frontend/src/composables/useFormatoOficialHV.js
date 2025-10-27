@@ -286,9 +286,9 @@ export function useFormatoOficialHV() {
             const firmaBase64 = datosUsuario.firmaServidor.replace(/^data:image\/\w+;base64,/, "");
             const firmaImage = await pdfDoc.embedPng(firmaBase64);
             
-            const firmaDims = firmaImage.scale(0.5); // Escala de la firma (ajustar según necesidad)
+            const firmaDims = firmaImage.scale(0.5); // Escala de la firma 
             
-            // Coordenadas donde se dibujará la firma (ajustar según el formato)
+            // Coordenadas donde se dibujará la firma 
             const firmaX = 250;  // Posición X
             const firmaY = page3.getSize().height - 500; // Posición Y desde arriba
             
