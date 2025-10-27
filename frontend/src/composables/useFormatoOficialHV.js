@@ -5,7 +5,6 @@ export function useFormatoOficialHV() {
   async function llenarFormatoOficial(datosUsuario, urlFormato = "/FORMATO_UNICO_HOJA_DE_VIDA.pdf") {
     try {
       console.log("💼 Experiencias recibidas:", datosUsuario.experienciaLaboral);
-
       console.log("📋 Datos recibidos para llenar PDF:", datosUsuario);
 
       let pdfDoc;
@@ -173,94 +172,87 @@ export function useFormatoOficialHV() {
         }
       }
 
-     // =======================================================
-//  PÁGINA 2: EXPERIENCIA LABORAL (DINÁMICA)
-// =======================================================
-console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
+      // =======================================================
+      //  PÁGINA 2: EXPERIENCIA LABORAL (DINÁMICA)
+      // =======================================================
+      console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
 
-const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
-  ? datosUsuario.experienciaLaboral
-  : [];
+      const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
+        ? datosUsuario.experienciaLaboral
+        : [];
 
-if (experiencias.length > 0 && pages[1]) {
-  const experienciasPorPagina = 4;
-  const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
+      if (experiencias.length > 0 && pages[1]) {
+        const experienciasPorPagina = 4;
+        const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
 
-  //  Cargar nuevamente el formato base para copiar la hoja 2 sin error
-  const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
-  const pdfBase = await PDFDocument.load(formatoBaseBytes);
+        //  Cargar nuevamente el formato base para copiar la hoja 2 sin error
+        const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
+        const pdfBase = await PDFDocument.load(formatoBaseBytes);
 
-  //  Insertar páginas adicionales si hay más de 4 experiencias
-  for (let i = 1; i < totalPaginasExperiencia; i++) {
-    const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]); // copiamos la página 2 del formato
-    pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2); // insertar antes de la última (página de firmas)
-  }
+        //  Insertar páginas adicionales si hay más de 4 experiencias
+        for (let i = 1; i < totalPaginasExperiencia; i++) {
+          const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]);
+          pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2);
+        }
 
-  //  Actualizar lista de páginas
-  const updatedPages = pdfDoc.getPages();
+        //  Actualizar lista de páginas
+        const updatedPages = pdfDoc.getPages();
 
-  //  Bloques de coordenadas de experiencia por cada página
-  const bloques = [
-    { yBase: 240 },
-    { yBase: 373 },
-    { yBase: 504 },
-    { yBase: 633 },
-  ];
+        //  Bloques de coordenadas de experiencia por cada página
+        const bloques = [
+          { yBase: 240 },
+          { yBase: 373 },
+          { yBase: 504 },
+          { yBase: 633 },
+        ];
 
-  //  Dibujar todas las experiencias en su respectiva página
-  experiencias.forEach((exp, idx) => {
-    const paginaIndex = 1 + Math.floor(idx / experienciasPorPagina); // página destino (2, 3, 4, ...)
-    const posicion = idx % experienciasPorPagina;
-    const { yBase } = bloques[posicion];
-    const page = updatedPages[paginaIndex];
+        //  Dibujar todas las experiencias en su respectiva página
+        experiencias.forEach((exp, idx) => {
+          const paginaIndex = 1 + Math.floor(idx / experienciasPorPagina);
+          const posicion = idx % experienciasPorPagina;
+          const { yBase } = bloques[posicion];
+          const page = updatedPages[paginaIndex];
 
-    // Agregar título en las páginas adicionales
-    if (posicion === 0 && paginaIndex > 1) {
-      page.drawText("", {
-        x: 200,
-        y: page.getSize().height - 60,
-        size: 12,
-        font: fontBold,
-        color: rgb(0, 0, 0),
-      });
-    }
+          if (posicion === 0 && paginaIndex > 1) {
+            page.drawText("", {
+              x: 200,
+              y: page.getSize().height - 60,
+              size: 12,
+              font: fontBold,
+              color: rgb(0, 0, 0),
+            });
+          }
 
-    // === Dibujo de datos de experiencia ===
-    write(page, exp.empresa || "", 60, yBase, 10);
-    if (exp.tipo === "publica") write(page, "X", 350, yBase, 10);
-    else if (exp.tipo === "privada") write(page, "X", 390, yBase, 10);
-    write(page, exp.pais || "", 485, yBase, 10);
+          write(page, exp.empresa || "", 60, yBase, 10);
+          if (exp.tipo === "publica") write(page, "X", 350, yBase, 10);
+          else if (exp.tipo === "privada") write(page, "X", 390, yBase, 10);
+          write(page, exp.pais || "", 485, yBase, 10);
 
-    write(page, exp.departamento || "", 60, yBase + 30, 10);
-    write(page, exp.municipio || "", 235, yBase + 30, 10);
-    write(page, exp.emailEntidad || "", 410, yBase + 30, 8);
-    write(page, exp.telefono || "", 60, yBase + 60, 10);
+          write(page, exp.departamento || "", 60, yBase + 30, 10);
+          write(page, exp.municipio || "", 235, yBase + 30, 10);
+          write(page, exp.emailEntidad || "", 410, yBase + 30, 8);
+          write(page, exp.telefono || "", 60, yBase + 60, 10);
 
-    //  Fechas (ajustadas para que se vean correctamente)
-    write(page, exp.fechaIngreso?.dia || "", 265, yBase + 60, 10);
-    write(page, exp.fechaIngreso?.mes || "", 310, yBase + 60, 10);
-    write(page, exp.fechaIngreso?.anio || "", 360, yBase + 60, 10);
-    write(page, exp.fechaRetiro?.dia || "", 430, yBase + 60, 10);
-    write(page, exp.fechaRetiro?.mes || "", 477, yBase + 60, 10);
-    write(page, exp.fechaRetiro?.anio || "", 525, yBase + 60, 10);
+          write(page, exp.fechaIngreso?.dia || "", 265, yBase + 60, 10);
+          write(page, exp.fechaIngreso?.mes || "", 310, yBase + 60, 10);
+          write(page, exp.fechaIngreso?.anio || "", 360, yBase + 60, 10);
+          write(page, exp.fechaRetiro?.dia || "", 430, yBase + 60, 10);
+          write(page, exp.fechaRetiro?.mes || "", 477, yBase + 60, 10);
+          write(page, exp.fechaRetiro?.anio || "", 525, yBase + 60, 10);
 
-    // Cargos y dirección
-    write(page, exp.cargo || "", 60, yBase + 90, 10);
-    write(page, exp.dependencia || "", 235, yBase + 90, 10);
-    write(page, exp.direccion || "", 410, yBase + 90, 10);
-  });
-}
-
-
+          write(page, exp.cargo || "", 60, yBase + 90, 10);
+          write(page, exp.dependencia || "", 235, yBase + 90, 10);
+          write(page, exp.direccion || "", 410, yBase + 90, 10);
+        });
+      }
 
       // =======================================================
-      //  PÁGINA 3: TIEMPO TOTAL Y FIRMAS
+      //  PÁGINA 3: TIEMPO TOTAL, FIRMAS Y FIRMA SERVIDOR
       // =======================================================
       const paginaFirmas = pdfDoc.getPageCount() - 1;
       if (pdfDoc.getPages()[paginaFirmas]) {
         const page3 = pdfDoc.getPages()[paginaFirmas];
         console.log("⏱️ Procesando tiempo de experiencia:", datosUsuario.tiempoExperiencia);
-        console.log("📊 Datos de tiempo detallados:", JSON.stringify(datosUsuario.tiempoExperiencia, null, 2));
 
         const t = datosUsuario.tiempoExperiencia || {};
         write(page3, t.servidorPublico?.anos || "", 400, 200, 14);
@@ -272,11 +264,49 @@ if (experiencias.length > 0 && pages[1]) {
         write(page3, t.total?.anos || "", 400, 280, 14);
         write(page3, t.total?.meses || "", 450, 280, 14);
 
-        // Ciudad y fecha actual
-        const fechaHoy = new Date();
-        const municipio = datosUsuario.direccionCorrespondencia?.municipio || "Bogotá";
-        const ciudadFecha = `${municipio}, ${fechaHoy.toLocaleDateString("es-CO")}`;
-        write(page3, ciudadFecha, 220, 455, 10);
+        // Ciudad y fecha de diligenciamiento
+        if (datosUsuario.ciudadDiligenciamiento && datosUsuario.fechaDiligenciamiento) {
+          const fechaObj = new Date(datosUsuario.fechaDiligenciamiento);
+          const ciudadFecha = `${datosUsuario.ciudadDiligenciamiento}, ${fechaObj.toLocaleDateString("es-CO")}`;
+          write(page3, ciudadFecha, 220, 455, 10);
+        } else {
+          // Fallback a ciudad de correspondencia y fecha actual
+          const fechaHoy = new Date();
+          const municipio = datosUsuario.direccionCorrespondencia?.municipio || "Bogotá";
+          const ciudadFecha = `${municipio}, ${fechaHoy.toLocaleDateString("es-CO")}`;
+          write(page3, ciudadFecha, 220, 455, 10);
+        }
+
+        // ===== DIBUJAR FIRMA DEL SERVIDOR =====
+        if (datosUsuario.firmaServidor) {
+          try {
+            console.log("🖊️ Insertando firma del servidor en el PDF");
+            
+            // Convertir base64 a imagen PNG embebida
+            const firmaBase64 = datosUsuario.firmaServidor.replace(/^data:image\/\w+;base64,/, "");
+            const firmaImage = await pdfDoc.embedPng(firmaBase64);
+            
+            const firmaDims = firmaImage.scale(0.5); // Escala de la firma (ajustar según necesidad)
+            
+            // Coordenadas donde se dibujará la firma (ajustar según el formato)
+            const firmaX = 80;  // Posición X
+            const firmaY = page3.getSize().height - 520; // Posición Y desde arriba
+            
+            page3.drawImage(firmaImage, {
+              x: firmaX,
+              y: firmaY,
+              width: firmaDims.width,
+              height: firmaDims.height,
+            });
+            
+            console.log("✅ Firma insertada correctamente en el PDF");
+          } catch (error) {
+            console.error("❌ Error al insertar la firma:", error);
+            console.log("Firma recibida:", datosUsuario.firmaServidor?.substring(0, 100));
+          }
+        } else {
+          console.log("⚠️ No se encontró firma del servidor para insertar");
+        }
       }
 
       console.log("✅ PDF llenado correctamente con todas las secciones");
@@ -304,15 +334,12 @@ if (experiencias.length > 0 && pages[1]) {
     URL.revokeObjectURL(url);
   }
 
-  //  FUNCIÓN PARA CALCULAR TIEMPO DE EXPERIENCIA
   function calcularTiempoExperiencia(experiencias) {
     let totalPublicoMeses = 0, totalPrivadoMeses = 0, totalIndependienteMeses = 0;
 
     experiencias.forEach(exp => {
-      // Convertir fechas a objetos Date
       let fechaIngreso, fechaRetiro;
       
-      // Manejar diferentes formatos de fecha
       if (exp.fechaIngreso) {
         if (typeof exp.fechaIngreso === 'string') {
           fechaIngreso = new Date(exp.fechaIngreso);
@@ -339,21 +366,10 @@ if (experiencias.length > 0 && pages[1]) {
 
       if (!fechaIngreso || !fechaRetiro) return;
 
-      // Calcular diferencia exacta en días
       const diffTime = fechaRetiro.getTime() - fechaIngreso.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir el día de inicio
-
-      // Convertir días a meses (usando 30 días por mes)
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
       const mesesDecimal = diffDays / 30;
 
-      console.log(`📅 Experiencia: ${exp.empresa}`);
-      console.log(`   Ingreso: ${fechaIngreso.toLocaleDateString()}`);
-      console.log(`   Retiro: ${fechaRetiro.toLocaleDateString()}`);
-      console.log(`   Días trabajados: ${diffDays}`);
-      console.log(`   Meses (decimal): ${mesesDecimal.toFixed(2)}`);
-      console.log(`   Tipo: ${exp.tipoEntidad}`);
-
-      // Clasificar según tipo de entidad
       const tipo = (exp.tipoEntidad || exp.tipo || "").toLowerCase();
       
       if (tipo === "publica" || tipo === "pública") {
@@ -365,7 +381,6 @@ if (experiencias.length > 0 && pages[1]) {
       }
     });
 
-    // Convertir meses decimales a años y meses enteros
     const convertirMesesDecimales = (totalMesesDecimal) => {
       const mesesEnteros = Math.floor(totalMesesDecimal);
       const anios = Math.floor(mesesEnteros / 12);
@@ -378,13 +393,6 @@ if (experiencias.length > 0 && pages[1]) {
     const independiente = convertirMesesDecimales(totalIndependienteMeses);
     const totalMesesDecimal = totalPublicoMeses + totalPrivadoMeses + totalIndependienteMeses;
     const total = convertirMesesDecimales(totalMesesDecimal);
-
-    console.log(`📊 Totales en meses (decimal):`);
-    console.log(`   Público: ${totalPublicoMeses.toFixed(2)} meses`);
-    console.log(`   Privado: ${totalPrivadoMeses.toFixed(2)} meses`);
-    console.log(`   Independiente: ${totalIndependienteMeses.toFixed(2)} meses`);
-    console.log(`   TOTAL: ${totalMesesDecimal.toFixed(2)} meses`);
-    console.log(`📊 Totales convertidos:`, { publico, privado, independiente, total });
 
     return { publico, privado, independiente, total };
   }
@@ -407,7 +415,6 @@ if (experiencias.length > 0 && pages[1]) {
       };
     };
 
-    // Mapear experiencias
     const experienciasMapeadas = (usuarioLocal.experienciaLaboral || []).map(exp => ({
       empresa: exp.empresa || "",
       tipo: exp.tipoEntidad ? exp.tipoEntidad.toLowerCase() : "",
@@ -424,11 +431,8 @@ if (experiencias.length > 0 && pages[1]) {
       tipoEntidad: exp.tipoEntidad || exp.tipo || ""
     }));
 
-    // Calcular tiempos basados en las experiencias reales
     const tiemposCalculados = calcularTiempoExperiencia(experienciasMapeadas);
     
-    console.log("🧮 Tiempos calculados:", tiemposCalculados);
-  
     return {
       apellido1: usuarioLocal.apellido1 || "",
       apellido2: usuarioLocal.apellido2 || "",
@@ -490,10 +494,13 @@ if (experiencias.length > 0 && pages[1]) {
           meses: String(tiemposCalculados.total.meses),
         },
       },
-      
+
+      // ===== NUEVOS CAMPOS PARA FIRMA =====
+      ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
+      fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
+      firmaServidor: usuarioLocal.firmaServidor || null,
     };
   }
-  
 
   return {
     llenarFormatoOficial,
