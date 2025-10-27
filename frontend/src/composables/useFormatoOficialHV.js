@@ -174,7 +174,7 @@ export function useFormatoOficialHV() {
       }
 
      // =======================================================
-// 💼 PÁGINA 2: EXPERIENCIA LABORAL (DINÁMICA)
+//  PÁGINA 2: EXPERIENCIA LABORAL (DINÁMICA)
 // =======================================================
 console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
 
@@ -186,20 +186,20 @@ if (experiencias.length > 0 && pages[1]) {
   const experienciasPorPagina = 4;
   const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
 
-  // ✅ Cargar nuevamente el formato base para copiar la hoja 2 sin error
+  //  Cargar nuevamente el formato base para copiar la hoja 2 sin error
   const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
   const pdfBase = await PDFDocument.load(formatoBaseBytes);
 
-  // 🧩 Insertar páginas adicionales si hay más de 4 experiencias
+  //  Insertar páginas adicionales si hay más de 4 experiencias
   for (let i = 1; i < totalPaginasExperiencia; i++) {
     const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]); // copiamos la página 2 del formato
     pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2); // insertar antes de la última (página de firmas)
   }
 
-  // 🔄 Actualizar lista de páginas
+  //  Actualizar lista de páginas
   const updatedPages = pdfDoc.getPages();
 
-  // 🎯 Bloques de coordenadas de experiencia por cada página
+  //  Bloques de coordenadas de experiencia por cada página
   const bloques = [
     { yBase: 240 },
     { yBase: 373 },
@@ -207,7 +207,7 @@ if (experiencias.length > 0 && pages[1]) {
     { yBase: 633 },
   ];
 
-  // 🖋️ Dibujar todas las experiencias en su respectiva página
+  //  Dibujar todas las experiencias en su respectiva página
   experiencias.forEach((exp, idx) => {
     const paginaIndex = 1 + Math.floor(idx / experienciasPorPagina); // página destino (2, 3, 4, ...)
     const posicion = idx % experienciasPorPagina;
