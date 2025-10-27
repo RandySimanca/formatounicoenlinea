@@ -504,11 +504,13 @@ async function obtenerDatosCompletos() {
   try {
     console.log('📥 Obteniendo todos los datos desde la API...');
 
-    const [resDatos, resFormacion, resIdiomas, resExperiencia] = await Promise.all([
+    // ⭐ IMPORTANTE: Agregar resFirma a las llamadas en paralelo
+    const [resDatos, resFormacion, resIdiomas, resExperiencia, resFirma] = await Promise.all([
       api.get('/datos-personales').catch(() => ({ data: {} })),
       api.get('/formacion-academica').catch(() => ({ data: {} })),
       api.get('/idiomas').catch(() => ({ data: { idiomas: [] } })),
-      api.get('/experiencia').catch(() => ({ data: [] }))
+      api.get('/experiencia').catch(() => ({ data: [] })),
+      api.get('/firma-servidor').catch(() => ({ data: {} })) // ⭐ NUEVO
     ]);
 
     const datosCompletos = {
@@ -522,9 +524,19 @@ async function obtenerDatosCompletos() {
       experienciaLaboral: Array.isArray(resExperiencia.data)
         ? resExperiencia.data
         : (resExperiencia.data?.experiencia || []),
+      
+      // ⭐ AGREGAR DATOS DE FIRMA
+      ciudadDiligenciamiento: resFirma.data?.ciudadDiligenciamiento || '',
+      fechaDiligenciamiento: resFirma.data?.fechaDiligenciamiento || '',
+      firmaServidor: resFirma.data?.firmaServidor || null,
     };
 
     console.log('📦 Datos combinados obtenidos correctamente');
+    console.log('🖊️ Firma incluida:', datosCompletos.firmaServidor ? 'SÍ ✅' : 'NO ❌');
+    if (datosCompletos.firmaServidor) {
+      console.log('🖊️ Preview firma:', datosCompletos.firmaServidor.substring(0, 50) + '...');
+    }
+    
     return datosCompletos;
   } catch (error) {
     console.error('❌ Error obteniendo datos:', error);
@@ -542,7 +554,11 @@ async function generarVistaPrevia() {
     }
 
     const datosCompletos = await obtenerDatosCompletos();
+    console.log('🔍 Verificando firma en vista previa:', datosCompletos.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
+    
     const datosFormateados = mapearDatosUsuario(datosCompletos);
+    console.log('🔍 Firma después de mapear:', datosFormateados.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
+    
     const pdfDoc = await llenarFormatoOficial(datosFormateados);
     
     const pdfBytes = await pdfDoc.save();
@@ -637,12 +653,25 @@ async function generarPDFHTML() {
 async function generarPDFOficial() {
   try {
     console.log('🚀 Iniciando generación de PDF oficial...');
+    
     const datosCompletos = await obtenerDatosCompletos();
+    console.log('🔍 Verificando firma en PDF oficial:', datosCompletos.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
+    
     const datosFormateados = mapearDatosUsuario(datosCompletos);
+    console.log('🔍 Firma después de mapear:', datosFormateados.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
+    
+    if (datosFormateados.firmaServidor) {
+      console.log('🖊️ Tipo de firma:', 
+        datosFormateados.firmaServidor.includes('png') ? 'PNG' : 
+        datosFormateados.firmaServidor.includes('jpeg') ? 'JPEG' : 'DESCONOCIDO');
+    }
+    
     const pdfDoc = await llenarFormatoOficial(datosFormateados);
+    
     const nombreUsuario = datosFormateados.nombres?.trim() || 'usuario';
     const apellido = datosFormateados.apellido1?.trim() || '';
     const nombreArchivo = `Hoja_Vida_${nombreUsuario}_${apellido}.pdf`.replace(/\s+/g, '_');
+    
     await descargarPDF(pdfDoc, nombreArchivo);
     console.log('✅ PDF generado y descargado exitosamente');
   } catch (error) {
