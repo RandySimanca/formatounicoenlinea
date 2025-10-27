@@ -289,7 +289,7 @@ export function useFormatoOficialHV() {
             const firmaDims = firmaImage.scale(0.5); // Escala de la firma (ajustar según necesidad)
             
             // Coordenadas donde se dibujará la firma (ajustar según el formato)
-            const firmaX = 2500;  // Posición X
+            const firmaX = 250;  // Posición X
             const firmaY = page3.getSize().height - 500; // Posición Y desde arriba
             
             page3.drawImage(firmaImage, {
