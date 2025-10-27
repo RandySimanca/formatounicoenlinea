@@ -1,75 +1,6 @@
 // ========================================
-// 1️⃣ backend/routes/firmaServidor.js
+// backend/controllers/firmaServidorControllers.js
 // ========================================
-import express from "express";
-import { 
-  guardarFirmaServidor, 
-  obtenerFirmaServidor,
-  eliminarFirmaServidor  // ⭐ NUEVO
-} from "../controllers/firmaServidorControllers.js";
-import auth from "../middlewares/auth.js";
-import verificarJWT from "../middlewares/verificarJWT.js";
-
-const router = express.Router();
-
-router.use(auth, verificarJWT);
-
-// Rutas
-router.post("/", guardarFirmaServidor);
-router.get("/", obtenerFirmaServidor);
-router.delete("/", eliminarFirmaServidor);  // ⭐ NUEVO
-
-export default router;
-
-
-// ========================================
-// 2️⃣ backend/controllers/firmaServidorControllers.js
-// ========================================
-// AGREGAR ESTA NUEVA FUNCIÓN AL FINAL DEL ARCHIVO
-
-/**
- * Eliminar firma del servidor
- * DELETE /api/firma-servidor
- */
-export const eliminarFirmaServidor = async (req, res) => {
-  try {
-    const usuarioId = req.usuario._id;
-
-    // Buscar y eliminar la firma del usuario
-    const firmaEliminada = await FirmaServidor.findOneAndDelete({ 
-      user: usuarioId 
-    });
-
-    if (!firmaEliminada) {
-      return res.status(404).json({ 
-        ok: false,
-        mensaje: "No se encontró firma para eliminar" 
-      });
-    }
-
-    console.log(`🗑️ Firma eliminada para usuario: ${usuarioId}`);
-
-    res.json({
-      ok: true,
-      mensaje: "Firma eliminada correctamente",
-      eliminada: true
-    });
-
-  } catch (error) {
-    console.error("❌ Error al eliminar firma:", error);
-    res.status(500).json({
-      ok: false,
-      mensaje: "Error al eliminar la firma del servidor",
-      error: error.message
-    });
-  }
-};
-
-
-// ========================================
-// 📝 ARCHIVO COMPLETO DE EJEMPLO (controllers)
-// ========================================
-// Si necesitas ver cómo quedaría el controlador completo:
 
 import FirmaServidor from "../models/FirmaServidor.js";
 
@@ -82,11 +13,11 @@ export const guardarFirmaServidor = async (req, res) => {
     const { ciudadDiligenciamiento, fechaDiligenciamiento, firmaServidor } = req.body;
     const usuarioId = req.usuario._id;
 
-    // Validaciones
+    // Validación
     if (!firmaServidor) {
       return res.status(400).json({
         ok: false,
-        mensaje: "La firma es requerida"
+        mensaje: "La firma es requerida",
       });
     }
 
@@ -105,7 +36,7 @@ export const guardarFirmaServidor = async (req, res) => {
       return res.json({
         ok: true,
         mensaje: "Firma actualizada correctamente",
-        data: firma
+        data: firma,
       });
     }
 
@@ -114,7 +45,7 @@ export const guardarFirmaServidor = async (req, res) => {
       user: usuarioId,
       ciudadDiligenciamiento,
       fechaDiligenciamiento,
-      firmaServidor
+      firmaServidor,
     });
 
     await firma.save();
@@ -124,15 +55,14 @@ export const guardarFirmaServidor = async (req, res) => {
     res.status(201).json({
       ok: true,
       mensaje: "Firma guardada correctamente",
-      data: firma
+      data: firma,
     });
-
   } catch (error) {
     console.error("❌ Error al guardar firma:", error);
     res.status(500).json({
       ok: false,
       mensaje: "Error al guardar la firma",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -150,7 +80,7 @@ export const obtenerFirmaServidor = async (req, res) => {
     if (!firma) {
       return res.status(404).json({
         ok: false,
-        mensaje: "No se encontró firma para este usuario"
+        mensaje: "No se encontró firma para este usuario",
       });
     }
 
@@ -158,16 +88,49 @@ export const obtenerFirmaServidor = async (req, res) => {
 
     res.json({
       ok: true,
-      data: firma
+      data: firma,
     });
-
   } catch (error) {
     console.error("❌ Error al obtener firma:", error);
     res.status(500).json({
       ok: false,
       mensaje: "Error al obtener la firma",
-      error: error.message
+      error: error.message,
     });
   }
 };
 
+/**
+ * Eliminar firma del servidor
+ * DELETE /api/firma-servidor
+ */
+export const eliminarFirmaServidor = async (req, res) => {
+  try {
+    const usuarioId = req.usuario._id;
+
+    // Buscar y eliminar la firma del usuario
+    const firmaEliminada = await FirmaServidor.findOneAndDelete({ user: usuarioId });
+
+    if (!firmaEliminada) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: "No se encontró firma para eliminar",
+      });
+    }
+
+    console.log(`🗑️ Firma eliminada para usuario: ${usuarioId}`);
+
+    res.json({
+      ok: true,
+      mensaje: "Firma eliminada correctamente",
+      eliminada: true,
+    });
+  } catch (error) {
+    console.error("❌ Error al eliminar firma:", error);
+    res.status(500).json({
+      ok: false,
+      mensaje: "Error al eliminar la firma del servidor",
+      error: error.message,
+    });
+  }
+};
