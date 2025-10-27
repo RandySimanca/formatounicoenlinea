@@ -270,7 +270,7 @@ if (experiencias.length > 0 && pages[1]) {
         write(page3, t.independiente?.anos || "", 400, 250, 14);
         write(page3, t.independiente?.meses || "", 450, 250, 14);
         write(page3, t.total?.anos || "", 400, 280, 14);
-        write(page3, t.total?.meses || "", 450, 280, 14);
+        write(page3, t.total?.meses || "", 450, 300, 14);
 
         // Ciudad y fecha actual
         const fechaHoy = new Date();
