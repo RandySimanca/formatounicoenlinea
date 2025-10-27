@@ -216,7 +216,7 @@ if (experiencias.length > 0 && pages[1]) {
 
     // Agregar título en las páginas adicionales
     if (posicion === 0 && paginaIndex > 1) {
-      page.drawText("CONTINUACIÓN DE EXPERIENCIA LABORAL", {
+      page.drawText("", {
         x: 200,
         y: page.getSize().height - 60,
         size: 12,
