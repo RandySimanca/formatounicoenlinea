@@ -1,4 +1,4 @@
-<!--src/FirmaServidorComponent.vue-->
+<!-- src/FirmaServidorComponent.vue -->
 <template>
   <div class="section firma-section">
     <div class="section-title">
@@ -39,7 +39,6 @@
     </div>
 
     <div class="signature-container">
-      <!-- Vista previa de la firma existente -->
       <div v-if="firmaUrl" class="firma-preview">
         <img :src="firmaUrl" alt="Firma cargada" class="firma-imagen" />
         <div class="firma-acciones">
@@ -52,7 +51,6 @@
         </div>
       </div>
 
-      <!-- Input para subir nueva firma -->
       <div v-else class="firma-upload">
         <input
           type="file"
@@ -65,7 +63,6 @@
         <label for="firma" class="label-upload"> 📝 Seleccionar firma </label>
       </div>
 
-      <!-- Input oculto para cambiar firma -->
       <input
         type="file"
         ref="firmaInputCambio"
@@ -88,7 +85,6 @@
       </button>
     </div>
 
-    <!-- Modal de confirmación para eliminar -->
     <div
       v-if="mostrarModalEliminar"
       class="modal-overlay"
@@ -269,17 +265,16 @@ const cambiarFirma = () => {
 </script>
 
 <style scoped>
-/* Contenedor principal con altura controlada */
 .firma-section {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  max-height: 380px; /* Altura aumentada considerablemente */
+  height: auto; /* ✅ Permite crecimiento dinámico */
   overflow: visible;
   padding: 0.5rem !important;
+  margin-bottom: 1rem; /* ✅ Espacio con la siguiente sección */
 }
 
-/* Contenedor de datos de ciudad y fecha */
 .datos-firma-container {
   display: flex;
   gap: 1rem;
@@ -299,17 +294,14 @@ const cambiarFirma = () => {
   font-size: 12px;
 }
 
-/* Contenedor de firma con altura fija */
 .signature-container {
   min-height: 150px;
-  max-height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0.4rem 0;
 }
 
-/* Vista previa de firma */
 .firma-preview {
   display: flex;
   align-items: center;
@@ -332,7 +324,6 @@ const cambiarFirma = () => {
   gap: 0.5rem;
 }
 
-/* Botones de acción */
 .btn-eliminar,
 .btn-cambiar {
   padding: 6px 12px;
@@ -353,7 +344,6 @@ const cambiarFirma = () => {
 .btn-eliminar:hover {
   background: #c82333;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
 }
 
 .btn-cambiar {
@@ -364,10 +354,8 @@ const cambiarFirma = () => {
 .btn-cambiar:hover {
   background: #138496;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
 }
 
-/* Upload de firma */
 .firma-upload {
   text-align: center;
   width: 100%;
@@ -392,18 +380,16 @@ const cambiarFirma = () => {
 .label-upload:hover {
   background: #0056b3;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 
-/* Footer con label y botón guardar */
 .firma-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 0.6rem;
   border-top: 2px solid #dee2e6;
-  margin-top: 0.5rem; /* Margen superior para separación */
-  min-height: 40px; /* Altura mínima para el footer */
+  margin-top: 0.5rem;
+  min-height: 40px;
 }
 
 .firma-label {
@@ -429,7 +415,6 @@ const cambiarFirma = () => {
 .btn-guardar:hover:not(:disabled) {
   background: #218838;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 
 .btn-guardar:disabled {
@@ -438,7 +423,6 @@ const cambiarFirma = () => {
   opacity: 0.6;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -450,16 +434,6 @@ const cambiarFirma = () => {
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .modal-content {
@@ -467,19 +441,6 @@ const cambiarFirma = () => {
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 .modal-header {
@@ -487,21 +448,8 @@ const cambiarFirma = () => {
   border-bottom: 1px solid #dee2e6;
 }
 
-.modal-header h3 {
-  margin: 0;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .modal-body {
   padding: 20px;
-}
-
-.modal-body p {
-  margin: 10px 0;
-  color: #555;
 }
 
 .warning-text {
@@ -533,20 +481,11 @@ const cambiarFirma = () => {
   color: white;
 }
 
-.btn-cancelar:hover {
-  background: #5a6268;
-}
-
 .btn-confirmar-eliminar {
   background: #dc3545;
   color: white;
 }
 
-.btn-confirmar-eliminar:hover {
-  background: #c82333;
-}
-
-/* Optimización para impresión */
 @media print {
   .no-imprimir {
     display: none !important;
@@ -556,13 +495,8 @@ const cambiarFirma = () => {
     max-height: none;
     page-break-inside: avoid;
   }
-
-  .firma-preview {
-    justify-content: flex-start;
-  }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .datos-firma-container {
     flex-direction: column;
@@ -573,23 +507,10 @@ const cambiarFirma = () => {
     gap: 0.5rem;
   }
 
-  .firma-acciones {
-    width: 100%;
-  }
-
-  .btn-eliminar,
-  .btn-cambiar {
-    width: 100%;
-  }
-
   .firma-footer {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
-  }
-
-  .firma-label {
-    max-width: 100%;
   }
 
   .btn-guardar {
