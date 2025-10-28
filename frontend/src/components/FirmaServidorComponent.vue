@@ -274,7 +274,7 @@ const cambiarFirma = () => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-height: 280px; /* Altura máxima fija */
+  max-height: 340px; /* Altura aumentada para evitar desbordamiento */
   overflow: visible;
   padding: 0.5rem !important;
 }
