@@ -273,8 +273,8 @@ const cambiarFirma = () => {
 .firma-section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-height: 340px; /* Altura aumentada para evitar desbordamiento */
+  gap: 0.4rem;
+  max-height: 380px; /* Altura aumentada considerablemente */
   overflow: visible;
   padding: 0.5rem !important;
 }
@@ -301,12 +301,12 @@ const cambiarFirma = () => {
 
 /* Contenedor de firma con altura fija */
 .signature-container {
-  min-height: 120px;
-  max-height: 120px;
+  min-height: 150px;
+  max-height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.3rem 0;
+  margin: 0.4rem 0;
 }
 
 /* Vista previa de firma */
@@ -400,9 +400,10 @@ const cambiarFirma = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 0.5rem;
+  padding-top: 0.6rem;
   border-top: 2px solid #dee2e6;
-  margin-top: auto; /* Empuja al final */
+  margin-top: 0.5rem; /* Margen superior para separación */
+  min-height: 40px; /* Altura mínima para el footer */
 }
 
 .firma-label {
