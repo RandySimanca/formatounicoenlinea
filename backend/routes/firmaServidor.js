@@ -1,6 +1,6 @@
 // backend/routes/firmaServidor.js
 import express from "express";
-import { guardarFirmaServidor, obtenerFirmaServidor } from "../controllers/firmaServidorControllers.js";
+import { guardarFirmaServidor, obtenerFirmaServidor, eliminarFirmaServidor } from "../controllers/firmaServidorControllers.js";
 import auth from "../middlewares/auth.js";
 import verificarJWT from "../middlewares/verificarJWT.js";
 
@@ -11,5 +11,6 @@ router.use(auth, verificarJWT);
 // Rutas
 router.post("/", guardarFirmaServidor);
 router.get("/", obtenerFirmaServidor);
+router.delete("/", eliminarFirmaServidor);
 
 export default router;

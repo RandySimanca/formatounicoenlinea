@@ -33,33 +33,27 @@ export const obtenerFirmaServidor = async (req, res) => {
  */
 export const eliminarFirmaServidor = async (req, res) => {
   try {
-    const usuarioId = req.usuario._id;
-
-    const firmaEliminada = await FirmaServidor.findOneAndDelete({ 
-      user: usuarioId 
-    });
-
-    if (!firmaEliminada) {
+    const userId = req.usuario.id; // Desde el middleware auth
+    
+    // Buscar y eliminar la firma del usuario
+    const resultado = await FirmaServidor.findOneAndDelete({ usuario: userId });
+    
+    if (!resultado) {
       return res.status(404).json({ 
-        ok: false,
         mensaje: "No se encontró firma para eliminar" 
       });
     }
-
-    console.log(`🗑️ Firma eliminada para usuario: ${usuarioId}`);
-
-    res.json({
-      ok: true,
-      mensaje: "Firma eliminada correctamente",
-      eliminada: true
+    
+    res.status(200).json({ 
+      mensaje: "Firma eliminada exitosamente",
+      firmaEliminada: resultado
     });
-
+    
   } catch (error) {
-    console.error("❌ Error al eliminar firma:", error);
-    res.status(500).json({
-      ok: false,
-      mensaje: "Error al eliminar la firma del servidor",
-      error: error.message
+    console.error("Error al eliminar firma:", error);
+    res.status(500).json({ 
+      mensaje: "Error al eliminar la firma",
+      error: error.message 
     });
   }
 };
