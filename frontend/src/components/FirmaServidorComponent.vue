@@ -1,6 +1,6 @@
 <!--src/FirmaServidorComponent.vue-->
 <template>
-  <div class="section">
+  <div class="section firma-section">
     <div class="section-title">
       <span class="section-number">5</span> FIRMA DEL SERVIDOR PÚBLICO O
       CONTRATISTA
@@ -21,29 +21,27 @@
       </p>
     </div>
 
-    <div class="form-group">
-      <label for="signing-city">Ciudad:</label>
-      <input
-        type="text"
-        id="signing-city"
-        placeholder="Ej: Bogotá"
-        v-model="ciudadDiligenciamiento"
-      />
+    <div class="datos-firma-container">
+      <div class="form-group">
+        <label for="signing-city">Ciudad:</label>
+        <input
+          type="text"
+          id="signing-city"
+          placeholder="Ej: Bogotá"
+          v-model="ciudadDiligenciamiento"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="signing-date">Fecha de diligenciamiento:</label>
+        <input type="date" id="signing-date" v-model="fechaDiligenciamiento" />
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="signing-date">Fecha de diligenciamiento:</label>
-      <input type="date" id="signing-date" v-model="fechaDiligenciamiento" />
-    </div>
-
-    <div class="signature-area">
+    <div class="signature-container">
       <!-- Vista previa de la firma existente -->
       <div v-if="firmaUrl" class="firma-preview">
-        <img
-          :src="firmaUrl"
-          alt="Firma cargada"
-          class="firma-imagen"
-        />
+        <img :src="firmaUrl" alt="Firma cargada" class="firma-imagen" />
         <div class="firma-acciones">
           <button @click="eliminarFirma" class="btn-eliminar no-imprimir">
             🗑️ Eliminar firma
@@ -64,9 +62,7 @@
           @change="mostrarFirma"
           class="input-file"
         />
-        <label for="firma" class="label-upload">
-          📝 Seleccionar firma
-        </label>
+        <label for="firma" class="label-upload"> 📝 Seleccionar firma </label>
       </div>
 
       <!-- Input oculto para cambiar firma -->
@@ -77,21 +73,27 @@
         @change="mostrarFirma"
         style="display: none"
       />
+    </div>
 
-      <div class="firma-header">
-        <label>FIRMA DEL SERVIDOR PÚBLICO O CONTRATISTA</label>
-        <button 
-          @click="guardarFirma" 
-          class="btn-guardar no-imprimir"
-          :disabled="guardando"
-        >
-          {{ guardando ? '⏳ Guardando...' : '💾 Guardar diligenciamiento' }}
-        </button>
-      </div>
+    <div class="firma-footer">
+      <label class="firma-label"
+        >FIRMA DEL SERVIDOR PÚBLICO O CONTRATISTA</label
+      >
+      <button
+        @click="guardarFirma"
+        class="btn-guardar no-imprimir"
+        :disabled="guardando"
+      >
+        {{ guardando ? "⏳ Guardando..." : "💾 Guardar diligenciamiento" }}
+      </button>
     </div>
 
     <!-- Modal de confirmación para eliminar -->
-    <div v-if="mostrarModalEliminar" class="modal-overlay" @click="cerrarModalEliminar">
+    <div
+      v-if="mostrarModalEliminar"
+      class="modal-overlay"
+      @click="cerrarModalEliminar"
+    >
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h3>⚠️ Confirmar eliminación</h3>
@@ -104,7 +106,10 @@
           <button @click="cerrarModalEliminar" class="btn-cancelar">
             Cancelar
           </button>
-          <button @click="confirmarEliminarFirma" class="btn-confirmar-eliminar">
+          <button
+            @click="confirmarEliminarFirma"
+            class="btn-confirmar-eliminar"
+          >
             Eliminar firma
           </button>
         </div>
@@ -149,18 +154,15 @@ async function cargarFirma() {
   }
 }
 
-// Convertir la imagen a base64
 const mostrarFirma = (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Validar tamaño del archivo (máximo 2MB)
   if (file.size > 2 * 1024 * 1024) {
     showError("❌ La imagen es muy grande. Máximo 2MB.");
     return;
   }
 
-  // Validar tipo de archivo
   if (!file.type.match(/image\/(jpeg|jpg|png)/)) {
     showError("❌ Solo se permiten archivos JPG, JPEG o PNG.");
     return;
@@ -174,14 +176,12 @@ const mostrarFirma = (event) => {
       canvas.width = 250;
       canvas.height = 100;
       const ctx = canvas.getContext("2d");
-      
-      // Fondo blanco
+
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Dibujar imagen
+
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      
+
       firmaUrl.value = canvas.toDataURL("image/png");
       console.log("✅ Firma procesada correctamente");
     };
@@ -196,7 +196,6 @@ const mostrarFirma = (event) => {
   reader.readAsDataURL(file);
 };
 
-// Guardar la información al backend
 const guardarFirma = async () => {
   if (!firmaUrl.value) {
     showError("❌ Por favor, selecciona una firma antes de guardar.");
@@ -219,7 +218,9 @@ const guardarFirma = async () => {
 
     const response = await api.post("/firma-servidor", payload);
     console.log("✅ Guardado:", response.data);
-    showSuccess("✅ Firma y datos de diligenciamiento guardados correctamente.");
+    showSuccess(
+      "✅ Firma y datos de diligenciamiento guardados correctamente."
+    );
   } catch (error) {
     console.error(
       "❌ Error al guardar:",
@@ -231,55 +232,117 @@ const guardarFirma = async () => {
   }
 };
 
-// Mostrar modal de confirmación
 const eliminarFirma = () => {
   mostrarModalEliminar.value = true;
 };
 
-// Cerrar modal
 const cerrarModalEliminar = () => {
   mostrarModalEliminar.value = false;
 };
 
-// Confirmar y eliminar firma
 const confirmarEliminarFirma = async () => {
   try {
     await api.delete("/firma-servidor");
-    
-    // Limpiar datos locales
+
     firmaUrl.value = null;
     ciudadDiligenciamiento.value = "";
     fechaDiligenciamiento.value = "";
-    
-    // Resetear inputs de archivo
+
     if (firmaInput.value) firmaInput.value.value = "";
     if (firmaInputCambio.value) firmaInputCambio.value.value = "";
-    
+
     showSuccess("✅ Firma eliminada correctamente.");
     cerrarModalEliminar();
     console.log("✅ Firma eliminada del servidor");
   } catch (error) {
-    console.error("❌ Error al eliminar firma:", error.response?.data || error.message);
+    console.error(
+      "❌ Error al eliminar firma:",
+      error.response?.data || error.message
+    );
     showError("❌ No se pudo eliminar la firma. Intenta nuevamente.");
   }
 };
 
-// Cambiar firma
 const cambiarFirma = () => {
   firmaInputCambio.value?.click();
 };
 </script>
 
 <style scoped>
+/* Contenedor principal con altura controlada */
+.firma-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 280px; /* Altura máxima fija */
+  overflow: visible;
+  padding: 0.5rem !important;
+}
 
+/* Contenedor de datos de ciudad y fecha */
+.datos-firma-container {
+  display: flex;
+  gap: 1rem;
+  margin: 0.3rem 0;
+}
+
+.datos-firma-container .form-group {
+  flex: 1;
+  margin: 0;
+}
+
+.datos-firma-container input {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Contenedor de firma con altura fija */
+.signature-container {
+  min-height: 120px;
+  max-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.3rem 0;
+}
+
+/* Vista previa de firma */
+.firma-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.firma-imagen {
+  width: 250px;
+  height: 100px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  object-fit: contain;
+  background: white;
+}
+
+.firma-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Botones de acción */
 .btn-eliminar,
 .btn-cambiar {
-  padding: 8px 16px;
+  padding: 6px 12px;
   border: none;
   border-radius: 6px;
   font-weight: 600;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .btn-eliminar {
@@ -307,7 +370,7 @@ const cambiarFirma = () => {
 /* Upload de firma */
 .firma-upload {
   text-align: center;
-  margin-bottom: 15px;
+  width: 100%;
 }
 
 .input-file {
@@ -316,12 +379,13 @@ const cambiarFirma = () => {
 
 .label-upload {
   display: inline-block;
-  padding: 12px 24px;
+  padding: 10px 20px;
   background: #007bff;
   color: white;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 13px;
   transition: all 0.3s ease;
 }
 
@@ -331,28 +395,34 @@ const cambiarFirma = () => {
   box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 
-.firma-header {
+/* Footer con label y botón guardar */
+.firma-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 15px;
+  padding-top: 0.5rem;
   border-top: 2px solid #dee2e6;
+  margin-top: auto; /* Empuja al final */
 }
 
-.firma-header label {
+.firma-label {
   font-weight: 600;
+  font-size: 11px;
   color: #333;
+  max-width: 50%;
 }
 
 .btn-guardar {
-  padding: 10px 20px;
+  padding: 8px 16px;
   background: #28a745;
   color: white;
   border: none;
   border-radius: 6px;
   font-weight: 600;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .btn-guardar:hover:not(:disabled) {
@@ -475,29 +545,53 @@ const cambiarFirma = () => {
   background: #c82333;
 }
 
+/* Optimización para impresión */
 @media print {
   .no-imprimir {
     display: none !important;
   }
-}
 
-@media (max-width: 768px) {
-  .firma-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  .firma-section {
+    max-height: none;
+    page-break-inside: avoid;
   }
 
-  .btn-guardar {
-    width: 100%;
+  .firma-preview {
+    justify-content: flex-start;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .datos-firma-container {
+    flex-direction: column;
+  }
+
+  .firma-preview {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .firma-acciones {
-    flex-direction: column;
+    width: 100%;
   }
 
   .btn-eliminar,
   .btn-cambiar {
+    width: 100%;
+  }
+
+  .firma-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .firma-label {
+    max-width: 100%;
+  }
+
+  .btn-guardar {
     width: 100%;
   }
 }
