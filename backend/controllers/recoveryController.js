@@ -1,6 +1,7 @@
 // backend/controllers/recoveryController.js
 import Usuario from "../models/Usuario.js";
 import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 // Almacenamiento temporal de códigos (en producción usar Redis o DB)
 const codigosRecuperacion = new Map();
@@ -73,7 +74,33 @@ export const solicitarRecuperacion = async (req, res) => {
       respuesta.codigoDesarrollo = codigo;
       console.log(`🔓 [DEV] Código incluido en respuesta: ${codigo}`);
     }
-
+    // ✉️ Configurar transporte de correo (usando Gmail, Outlook, etc.)
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+  
+      const mailOptions = {
+        from: `"Soporte FUE" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Código de recuperación de contraseña",
+        text: `Hola ${usuario.nombre || ""},\n\nTu código de recuperación es: ${codigo}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste este código, ignora este correo.`,
+      };
+  
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log(`📧 Correo de recuperación enviado a ${email}`);
+      } catch (error) {
+        console.error("❌ Error al enviar correo:", error.message);
+        return res.status(500).json({
+          mensaje: "Error al enviar el correo de recuperación.",
+          detalle: error.message,
+        });
+      }
+  
     res.status(200).json(respuesta);
 
   } catch (error) {
