@@ -84,10 +84,10 @@ export const solicitarRecuperacion = async (req, res) => {
       });
   
       const mailOptions = {
-        from: `"Soporte FUE" <${process.env.EMAIL_USER}>`,
+        from: `"Soporte Hoja de Vida Formato Unico" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "Código de recuperación de contraseña",
-        text: `Hola ${usuario.nombre || ""},\n\nTu código de recuperación es: ${codigo}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste este código, ignora este correo.`,
+        text: `Hola ${usuario.nombre || ""},\n\nTu código de recuperación es: ${codigo}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste este código, ignora este correo.\n\n\n\nAtte. Randy Simanca\n\Tecnico Soporte.`,
       };
   
       try {
