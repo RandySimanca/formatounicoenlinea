@@ -52,7 +52,7 @@ const router = createRouter({
         { path: "login", name: "login", component: LoginViews },
         { path: "recuperar-password", name: "recuperar-password", component: RecuperarPassword } // ✅ NUEVA RUTA
       ]
-    },v
+    },
 
     {
       path: "/panel",
