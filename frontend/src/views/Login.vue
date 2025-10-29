@@ -1,4 +1,3 @@
-<!--frontend/views/login-->
 <template>
   <div class="login-wrapper">
     <!-- Panel de información de contacto -->
@@ -20,13 +19,6 @@
             <p>randysimancamercado@gmail.com</p>
           </div>
         </div>
-        <!--<div class="contact-item">
-          <span class="icon">📱</span>
-          <div>
-            <strong>Teléfono</strong>
-            <p>+57 (1) 234-5678</p>
-          </div>
-        </div>-->
         <div class="contact-item">
           <span class="icon">💬</span>
           <div>
@@ -34,24 +26,7 @@
             <p>+57 314 519 3285</p>
           </div>
         </div>
-       <!-- <div class="contact-item">
-          <span class="icon">🌐</span>
-         <div>
-            <strong>Sitio Web</strong>
-            <p>www.cvbuilder.com</p>
-          </div>
-        </div>-->
       </div>
-
-     <!-- <div class="features">
-        <h3>¿Por qué elegirnos?</h3>
-        <ul>
-          <li>✨ Plantillas profesionales</li>
-          <li>🔒 Datos 100% seguros</li>
-          <li>📊 Estadísticas en tiempo real</li>
-          <li>🎯 Optimizado para ATS</li>
-        </ul>
-      </div>-->
     </div> 
 
     <!-- Formulario de login -->
@@ -132,11 +107,13 @@
         </p>
       </div>
 
-      <!-- Enlaces adicionales -->
+      <!-- Enlaces adicionales - ✅ ACTUALIZADO -->
       <div class="additional-links">
-        <a href="#" class="link">¿Olvidaste tu contraseña?</a>
+        <router-link to="/recuperar-password" class="link">
+          🔐 ¿Olvidaste tu contraseña?
+        </router-link>
         <span class="separator">•</span>
-        <a href="#" class="link">Términos y condiciones</a>
+        <a href="#" class="link" @click.prevent>Términos y condiciones</a>
       </div>
     </div>
 
@@ -163,45 +140,6 @@
             </button>
           </div>
         </div>
-
-        <!-- Anuncios secundarios -->
-     <!--   <div class="secondary-ads">
-          <div class="small-ad">
-            <div class="ad-icon">📊</div>
-            <div class="ad-text">
-              <h4>Estadísticas</h4>
-              <p>Ve cuántas veces han visto tu CV</p>
-            </div>
-          </div>
-
-          <div class="small-ad">
-            <div class="ad-icon">🎯</div>
-            <div class="ad-text">
-              <h4>Match Jobs</h4>
-              <p>Encuentra empleos perfectos para tu perfil</p>
-            </div>
-          </div>
-
-          <div class="small-ad">
-            <div class="ad-icon">💼</div>
-            <div class="ad-text">
-              <h4>Red Profesional</h4>
-              <p>Conecta con recruiters y empresas</p>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- Testimonial -->
-       <!-- <div class="testimonial-ad">
-          <div class="quote">"Gracias a esta plataforma conseguí mi trabajo soñado en solo 2 semanas"</div>
-          <div class="author">
-            <div class="avatar">👨‍💼</div>
-            <div class="author-info">
-              <strong>Carlos Rodríguez</strong>
-              <span>Ingeniero de Software</span>
-            </div>
-          </div>
-        </div> -->
 
         <!-- Banner publicitario externo (ejemplo) -->
         <div class="external-ad">
@@ -304,7 +242,7 @@ const handleRegister = async () => {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Panel de contacto - MANTIENE EL DISEÑO ORIGINAL */
+/* Panel de contacto */
 .contact-panel {
   flex: 1;
   max-width: 500px;
@@ -359,8 +297,7 @@ const handleRegister = async () => {
   margin-bottom: 2rem;
 }
 
-.contact-info h3,
-.features h3 {
+.contact-info h3 {
   font-size: 1.3rem;
   margin-bottom: 1.5rem;
   color: #fff;
@@ -396,21 +333,7 @@ const handleRegister = async () => {
   font-size: 0.9rem;
 }
 
-.features ul {
-  list-style: none;
-  padding: 0;
-}
-
-.features li {
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Formulario de login - MANTIENE EL DISEÑO ORIGINAL */
+/* Formulario de login */
 .login-card {
   flex: 1;
   max-width: 500px;
@@ -514,7 +437,7 @@ const handleRegister = async () => {
 }
 
 .error-message {
-  background: hsl(145, 85%, 79%);
+  background: #fef2f2;
   color: #c53030;
   padding: 1rem;
   border-radius: 8px;
@@ -567,19 +490,23 @@ const handleRegister = async () => {
 .link {
   color: #718096;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .link:hover {
   color: #667eea;
   text-decoration: underline;
+  transform: translateY(-1px);
 }
 
 .separator {
   color: #cbd5e0;
 }
 
-/* NUEVO PANEL PUBLICITARIO */
+/* Panel publicitario */
 .ads-panel {
   flex: 1;
   max-width: 400px;
@@ -597,7 +524,6 @@ const handleRegister = async () => {
   justify-content: flex-start;
 }
 
-/* Anuncio principal */
 .main-ad {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -689,103 +615,6 @@ const handleRegister = async () => {
   font-size: 0.8rem;
 }
 
-/* Anuncios secundarios */
-.secondary-ads {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.small-ad {
-  background: white;
-  padding: 1rem;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
-}
-
-.small-ad:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.ad-icon {
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: 8px;
-  color: white;
-}
-
-.ad-text h4 {
-  margin: 0 0 0.25rem 0;
-  font-size: 0.9rem;
-  color: #2d3748;
-  font-weight: 600;
-}
-
-.ad-text p {
-  margin: 0;
-  font-size: 0.75rem;
-  color: #718096;
-  line-height: 1.4;
-}
-
-/* Testimonial */
-.testimonial-ad {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #667eea;
-}
-
-.quote {
-  font-style: italic;
-  color: #2d3748;
-  margin-bottom: 1rem;
-  line-height: 1.6;
-  font-size: 0.85rem;
-}
-
-.author {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.avatar {
-  width: 35px;
-  height: 35px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-}
-
-.author-info strong {
-  display: block;
-  color: #2d3748;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.author-info span {
-  color: #718096;
-  font-size: 0.75rem;
-}
-
-/* Banner publicitario externo */
 .external-ad {
   background: white;
   border: 2px dashed #e2e8f0;
@@ -871,5 +700,3 @@ const handleRegister = async () => {
   }
 }
 </style>
-
-
