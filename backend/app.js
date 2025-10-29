@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import cors from "cors"; // ✅ Importar cors
+import recoveryRoutes from "./routes/recovery.js";
 
 // --- Importar rutas API ---
 import formacionAcademicaRoutes from "./routes/formacionAcademica.js";
@@ -53,6 +54,7 @@ app.use("/api/pdf", pdfRoutes);
 app.use("/api", hojaRoutes); 
 app.use("/api/idiomas", idiomasRoutes);
 app.use("/api/firma-servidor", firmaServidorRoutes);
+app.use("/api/recovery", recoveryRoutes);
 
 // --- Configuración de frontend MEJORADA ---
 const __filename = fileURLToPath(import.meta.url);

@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 // Layouts
 import LayoutPublico from "../Layouts/LayoutPublico.vue";
 import LayoutPrivado from "../Layouts/LayoutPrivado.vue";
+import RecuperarPassword from "../views/RecuperarPassword.vue";
 
 // Vistas públicas
 import LoginViews from "../views/Login.vue";
@@ -29,7 +30,8 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     // Layout público (sin menú)
-    {
+ 
+    /**{
       path: "/",
       component: LayoutPublico,
       children: [
@@ -40,7 +42,17 @@ const router = createRouter({
           component: LoginViews,
         }
       ]
-    },
+    },*/
+
+    {
+      path: "/",
+      component: LayoutPublico,
+      children: [
+        { path: "", redirect: "/login" },
+        { path: "login", name: "login", component: LoginViews },
+        { path: "recuperar-password", name: "recuperar-password", component: RecuperarPassword } // ✅ NUEVA RUTA
+      ]
+    }
 
     {
       path: "/panel",
@@ -54,6 +66,7 @@ const router = createRouter({
         {path: "vistaCompleta", component: VistaCompleta},
       ]
     },
+    
 
     ]
 });
