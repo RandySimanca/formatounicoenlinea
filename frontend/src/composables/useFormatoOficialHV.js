@@ -124,7 +124,7 @@ export function useFormatoOficialHV() {
           }
         }
 
-        write(page1, datosUsuario.tituloBasica || "", 380, 442, 10);
+        write(page1, datosUsuario.tituloBasica || "", 380, 430, 10);
         write(page1, datosUsuario.mesGradoBasica || "", 350, 475, 12);
         write(page1, datosUsuario.anoGradoBasica || "", 410, 475, 12);
 
