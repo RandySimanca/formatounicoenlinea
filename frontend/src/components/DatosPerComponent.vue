@@ -155,6 +155,7 @@
                 id="primera"
                 value="primera"
                 v-model="libretaMilitar"
+                @click="toggleRadio('primera')"
               />
               <label for="primera">PRIMERA CLASE</label>
             </div>
@@ -164,6 +165,7 @@
                 id="segunda"
                 value="segunda"
                 v-model="libretaMilitar"
+                @click="toggleRadio('segunda')"
               />
               <label for="segunda">SEGUNDA CLASE</label>
             </div>
@@ -183,25 +185,29 @@
 
         <div class="form-group col-4">
           <label for="dm">D.M</label>
-          <input type="text" id="dm" class="form-control2" 
-            v-model="dm" 
-            placeholder=""/>
+          <input
+            type="text"
+            id="dm"
+            class="form-control2"
+            v-model="dm"
+            placeholder=""
+          />
         </div>
       </div>
 
       <div class="form-row">
-     <div class="form-group col-2">
+        <div class="form-group col-2">
           <label>FECHA Y LUGAR DE NACIMIENTO</label>
           <div style="display: flex; flex-wrap: wrap">
-                        <div class="form-group col-4">
-                              <label for="dia-nac">DÍA</label>
-                              <input
-                                type="text"
-                                id="dia-nac"
-                                class="form-control"
-                                v-model="diaNac"
-                              />
-                        </div>
+            <div class="form-group col-4">
+              <label for="dia-nac">DÍA</label>
+              <input
+                type="text"
+                id="dia-nac"
+                class="form-control"
+                v-model="diaNac"
+              />
+            </div>
             <div class="form-group col-4">
               <label for="mes-nac">MES</label>
               <input
@@ -211,7 +217,7 @@
                 v-model="mesNac"
               />
             </div>
-            <div class="form-group col-4" >
+            <div class="form-group col-4">
               <label for="ano-nac">AÑO</label>
               <input
                 type="text"
@@ -220,7 +226,7 @@
                 v-model="anoNac"
               />
             </div>
-         </div>
+          </div>
 
           <div class="form-group col-2">
             <label for="pais-nac">PAÍS</label>
@@ -251,13 +257,12 @@
               v-model="municipioNac"
             />
           </div>
-       </div>
-       
+        </div>
 
-           <div class="form-group col-2">
+        <div class="form-group col-2">
           <label>DIRECCIÓN DE CORRESPONDENCIA</label>
-          <div style="display: flex; margin-top: 3px" >
-              <div class="form-group col-3">
+          <div style="display: flex; margin-top: 3px">
+            <div class="form-group col-3">
               <label for="pais-corr">PAÍS</label>
               <input
                 type="text"
@@ -318,33 +323,29 @@
             />
           </div>
         </div>
-     </div>
-    
-   
-  
-    <div class="form-group no-imprimir" style="margin-top: 20px">
-      <button
-        type="submit"
-        class="boton-guardar no-imprimir"
-        style="margin-left: 10px; background-color: #28a745;"
-        :disabled="cargando || datosPrecargados"
-      >
-        {{ cargando ? "Guardando..." : "Guardar datos personales" }}
-        
-      </button>
-      <button
-        type="button"
-        class="no-imprimir boton-actualizar" 
-        @click="actualizarDatos"
-        :disabled="cargando"
-      >
-        {{ cargando ? "Actualizando..." : "Actualizar datos personales" }}
-      </button>
-    </div>
+      </div>
 
-    <p v-if="envioExitoso" class="mensaje-ok">Datos guardados con éxito</p>
-    <p v-if="errorEnvio" class="mensaje-error">{{ errorEnvio }}</p>
+      <div class="form-group no-imprimir" style="margin-top: 20px">
+        <button
+          type="submit"
+          class="boton-guardar no-imprimir"
+          style="margin-left: 10px; background-color: #28a745"
+          :disabled="cargando || datosPrecargados"
+        >
+          {{ cargando ? "Guardando..." : "Guardar datos personales" }}
+        </button>
+        <button
+          type="button"
+          class="no-imprimir boton-actualizar"
+          @click="actualizarDatos"
+          :disabled="cargando"
+        >
+          {{ cargando ? "Actualizando..." : "Actualizar datos personales" }}
+        </button>
+      </div>
 
+      <p v-if="envioExitoso" class="mensaje-ok">Datos guardados con éxito</p>
+      <p v-if="errorEnvio" class="mensaje-error">{{ errorEnvio }}</p>
     </div>
   </form>
 </template>
@@ -508,13 +509,18 @@ export default {
         },
       };
     },
+    toggleRadio(valor) {
+    if (this.libretaMilitar === valor) {
+      this.libretaMilitar = ""; // desmarca si se vuelve a hacer clic
+    }
+  },
   },
 };
 </script>
 
 <style>
 /* estilos */
-  #municipio-corr {
+#municipio-corr {
   width: 100%;
   padding: 0px 8px;
   box-sizing: border-box;
@@ -524,9 +530,4 @@ export default {
   text-overflow: ellipsis;
   height: auto;
 }
-
-
 </style>
-
-
-
