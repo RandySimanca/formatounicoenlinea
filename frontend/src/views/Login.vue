@@ -1,3 +1,4 @@
+<!--frontend/views/login-->
 <template>
   <div class="login-wrapper">
     <!-- Panel de información de contacto -->
