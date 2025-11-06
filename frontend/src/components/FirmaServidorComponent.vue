@@ -6,63 +6,31 @@
       CONTRATISTA
     </div>
 
-    <!-- ✅ NUEVA SECCIÓN: Declaración de Inhabilidad -->
     <div class="declaration">
-      <p class="declaration-text">
+      <p>
         MANIFIESTO BAJO LA GRAVEDAD DEL JURAMENTO QUE 
-        <span class="radio-inline-group">
-          <label class="radio-label">
-            <input 
-              type="radio" 
-              name="inhabilidad" 
-              value="SI" 
-              v-model="declaracionInhabilidad"
-            />
-            <span class="radio-text">SI</span>
-          </label>
-          <label class="radio-label">
-            <input 
-              type="radio" 
-              name="inhabilidad" 
-              value="NO" 
-              v-model="declaracionInhabilidad"
-            />
-            <span class="radio-text">NO</span>
-          </label>
-        </span>
-        ME ENCUENTRO DENTRO DE LAS CAUSALES DE INHABILIDAD E INCOMPATIBILIDAD DEL ORDEN
+        <input 
+          type="radio" 
+          name="inhabilidad" 
+          value="SI" 
+          v-model="declaracionInhabilidad"
+        /> SI
+        <input 
+          type="radio" 
+          name="inhabilidad" 
+          value="NO" 
+          v-model="declaracionInhabilidad"
+        /> NO
+        ME ENCUENTRO DENTRO
+        DE LAS CAUSALES DE INHABILIDAD E INCOMPATIBILIDAD DEL ORDEN
         CONSTITUCIONAL O LEGAL, PARA EJERCER CARGOS EMPLEOS PÚBLICOS O PARA
         CELEBRAR CONTRATOS DE PRESTACIÓN DE SERVICIOS CON LA ADMINISTRACIÓN
         PÚBLICA.
       </p>
-    </div>
-
-    <!-- ✅ NUEVA SECCIÓN: Declaración de Veracidad -->
-    <div class="declaration">
-      <p class="declaration-text">
+      <p>
         PARA TODOS LOS EFECTOS LEGALES, CERTIFICO QUE LOS DATOS POR MI ANOTADOS
         EN EL PRESENTE FORMATO ÚNICO DE HOJA DE VIDA, SON VERACES (ARTÍCULO 5o.
         DE LA LEY 190/95).
-        <span class="radio-inline-group">
-          <label class="radio-label">
-            <input 
-              type="radio" 
-              name="veracidad" 
-              value="SI" 
-              v-model="declaracionVeracidad"
-            />
-            <span class="radio-text">SI</span>
-          </label>
-          <label class="radio-label">
-            <input 
-              type="radio" 
-              name="veracidad" 
-              value="NO" 
-              v-model="declaracionVeracidad"
-            />
-            <span class="radio-text">NO</span>
-          </label>
-        </span>
       </p>
     </div>
 
