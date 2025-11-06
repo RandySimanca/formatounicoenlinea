@@ -6,18 +6,63 @@
       CONTRATISTA
     </div>
 
+    <!-- ✅ NUEVA SECCIÓN: Declaración de Inhabilidad -->
     <div class="declaration">
-      <p>
-        MANIFIESTO BAJO LA GRAVEDAD DEL JURAMENTO QUE SI NO ME ENCUENTRO DENTRO
-        DE LAS CAUSALES DE INHABILIDAD E INCOMPATIBILIDAD DEL ORDEN
+      <p class="declaration-text">
+        MANIFIESTO BAJO LA GRAVEDAD DEL JURAMENTO QUE 
+        <span class="radio-inline-group">
+          <label class="radio-label">
+            <input 
+              type="radio" 
+              name="inhabilidad" 
+              value="SI" 
+              v-model="declaracionInhabilidad"
+            />
+            <span class="radio-text">SI</span>
+          </label>
+          <label class="radio-label">
+            <input 
+              type="radio" 
+              name="inhabilidad" 
+              value="NO" 
+              v-model="declaracionInhabilidad"
+            />
+            <span class="radio-text">NO</span>
+          </label>
+        </span>
+        ME ENCUENTRO DENTRO DE LAS CAUSALES DE INHABILIDAD E INCOMPATIBILIDAD DEL ORDEN
         CONSTITUCIONAL O LEGAL, PARA EJERCER CARGOS EMPLEOS PÚBLICOS O PARA
         CELEBRAR CONTRATOS DE PRESTACIÓN DE SERVICIOS CON LA ADMINISTRACIÓN
         PÚBLICA.
       </p>
-      <p>
+    </div>
+
+    <!-- ✅ NUEVA SECCIÓN: Declaración de Veracidad -->
+    <div class="declaration">
+      <p class="declaration-text">
         PARA TODOS LOS EFECTOS LEGALES, CERTIFICO QUE LOS DATOS POR MI ANOTADOS
         EN EL PRESENTE FORMATO ÚNICO DE HOJA DE VIDA, SON VERACES (ARTÍCULO 5o.
         DE LA LEY 190/95).
+        <span class="radio-inline-group">
+          <label class="radio-label">
+            <input 
+              type="radio" 
+              name="veracidad" 
+              value="SI" 
+              v-model="declaracionVeracidad"
+            />
+            <span class="radio-text">SI</span>
+          </label>
+          <label class="radio-label">
+            <input 
+              type="radio" 
+              name="veracidad" 
+              value="NO" 
+              v-model="declaracionVeracidad"
+            />
+            <span class="radio-text">NO</span>
+          </label>
+        </span>
       </p>
     </div>
 
@@ -123,6 +168,10 @@ import { showSuccess, showError } from "../utils/showMessage";
 import { ref, onMounted } from "vue";
 import api from "../api/axios";
 
+// ✅ NUEVAS VARIABLES REACTIVAS
+const declaracionInhabilidad = ref("");
+const declaracionVeracidad = ref("");
+
 const ciudadDiligenciamiento = ref("");
 const fechaDiligenciamiento = ref("");
 const firmaUrl = ref(null);
@@ -140,6 +189,10 @@ async function cargarFirma() {
     const response = await api.get("/firma-servidor");
     const data = response.data;
     if (data) {
+      // ✅ CARGAR DECLARACIONES
+      declaracionInhabilidad.value = data.declaracionInhabilidad || "";
+      declaracionVeracidad.value = data.declaracionVeracidad || "";
+      
       ciudadDiligenciamiento.value = data.ciudadDiligenciamiento || "";
       fechaDiligenciamiento.value =
         data.fechaDiligenciamiento?.substring(0, 10) || "";
@@ -177,13 +230,10 @@ const mostrarFirma = (event) => {
       canvas.height = 100;
       const ctx = canvas.getContext("2d");
 
-      // ✅ NO llenar con fondo blanco - conservar transparencia
-      // Si quieres fondo blanco solo para JPG:
       if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-      // Para PNG, el canvas mantiene transparencia por defecto
 
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
@@ -202,6 +252,17 @@ const mostrarFirma = (event) => {
 };
 
 const guardarFirma = async () => {
+  // ✅ VALIDAR DECLARACIONES
+  if (!declaracionInhabilidad.value) {
+    showError("❌ Por favor, selecciona una opción en la declaración de inhabilidad.");
+    return;
+  }
+
+  if (!declaracionVeracidad.value) {
+    showError("❌ Por favor, selecciona una opción en la declaración de veracidad.");
+    return;
+  }
+
   if (!firmaUrl.value) {
     showError("❌ Por favor, selecciona una firma antes de guardar.");
     return;
@@ -215,7 +276,10 @@ const guardarFirma = async () => {
   guardando.value = true;
 
   try {
+    // ✅ INCLUIR DECLARACIONES EN EL PAYLOAD
     const payload = {
+      declaracionInhabilidad: declaracionInhabilidad.value,
+      declaracionVeracidad: declaracionVeracidad.value,
       ciudadDiligenciamiento: ciudadDiligenciamiento.value,
       fechaDiligenciamiento: fechaDiligenciamiento.value,
       firmaServidor: firmaUrl.value,
@@ -224,7 +288,7 @@ const guardarFirma = async () => {
     const response = await api.post("/firma-servidor", payload);
     console.log("✅ Guardado:", response.data);
     showSuccess(
-      "✅ Firma y datos de diligenciamiento guardados correctamente."
+      "✅ Firma y declaraciones guardadas correctamente."
     );
   } catch (error) {
     console.error(
@@ -249,6 +313,9 @@ const confirmarEliminarFirma = async () => {
   try {
     await api.delete("/firma-servidor");
 
+    // ✅ LIMPIAR TAMBIÉN LAS DECLARACIONES
+    declaracionInhabilidad.value = "";
+    declaracionVeracidad.value = "";
     firmaUrl.value = null;
     ciudadDiligenciamiento.value = "";
     fechaDiligenciamiento.value = "";
@@ -274,12 +341,63 @@ const cambiarFirma = () => {
 </script>
 
 <style scoped>
+/* ✅ NUEVOS ESTILOS PARA RADIO BUTTONS */
+.declaration {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+  border-left: 4px solid #007bff;
+}
+
+.declaration-text {
+  margin: 0;
+  line-height: 1.6;
+  color: #333;
+  font-size: 13px;
+}
+
+.radio-inline-group {
+  display: inline-flex;
+  gap: 15px;
+  margin: 0 8px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #007bff;
+  transition: all 0.2s ease;
+}
+
+.radio-label:hover {
+  color: #0056b3;
+  transform: scale(1.05);
+}
+
+.radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #007bff;
+}
+
+.radio-text {
+  font-size: 14px;
+  user-select: none;
+}
+
 /* Contenedor principal con altura controlada */
 .firma-section {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  max-height: 380px; /* Altura aumentada considerablemente */
+  max-height: 480px;
   overflow: visible;
   padding: 0.5rem !important;
 }
@@ -407,8 +525,8 @@ const cambiarFirma = () => {
   align-items: center;
   padding-top: 0.6rem;
   border-top: 2px solid #dee2e6;
-  margin-top: 0.5rem; /* Margen superior para separación */
-  min-height: 40px; /* Altura mínima para el footer */
+  margin-top: 0.5rem;
+  min-height: 40px;
 }
 
 .firma-label {
@@ -565,6 +683,14 @@ const cambiarFirma = () => {
   .firma-preview {
     justify-content: flex-start;
   }
+
+  /* Mostrar X en lugar de radio button al imprimir */
+  .radio-label input[type="radio"]:checked::before {
+    content: 'X';
+    display: block;
+    text-align: center;
+    font-weight: bold;
+  }
 }
 
 /* Responsive */
@@ -599,6 +725,11 @@ const cambiarFirma = () => {
 
   .btn-guardar {
     width: 100%;
+  }
+
+  .radio-inline-group {
+    display: flex;
+    margin: 8px 0;
   }
 }
 </style>
