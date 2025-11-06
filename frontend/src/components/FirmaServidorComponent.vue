@@ -660,36 +660,181 @@ const cambiarFirma = () => {
   }
 
   .firma-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.firma-imagen {
+  width: 250px;
+  height: 100px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  object-fit: contain;
+  background: white;
+  flex-shrink: 0;
+}
+
+.firma-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 1;
+  min-width: 120px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.signature-container {
+  min-height: 150px;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0.4rem 0;
+  width: 100%;
+}
+
+.firma-upload {
+  text-align: center;
+  width: 100%;
+}
+
+.input-file {
+  display: none;
+}
+
+.label-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.label-upload:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-eliminar,
+.btn-cambiar {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-eliminar {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-eliminar:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-cambiar {
+  background: #17a2b8;
+  color: white;
+}
+
+.btn-cambiar:hover {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+.firma-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.6rem;
+  border-top: 2px solid #dee2e6;
+  margin-top: 0.5rem;
+  min-height: 40px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.firma-label {
+  font-weight: 600;
+  font-size: 11px;
+  color: #333;
+  max-width: 100%;
+}
+
+.btn-guardar {
+  padding: 8px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-guardar:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .firma-preview {
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: center;
   }
 
   .firma-acciones {
     width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .btn-eliminar,
   .btn-cambiar {
-    width: 100%;
+    width: auto;
+    flex: 1 1 45%;
+    margin: 4px 0;
   }
 
   .firma-footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .firma-label {
-    max-width: 100%;
   }
 
   .btn-guardar {
     width: 100%;
   }
+}
 
-  .radio-inline-group {
-    display: flex;
-    margin: 8px 0;
-  }
 }
 </style>
