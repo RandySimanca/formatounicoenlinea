@@ -266,7 +266,7 @@ export function useFormatoOficialHV() {
         if (datosUsuario.declaracionInhabilidad === "SI") {
           // Coordenadas aproximadas para la opción "SI"
           // AJUSTA ESTAS COORDENADAS según tu PDF real
-          write(page3, "X", 180, 330, 12, fontBold); 
+          write(page3, "X", 455, 285, 12, fontBold); 
           console.log("✅ Dibujando X en SI");
         } else if (datosUsuario.declaracionInhabilidad === "NO") {
           // Coordenadas aproximadas para la opción "NO"
