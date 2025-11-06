@@ -6,11 +6,10 @@ export function useFormatoOficialHV() {
     try {
       console.log("💼 Experiencias recibidas:", datosUsuario.experienciaLaboral);
       console.log("📋 Datos recibidos para llenar PDF:", datosUsuario);
-      console.log("⚖️ Declaración de inhabilidad:", datosUsuario.declaracionInhabilidad); // ✅ NUEVO LOG
+      console.log("⚖️ Declaración de inhabilidad:", datosUsuario.declaracionInhabilidad);
 
       let pdfDoc;
 
-      // ====== INTENTAR CARGAR FORMATO BASE ======
       try {
         const existingPdfBytes = await fetch(urlFormato).then((res) => {
           if (!res.ok) throw new Error("Formato no encontrado");
@@ -24,13 +23,11 @@ export function useFormatoOficialHV() {
         await crearFormatoDesdeCero(pdfDoc);
       }
 
-      // ====== FUENTES Y CONFIGURACIÓN GENERAL ======
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const fontSize = 9;
       const fontSizeSmall = 7;
 
-      // ====== FUNCION GLOBAL DE ESCRITURA ======
       const write = (page, text, x, y, size = fontSize, fontType = font) => {
         if (!text && text !== 0) return;
         const { height } = page.getSize();
@@ -46,62 +43,41 @@ export function useFormatoOficialHV() {
 
       const pages = pdfDoc.getPages();
 
-      // =======================================================
-      // 🧍‍♂️ PÁGINA 1: DATOS PERSONALES, FORMACIÓN E IDIOMAS
-      // =======================================================
+      // ========================== PÁGINA 1 =============================
       if (pages[0]) {
         const page1 = pages[0];
-
-        // ===== DATOS PERSONALES =====
         write(page1, datosUsuario.apellido1 || "", 66, 188, fontSize + 1);
         write(page1, datosUsuario.apellido2 || "", 230, 188, fontSize + 1);
         write(page1, datosUsuario.nombres || "", 400, 188, fontSize + 1);
 
-        // Tipo de documento
-        if (datosUsuario.tipoDocumento === "C.C") {
-          write(page1, "X", 82, 220, 10, fontBold);
-        } else if (datosUsuario.tipoDocumento === "C.E") {
-          write(page1, "X", 113, 220, 10, fontBold);
-        } else if (datosUsuario.tipoDocumento === "PAS") {
-          write(page1, "X", 148, 220, 10, fontBold);
-        }
+        if (datosUsuario.tipoDocumento === "C.C") write(page1, "X", 82, 220, 10, fontBold);
+        else if (datosUsuario.tipoDocumento === "C.E") write(page1, "X", 113, 220, 10, fontBold);
+        else if (datosUsuario.tipoDocumento === "PAS") write(page1, "X", 148, 220, 10, fontBold);
 
         write(page1, datosUsuario.numDocumento || "", 185, 220, fontSize + 1);
 
-        // Sexo
-        if (["F", "Femenino"].includes(datosUsuario.sexo)) {
-          write(page1, "X", 316, 220, 10, fontBold);
-        } else if (["M", "Masculino"].includes(datosUsuario.sexo)) {
-          write(page1, "X", 341, 220, 10, fontBold);
-        }
+        if (["F", "Femenino"].includes(datosUsuario.sexo)) write(page1, "X", 316, 220, 10, fontBold);
+        else if (["M", "Masculino"].includes(datosUsuario.sexo)) write(page1, "X", 341, 220, 10, fontBold);
 
-        // Nacionalidad
-        if (["colombiana", "Colombiano"].includes(datosUsuario.nacionalidad)) {
-          write(page1, "X", 383, 220, 10, fontBold);
-        } else if (datosUsuario.nacionalidad === "Extranjero") {
-          write(page1, "X", 458, 208, 10, fontBold);
-        }
+        if (["colombiana", "Colombiano"].includes(datosUsuario.nacionalidad)) write(page1, "X", 383, 220, 10, fontBold);
+        else if (datosUsuario.nacionalidad === "Extranjero") write(page1, "X", 458, 208, 10, fontBold);
 
         write(page1, datosUsuario.pais || "", 480, 220, 10);
 
-        // Libreta militar
-        if (datosUsuario.libretaMilitar === "primera") {
-          write(page1, "X", 144, 250, 10, fontBold);
-        } else if (datosUsuario.libretaMilitar === "segunda") {
-          write(page1, "X", 260, 250, 10, fontBold);
-        }
+        if (datosUsuario.libretaMilitar === "primera") write(page1, "X", 144, 250, 10, fontBold);
+        else if (datosUsuario.libretaMilitar === "segunda") write(page1, "X", 260, 250, 10, fontBold);
+
         write(page1, datosUsuario.numeroLibreta || "", 330, 250);
         write(page1, datosUsuario.dm || "", 510, 250);
 
-        // Fecha de nacimiento
         write(page1, datosUsuario.fechaNacimiento?.dia || "", 142, 287, 10);
         write(page1, datosUsuario.fechaNacimiento?.mes || "", 186, 287, 10);
         write(page1, datosUsuario.fechaNacimiento?.anio || "", 242, 287, 10);
+
         write(page1, datosUsuario.fechaNacimiento?.pais || "", 140, 304, 10);
         write(page1, datosUsuario.fechaNacimiento?.depto || "", 140, 320, 10);
         write(page1, datosUsuario.fechaNacimiento?.municipio || "", 140, 335, 10);
 
-        // Dirección de correspondencia
         const dirCorr = datosUsuario.direccionCorrespondencia || {};
         write(page1, dirCorr.pais || "", 330, 304, 10);
         write(page1, dirCorr.depto || "", 490, 304, 10);
@@ -109,9 +85,6 @@ export function useFormatoOficialHV() {
         write(page1, dirCorr.direccion || "", 290, 285, 10);
         write(page1, dirCorr.telefono || "", 350, 335, 10);
         write(page1, dirCorr.email || "", 470, 335, 8);
-
-        // ===== FORMACIÓN ACADÉMICA =====
-        console.log("🎓 Procesando formación académica");
 
         if (datosUsuario.gradoAprobado) {
           const grados = {
@@ -129,15 +102,11 @@ export function useFormatoOficialHV() {
         write(page1, datosUsuario.mesGradoBasica || "", 350, 475, 12);
         write(page1, datosUsuario.anoGradoBasica || "", 410, 475, 12);
 
-        // Educación superior
-        console.log("🎓 Educación superior:", datosUsuario.educacionSuperior);
         if (Array.isArray(datosUsuario.educacionSuperior)) {
           let yEdu = 590;
           const espacioEntreFilas = 18;
-
           datosUsuario.educacionSuperior.forEach((edu, idx) => {
             if (idx < 6) {
-              console.log(`   Registro ${idx + 1}:`, edu);
               write(page1, edu.modalidad || "", 62, yEdu, 10);
               write(page1, edu.semestres || "", 115, yEdu, 10);
               if (edu.graduado === true || edu.graduado === "SI") write(page1, "X", 180, yEdu, 10);
@@ -151,8 +120,6 @@ export function useFormatoOficialHV() {
           });
         }
 
-        // ===== IDIOMAS =====
-        console.log("📚 Procesando idiomas:", datosUsuario.idiomas);
         if (Array.isArray(datosUsuario.idiomas)) {
           let yIdioma = 718;
           datosUsuario.idiomas.forEach((idioma, idx) => {
@@ -173,9 +140,7 @@ export function useFormatoOficialHV() {
         }
       }
 
-      // =======================================================
-      //  PÁGINA 2: EXPERIENCIA LABORAL (DINÁMICA)
-      // =======================================================
+      // ========================== PÁGINA 2 =============================
       console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
 
       const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
@@ -242,13 +207,11 @@ export function useFormatoOficialHV() {
         });
       }
 
-      // =======================================================
-      //  PÁGINA 3: TIEMPO TOTAL, FIRMAS Y FIRMA SERVIDOR
-      // =======================================================
+      // ========================== PÁGINA 3 =============================
       const paginaFirmas = pdfDoc.getPageCount() - 1;
       if (pdfDoc.getPages()[paginaFirmas]) {
         const page3 = pdfDoc.getPages()[paginaFirmas];
-        console.log("⏱️ Procesando tiempo de experiencia:", datosUsuario.tiempoExperiencia);
+        const { height } = page3.getSize();
 
         const t = datosUsuario.tiempoExperiencia || {};
         write(page3, t.servidorPublico?.anos || "", 400, 200, 14);
@@ -260,24 +223,30 @@ export function useFormatoOficialHV() {
         write(page3, t.total?.anos || "", 400, 280, 14);
         write(page3, t.total?.meses || "", 450, 280, 14);
 
-        // ===== ✅ DIBUJAR DECLARACIÓN DE INHABILIDAD (SI/NO) ===== 
-        console.log("⚖️ Dibujando declaración de inhabilidad:", datosUsuario.declaracionInhabilidad);
-        
+        // ✅ NUEVO SISTEMA PARA DIBUJAR X (COORDENADAS EDITABLES)
+        const coordInhabilidad = {
+          SI: { x: 0, y: 0 }, // <--- Ajusta estos valores
+          NO: { x: 0, y: 0 }  // <--- Ajusta estos valores
+        };
+
         if (datosUsuario.declaracionInhabilidad === "SI") {
-          // Coordenadas aproximadas para la opción "SI"
-          // AJUSTA ESTAS COORDENADAS según tu PDF real
-          write(page3, "X", 455, 285, 12, fontBold); 
-          console.log("✅ Dibujando X en SI");
+          page3.drawText("X", {
+            x: coordInhabilidad.SI.x,
+            y: height - coordInhabilidad.SI.y,
+            size: 12,
+            font: fontBold,
+            color: rgb(0, 0, 0),
+          });
         } else if (datosUsuario.declaracionInhabilidad === "NO") {
-          // Coordenadas aproximadas para la opción "NO"
-          // AJUSTA ESTAS COORDENADAS según tu PDF real
-          write(page3, "X", 220, 330, 12, fontBold); 
-          console.log("✅ Dibujando X en NO");
-        } else {
-          console.log("⚠️ No hay declaración de inhabilidad seleccionada");
+          page3.drawText("X", {
+            x: coordInhabilidad.NO.x,
+            y: height - coordInhabilidad.NO.y,
+            size: 12,
+            font: fontBold,
+            color: rgb(0, 0, 0),
+          });
         }
 
-        // Ciudad y fecha de diligenciamiento
         if (datosUsuario.ciudadDiligenciamiento && datosUsuario.fechaDiligenciamiento) {
           const fechaObj = new Date(datosUsuario.fechaDiligenciamiento);
           const ciudadFecha = `${datosUsuario.ciudadDiligenciamiento}, ${fechaObj.toLocaleDateString("es-CO")}`;
@@ -289,37 +258,27 @@ export function useFormatoOficialHV() {
           write(page3, ciudadFecha, 220, 455, 10);
         }
 
-        // ===== DIBUJAR FIRMA DEL SERVIDOR =====
         if (datosUsuario.firmaServidor) {
           try {
-            console.log("🖊️ Insertando firma del servidor en el PDF");
-            
             const firmaBase64 = datosUsuario.firmaServidor.replace(/^data:image\/\w+;base64,/, "");
             const firmaImage = await pdfDoc.embedPng(firmaBase64);
-            
             const firmaDims = firmaImage.scale(0.5);
-            
             const firmaX = 250;
             const firmaY = page3.getSize().height - 500;
-            
+
             page3.drawImage(firmaImage, {
               x: firmaX,
               y: firmaY,
               width: firmaDims.width,
               height: firmaDims.height,
             });
-            
-            console.log("✅ Firma insertada correctamente en el PDF");
           } catch (error) {
             console.error("❌ Error al insertar la firma:", error);
-            console.log("Firma recibida:", datosUsuario.firmaServidor?.substring(0, 100));
           }
-        } else {
-          console.log("⚠️ No se encontró firma del servidor para insertar");
         }
       }
 
-      console.log("✅ PDF llenado correctamente con todas las secciones");
+      console.log("✅ PDF llenado correctamente");
       return pdfDoc;
     } catch (error) {
       console.error("❌ Error llenando formato oficial:", error);
@@ -349,7 +308,7 @@ export function useFormatoOficialHV() {
 
     experiencias.forEach(exp => {
       let fechaIngreso, fechaRetiro;
-      
+
       if (exp.fechaIngreso) {
         if (typeof exp.fechaIngreso === 'string') {
           fechaIngreso = new Date(exp.fechaIngreso);
@@ -381,7 +340,7 @@ export function useFormatoOficialHV() {
       const mesesDecimal = diffDays / 30;
 
       const tipo = (exp.tipoEntidad || exp.tipo || "").toLowerCase();
-      
+
       if (tipo === "publica" || tipo === "pública") {
         totalPublicoMeses += mesesDecimal;
       } else if (tipo === "privada") {
@@ -442,7 +401,7 @@ export function useFormatoOficialHV() {
     }));
 
     const tiemposCalculados = calcularTiempoExperiencia(experienciasMapeadas);
-    
+
     return {
       apellido1: usuarioLocal.apellido1 || "",
       apellido2: usuarioLocal.apellido2 || "",
@@ -457,19 +416,19 @@ export function useFormatoOficialHV() {
       dm: usuarioLocal.dm || "",
       fechaNacimiento: usuarioLocal.fechaNacimiento || {},
       direccionCorrespondencia: usuarioLocal.direccionCorrespondencia || {},
-  
+
       idiomas: (usuarioLocal.idiomas || []).map(i => ({
         nombre: i.nombre || i.idioma || "",
         habla: i.habla || "",
         lee: i.lee || "",
         escribe: i.escribe || ""
       })),
-  
+
       gradoAprobado: usuarioLocal.gradoBasica || 11,
       tituloBasica: usuarioLocal.tituloBachiller || "Bachiller",
       mesGradoBasica: usuarioLocal.mesGrado || "",
       anoGradoBasica: usuarioLocal.anioGrado || "",
-  
+
       educacionSuperior: (usuarioLocal.formacionesSuperior || []).map(f => ({
         modalidad: f.modalidad || "",
         semestres: f.semestres || "",
@@ -479,7 +438,7 @@ export function useFormatoOficialHV() {
         anoGrado: f.anioTermino || "",
         tarjetaProfesional: f.tarjeta || ""
       })),
-  
+
       experienciaLaboral: experienciasMapeadas.map(exp => ({
         ...exp,
         fechaIngreso: normalizarFecha(exp.fechaIngreso),
@@ -505,8 +464,7 @@ export function useFormatoOficialHV() {
         },
       },
 
-      // ===== CAMPOS PARA FIRMA Y DECLARACIÓN =====
-      declaracionInhabilidad: usuarioLocal.declaracionInhabilidad || "", // ✅ NUEVO
+      declaracionInhabilidad: usuarioLocal.declaracionInhabilidad || "",
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
