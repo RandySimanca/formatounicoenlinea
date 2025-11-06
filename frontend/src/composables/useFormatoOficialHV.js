@@ -276,6 +276,16 @@ export function useFormatoOficialHV() {
             console.error("❌ Error al insertar la firma:", error);
           }
         }
+
+        // ==== PRUEBA FORZADA: DIBUJAR X EN CENTRO DE PÁGINA 3 ====
+page3.drawText("X", {
+  x: 300,
+  y: 400,
+  size: 30,
+  font: fontBold,
+  color: rgb(1, 0, 0),
+});
+console.log("✅ TEST: X FORZADA DIBUJADA");
       }
 
       console.log("✅ PDF llenado correctamente");
@@ -472,15 +482,7 @@ export function useFormatoOficialHV() {
     
   }
 
-  // ==== PRUEBA FORZADA: DIBUJAR X EN CENTRO DE PÁGINA 3 ====
-page3.drawText("X", {
-  x: 300,
-  y: 400,
-  size: 30,
-  font: fontBold,
-  color: rgb(1, 0, 0),
-});
-console.log("✅ TEST: X FORZADA DIBUJADA");
+  
 
 
   return {
