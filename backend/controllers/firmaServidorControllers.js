@@ -26,7 +26,6 @@ export const guardarFirmaServidor = async (req, res) => {
     console.log('💾 Guardando firma con declaraciones:', {
       userId: req.user.id,
       declaracionInhabilidad,
-      declaracionVeracidad,
       ciudadDiligenciamiento
     });
 
@@ -34,7 +33,6 @@ export const guardarFirmaServidor = async (req, res) => {
       { user: req.user.id },
       { 
         declaracionInhabilidad,
-        declaracionVeracidad,
         ciudadDiligenciamiento, 
         fechaDiligenciamiento, 
         firmaServidor, 
@@ -68,7 +66,7 @@ export const obtenerFirmaServidor = async (req, res) => {
 
     console.log('✅ Firma obtenida:', {
       userId: req.user.id,
-      tieneDeclaraciones: !!(data.declaracionInhabilidad && data.declaracionVeracidad)
+      tieneDeclaraciones: !!(data.declaracionInhabilidad)
     });
 
     res.status(200).json(data);
