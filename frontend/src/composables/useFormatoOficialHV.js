@@ -227,8 +227,8 @@ export function useFormatoOficialHV() {
         // Basadas en la prueba que hiciste (la X roja), están muy cerca de la posición final.
         // SI suele estar a la IZQ del grupo, NO a la DER. Ajusta los valores X.
         const coordInhabilidad = {
-          SI: { x: 340, y: 300 }, // <- prueba primero, luego ajusta
-          NO: { x: 380, y: 300 }  // <- prueba primero, luego ajusta
+          SI: { x: 400, y: 285 }, // <- prueba primero, luego ajusta
+          NO: { x: 405, y: 285 }  // <- prueba primero, luego ajusta
         };
 
         // Dibujo la X usando drawText (queda en primer plano)
