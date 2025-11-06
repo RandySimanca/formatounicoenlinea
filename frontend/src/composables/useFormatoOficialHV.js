@@ -6,6 +6,7 @@ export function useFormatoOficialHV() {
     try {
       console.log("💼 Experiencias recibidas:", datosUsuario.experienciaLaboral);
       console.log("📋 Datos recibidos para llenar PDF:", datosUsuario);
+      console.log("⚖️ Declaración de inhabilidad:", datosUsuario.declaracionInhabilidad); // ✅ NUEVO LOG
 
       let pdfDoc;
 
@@ -185,20 +186,16 @@ export function useFormatoOficialHV() {
         const experienciasPorPagina = 4;
         const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
 
-        //  Cargar nuevamente el formato base para copiar la hoja 2 sin error
         const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
         const pdfBase = await PDFDocument.load(formatoBaseBytes);
 
-        //  Insertar páginas adicionales si hay más de 4 experiencias
         for (let i = 1; i < totalPaginasExperiencia; i++) {
           const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]);
           pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2);
         }
 
-        //  Actualizar lista de páginas
         const updatedPages = pdfDoc.getPages();
 
-        //  Bloques de coordenadas de experiencia por cada página
         const bloques = [
           { yBase: 240 },
           { yBase: 373 },
@@ -206,7 +203,6 @@ export function useFormatoOficialHV() {
           { yBase: 633 },
         ];
 
-        //  Dibujar todas las experiencias en su respectiva página
         experiencias.forEach((exp, idx) => {
           const paginaIndex = 1 + Math.floor(idx / experienciasPorPagina);
           const posicion = idx % experienciasPorPagina;
@@ -264,13 +260,29 @@ export function useFormatoOficialHV() {
         write(page3, t.total?.anos || "", 400, 280, 14);
         write(page3, t.total?.meses || "", 450, 280, 14);
 
+        // ===== ✅ DIBUJAR DECLARACIÓN DE INHABILIDAD (SI/NO) ===== 
+        console.log("⚖️ Dibujando declaración de inhabilidad:", datosUsuario.declaracionInhabilidad);
+        
+        if (datosUsuario.declaracionInhabilidad === "SI") {
+          // Coordenadas aproximadas para la opción "SI"
+          // AJUSTA ESTAS COORDENADAS según tu PDF real
+          write(page3, "X", 180, 330, 12, fontBold); 
+          console.log("✅ Dibujando X en SI");
+        } else if (datosUsuario.declaracionInhabilidad === "NO") {
+          // Coordenadas aproximadas para la opción "NO"
+          // AJUSTA ESTAS COORDENADAS según tu PDF real
+          write(page3, "X", 220, 330, 12, fontBold); 
+          console.log("✅ Dibujando X en NO");
+        } else {
+          console.log("⚠️ No hay declaración de inhabilidad seleccionada");
+        }
+
         // Ciudad y fecha de diligenciamiento
         if (datosUsuario.ciudadDiligenciamiento && datosUsuario.fechaDiligenciamiento) {
           const fechaObj = new Date(datosUsuario.fechaDiligenciamiento);
           const ciudadFecha = `${datosUsuario.ciudadDiligenciamiento}, ${fechaObj.toLocaleDateString("es-CO")}`;
           write(page3, ciudadFecha, 220, 455, 10);
         } else {
-          // Fallback a ciudad de correspondencia y fecha actual
           const fechaHoy = new Date();
           const municipio = datosUsuario.direccionCorrespondencia?.municipio || "Bogotá";
           const ciudadFecha = `${municipio}, ${fechaHoy.toLocaleDateString("es-CO")}`;
@@ -282,15 +294,13 @@ export function useFormatoOficialHV() {
           try {
             console.log("🖊️ Insertando firma del servidor en el PDF");
             
-            // Convertir base64 a imagen PNG embebida
             const firmaBase64 = datosUsuario.firmaServidor.replace(/^data:image\/\w+;base64,/, "");
             const firmaImage = await pdfDoc.embedPng(firmaBase64);
             
-            const firmaDims = firmaImage.scale(0.5); // Escala de la firma 
+            const firmaDims = firmaImage.scale(0.5);
             
-            // Coordenadas donde se dibujará la firma 
-            const firmaX = 250;  // Posición X
-            const firmaY = page3.getSize().height - 500; // Posición Y desde arriba
+            const firmaX = 250;
+            const firmaY = page3.getSize().height - 500;
             
             page3.drawImage(firmaImage, {
               x: firmaX,
@@ -495,7 +505,8 @@ export function useFormatoOficialHV() {
         },
       },
 
-      // ===== NUEVOS CAMPOS PARA FIRMA =====
+      // ===== CAMPOS PARA FIRMA Y DECLARACIÓN =====
+      declaracionInhabilidad: usuarioLocal.declaracionInhabilidad || "", // ✅ NUEVO
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
