@@ -5,7 +5,6 @@ export const guardarFirmaServidor = async (req, res) => {
   try {
     const { 
       declaracionInhabilidad,
-      declaracionVeracidad,
       ciudadDiligenciamiento, 
       fechaDiligenciamiento, 
       firmaServidor 
@@ -15,12 +14,6 @@ export const guardarFirmaServidor = async (req, res) => {
     if (!declaracionInhabilidad) {
       return res.status(400).json({ 
         mensaje: 'La declaración de inhabilidad es obligatoria' 
-      });
-    }
-
-    if (!declaracionVeracidad) {
-      return res.status(400).json({ 
-        mensaje: 'La declaración de veracidad es obligatoria' 
       });
     }
 

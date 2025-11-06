@@ -14,12 +14,7 @@ const FirmaServidorSchema = new mongoose.Schema({
     enum: ['SI', 'NO', ''],
     default: ''
   },
-  declaracionVeracidad: {
-    type: String,
-    enum: ['SI', 'NO', ''],
-    default: ''
-  },
-  ciudadDiligenciamiento: String,
+   ciudadDiligenciamiento: String,
   fechaDiligenciamiento: Date,
   firmaServidor: String, // base64
 }, {
