@@ -208,9 +208,9 @@ export function useFormatoOficialHV() {
       }
 
       // ========================== PÁGINA 3 =============================
-      const paginaFirmas = pdfDoc.getPageCount() - 1;
-      if (pdfDoc.getPages()[paginaFirmas]) {
-        const page3 = pdfDoc.getPages()[paginaFirmas];
+      // uso la página 3 por índice fijo (más fiable si agregas páginas dinámicas)
+      const page3 = pdfDoc.getPages()[2];
+      if (page3) {
         const { height } = page3.getSize();
 
         const t = datosUsuario.tiempoExperiencia || {};
@@ -223,12 +223,15 @@ export function useFormatoOficialHV() {
         write(page3, t.total?.anos || "", 400, 280, 14);
         write(page3, t.total?.meses || "", 450, 280, 14);
 
-        // ✅ NUEVO SISTEMA PARA DIBUJAR X (COORDENADAS EDITABLES)
+        // Coordenadas sugeridas: AJUSTA SI/NO como necesites.
+        // Basadas en la prueba que hiciste (la X roja), están muy cerca de la posición final.
+        // SI suele estar a la IZQ del grupo, NO a la DER. Ajusta los valores X.
         const coordInhabilidad = {
-          SI: { x: 455, y: 285 }, // <--- Ajusta estos valores
-          NO: { x: 455, y: 285 }  // <--- Ajusta estos valores
+          SI: { x: 340, y: 300 }, // <- prueba primero, luego ajusta
+          NO: { x: 380, y: 300 }  // <- prueba primero, luego ajusta
         };
 
+        // Dibujo la X usando drawText (queda en primer plano)
         if (datosUsuario.declaracionInhabilidad === "SI") {
           page3.drawText("X", {
             x: coordInhabilidad.SI.x,
@@ -276,16 +279,6 @@ export function useFormatoOficialHV() {
             console.error("❌ Error al insertar la firma:", error);
           }
         }
-
-        // ==== PRUEBA FORZADA: DIBUJAR X EN CENTRO DE PÁGINA 3 ====
-page3.drawText("X", {
-  x: 300,
-  y: 400,
-  size: 30,
-  font: fontBold,
-  color: rgb(1, 0, 0),
-});
-console.log("✅ TEST: X FORZADA DIBUJADA");
       }
 
       console.log("✅ PDF llenado correctamente");
@@ -479,11 +472,7 @@ console.log("✅ TEST: X FORZADA DIBUJADA");
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
     };
-    
   }
-
-  
-
 
   return {
     llenarFormatoOficial,
