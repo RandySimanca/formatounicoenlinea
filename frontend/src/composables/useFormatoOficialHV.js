@@ -54,7 +54,7 @@ export function useFormatoOficialHV() {
         // ===== DATOS PERSONALES =====
         write(page1, datosUsuario.apellido1 || "", 66, 188, fontSize + 1);
         write(page1, datosUsuario.apellido2 || "", 230, 188, fontSize + 1);
-        write(page1, datosUsuario.nombres || "", 425, 188, fontSize + 1);
+        write(page1, datosUsuario.nombres || "", 400, 188, fontSize + 1);
 
         // Tipo de documento
         if (datosUsuario.tipoDocumento === "C.C") {
