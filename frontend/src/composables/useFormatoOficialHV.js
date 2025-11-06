@@ -387,6 +387,13 @@ export function useFormatoOficialHV() {
       };
     };
 
+    const normalizarInhabilidad = (valor) => {
+      if (!valor) return "NO";
+      const v = String(valor).trim().toUpperCase();
+      if (["SI", "S", "TRUE", "X", "1"].includes(v)) return "SI";
+      return "NO";
+    };
+
     const experienciasMapeadas = (usuarioLocal.experienciaLaboral || []).map(exp => ({
       empresa: exp.empresa || "",
       tipo: exp.tipoEntidad ? exp.tipoEntidad.toLowerCase() : "",
@@ -467,12 +474,13 @@ export function useFormatoOficialHV() {
         },
       },
 
-      declaracionInhabilidad: usuarioLocal.declaracionInhabilidad || "",
+      declaracionInhabilidad: normalizarInhabilidad(usuarioLocal.declaracionInhabilidad),
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
     };
-  }
+}
+
 
   return {
     llenarFormatoOficial,
