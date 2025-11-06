@@ -138,7 +138,7 @@ import api from "../api/axios";
 
 // ✅ NUEVAS VARIABLES REACTIVAS
 const declaracionInhabilidad = ref("");
-const declaracionVeracidad = ref("");
+
 
 const ciudadDiligenciamiento = ref("");
 const fechaDiligenciamiento = ref("");
@@ -159,8 +159,7 @@ async function cargarFirma() {
     if (data) {
       // ✅ CARGAR DECLARACIONES
       declaracionInhabilidad.value = data.declaracionInhabilidad || "";
-      declaracionVeracidad.value = data.declaracionVeracidad || "";
-      
+           
       ciudadDiligenciamiento.value = data.ciudadDiligenciamiento || "";
       fechaDiligenciamiento.value =
         data.fechaDiligenciamiento?.substring(0, 10) || "";
@@ -226,11 +225,6 @@ const guardarFirma = async () => {
     return;
   }
 
-  if (!declaracionVeracidad.value) {
-    showError("❌ Por favor, selecciona una opción en la declaración de veracidad.");
-    return;
-  }
-
   if (!firmaUrl.value) {
     showError("❌ Por favor, selecciona una firma antes de guardar.");
     return;
@@ -247,7 +241,6 @@ const guardarFirma = async () => {
     // ✅ INCLUIR DECLARACIONES EN EL PAYLOAD
     const payload = {
       declaracionInhabilidad: declaracionInhabilidad.value,
-      declaracionVeracidad: declaracionVeracidad.value,
       ciudadDiligenciamiento: ciudadDiligenciamiento.value,
       fechaDiligenciamiento: fechaDiligenciamiento.value,
       firmaServidor: firmaUrl.value,
@@ -283,7 +276,6 @@ const confirmarEliminarFirma = async () => {
 
     // ✅ LIMPIAR TAMBIÉN LAS DECLARACIONES
     declaracionInhabilidad.value = "";
-    declaracionVeracidad.value = "";
     firmaUrl.value = null;
     ciudadDiligenciamiento.value = "";
     fechaDiligenciamiento.value = "";
