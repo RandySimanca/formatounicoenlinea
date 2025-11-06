@@ -225,8 +225,8 @@ export function useFormatoOficialHV() {
 
         // ✅ NUEVO SISTEMA PARA DIBUJAR X (COORDENADAS EDITABLES)
         const coordInhabilidad = {
-          SI: { x: 0, y: 0 }, // <--- Ajusta estos valores
-          NO: { x: 0, y: 0 }  // <--- Ajusta estos valores
+          SI: { x: 455, y: 285 }, // <--- Ajusta estos valores
+          NO: { x: 455, y: 285 }  // <--- Ajusta estos valores
         };
 
         if (datosUsuario.declaracionInhabilidad === "SI") {
