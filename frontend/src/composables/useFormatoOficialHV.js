@@ -469,7 +469,19 @@ export function useFormatoOficialHV() {
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
     };
+    
   }
+
+  // ==== PRUEBA FORZADA: DIBUJAR X EN CENTRO DE PÁGINA 3 ====
+page3.drawText("X", {
+  x: 300,
+  y: 400,
+  size: 30,
+  font: fontBold,
+  color: rgb(1, 0, 0),
+});
+console.log("✅ TEST: X FORZADA DIBUJADA");
+
 
   return {
     llenarFormatoOficial,
