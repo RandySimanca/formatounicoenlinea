@@ -36,7 +36,7 @@
         <p>
           {{
             modoRegistro
-              ? "Registra y Descarga tu hoja de vida en minutos"
+              ? "Registrate, llena tu tu hoja de vida y descargala en minutos"
               : "Inicia sesión para acceder a tu panel profesional"
           }}
         </p>
