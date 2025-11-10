@@ -32,11 +32,11 @@
     <!-- Formulario de login -->
     <div class="login-card">
       <div class="form-header">
-        <h2>{{ modoRegistro ? "Crear cuenta" : "¡Bienvenido de vuelta!" }}</h2>
+        <h2>{{ modoRegistro ? "Crear cuenta" : "¡Bienvenido!" }}</h2>
         <p>
           {{
             modoRegistro
-              ? "Únete a miles de profesionales que confían en nosotros"
+              ? "Registra y Descarga tu hoja de vida en minutos"
               : "Inicia sesión para acceder a tu panel profesional"
           }}
         </p>
