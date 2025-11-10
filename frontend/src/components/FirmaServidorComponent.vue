@@ -352,20 +352,22 @@ const cambiarFirma = () => {
   user-select: none;
 }
 
+
 /* ✅ Contenedor principal CON altura controlada */
 .firma-section {
   display: flex !important;
   flex-direction: column !important;
-  gap: 0.8rem !important; /* Aumentado para dar más espacio */
-  padding: 1.2rem !important; /* Override del padding global */
+  gap: 0.8rem !important;
+  padding: 1.2rem !important;
   box-sizing: border-box !important;
-  margin-bottom: 2rem !important; /* Espacio inferior para separar del siguiente componente */
+  margin-bottom: 2rem !important;
   position: relative !important;
   min-height: auto !important;
   height: auto !important;
   overflow: visible !important;
+  contain: layout !important; /* ✅ Contener el layout dentro */
+  isolation: isolate !important; /* ✅ Crear nuevo contexto de apilamiento */
 }
-
 /* Contenedor de datos de ciudad y fecha */
 .datos-firma-container {
   display: flex;
