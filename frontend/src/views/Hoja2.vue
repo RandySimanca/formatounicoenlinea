@@ -84,7 +84,6 @@ const primerasExperiencias = computed(() => experienciasOrdenadas.value.slice(0,
 const experienciasAgrupadas = computed(() => agrupar(experienciasOrdenadas.value.slice(4), 4));
 </script>
 
-
 <style scoped>
 @media print {
   .carta {
