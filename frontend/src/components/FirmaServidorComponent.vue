@@ -301,26 +301,27 @@ const cambiarFirma = () => {
 </script>
 
 <style scoped>
-/* ✅ NUEVOS ESTILOS PARA RADIO BUTTONS */
+/* ✅ ESTILOS CORREGIDOS PARA EVITAR DESBORDAMIENTO */
+
 .declaration {
   background: #f8f9fa;
-  padding: 12px;
+  padding: 8px; /* Reducido */
   border-radius: 6px;
-  margin: 8px 0;
+  margin: 6px 0; /* Reducido */
   border-left: 4px solid #007bff;
 }
 
-.declaration-text {
-  margin: 0;
-  line-height: 1.6;
+.declaration p {
+  margin: 4px 0; /* Reducido */
+  line-height: 1.4; /* Reducido */
   color: #333;
-  font-size: 13px;
+  font-size: 11px; /* Reducido */
 }
 
 .radio-inline-group {
   display: inline-flex;
-  gap: 15px;
-  margin: 0 8px;
+  gap: 10px; /* Reducido */
+  margin: 0 6px; /* Reducido */
   align-items: center;
   vertical-align: middle;
 }
@@ -328,7 +329,7 @@ const cambiarFirma = () => {
 .radio-label {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px; /* Reducido */
   cursor: pointer;
   font-weight: 600;
   color: #007bff;
@@ -341,32 +342,33 @@ const cambiarFirma = () => {
 }
 
 .radio-label input[type="radio"] {
-  width: 18px;
-  height: 18px;
+  width: 14px; /* Reducido */
+  height: 14px; /* Reducido */
   cursor: pointer;
   accent-color: #007bff;
 }
 
 .radio-text {
-  font-size: 14px;
+  font-size: 12px; /* Reducido */
   user-select: none;
 }
 
-/* Contenedor principal con altura controlada */
+/* ✅ Contenedor principal CON altura controlada */
 .firma-section {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  max-height: 480px;
-  overflow: visible;
-  padding: 0.5rem !important;
+  gap: 0.3rem; /* Reducido */
+  max-height: 450px; /* Altura máxima ajustada */
+  overflow: hidden; /* Evitar desbordamiento */
+  padding: 0.4rem !important; /* Reducido */
+  box-sizing: border-box;
 }
 
 /* Contenedor de datos de ciudad y fecha */
 .datos-firma-container {
   display: flex;
-  gap: 1rem;
-  margin: 0.3rem 0;
+  gap: 0.8rem; /* Reducido */
+  margin: 0.2rem 0; /* Reducido */
 }
 
 .datos-firma-container .form-group {
@@ -374,55 +376,68 @@ const cambiarFirma = () => {
   margin: 0;
 }
 
-.datos-firma-container input {
-  width: 100%;
-  padding: 0.4rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 12px;
+.datos-firma-container label {
+  font-size: 10px; /* Reducido */
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: block;
 }
 
-/* Contenedor de firma con altura fija */
+.datos-firma-container input {
+  width: 100%;
+  padding: 0.3rem; /* Reducido */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 11px; /* Reducido */
+  box-sizing: border-box;
+}
+
+/* ✅ Contenedor de firma con altura FIJA y controlada */
 .signature-container {
-  min-height: 150px;
-  max-height: 150px;
+  min-height: 120px; /* Reducido */
+  max-height: 120px; /* Reducido */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.4rem 0;
+  margin: 0.3rem 0; /* Reducido */
+  overflow: hidden; /* Evitar desbordamiento */
 }
 
-/* Vista previa de firma */
+/* Vista previa de firma - TAMAÑO REDUCIDO */
 .firma-preview {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem; /* Reducido */
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .firma-imagen {
-  width: 250px;
-  height: 100px;
+  width: 200px; /* Reducido de 250px */
+  height: 80px; /* Reducido de 100px */
   border: 2px solid #dee2e6;
   border-radius: 6px;
   object-fit: contain;
   background: white;
+  flex-shrink: 0; /* No reducir tamaño */
 }
 
 .firma-acciones {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem; /* Reducido */
+  flex-shrink: 0;
 }
 
-/* Botones de acción */
+/* Botones de acción - TAMAÑO REDUCIDO */
 .btn-eliminar,
 .btn-cambiar {
-  padding: 6px 12px;
+  padding: 5px 10px; /* Reducido */
   border: none;
-  border-radius: 6px;
+  border-radius: 5px; /* Reducido */
   font-weight: 600;
-  font-size: 12px;
+  font-size: 10px; /* Reducido */
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
@@ -436,7 +451,7 @@ const cambiarFirma = () => {
 .btn-eliminar:hover {
   background: #c82333;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 3px 6px rgba(220, 53, 69, 0.3);
 }
 
 .btn-cambiar {
@@ -447,7 +462,7 @@ const cambiarFirma = () => {
 .btn-cambiar:hover {
   background: #138496;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+  box-shadow: 0 3px 6px rgba(23, 162, 184, 0.3);
 }
 
 /* Upload de firma */
@@ -462,57 +477,60 @@ const cambiarFirma = () => {
 
 .label-upload {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 8px 16px; /* Reducido */
   background: #007bff;
   color: white;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 11px; /* Reducido */
   transition: all 0.3s ease;
 }
 
 .label-upload:hover {
   background: #0056b3;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 3px 6px rgba(0, 123, 255, 0.3);
 }
 
-/* Footer con label y botón guardar */
+/* ✅ Footer AJUSTADO para evitar desbordamiento */
 .firma-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 0.6rem;
+  padding-top: 0.4rem; /* Reducido */
   border-top: 2px solid #dee2e6;
-  margin-top: 0.5rem;
-  min-height: 40px;
+  margin-top: 0.3rem; /* Reducido */
+  min-height: 35px; /* Reducido */
+  flex-shrink: 0; /* No reducir tamaño */
 }
 
 .firma-label {
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px; /* Reducido */
   color: #333;
-  max-width: 50%;
+  max-width: 45%;
+  line-height: 1.2;
 }
 
 .btn-guardar {
-  padding: 8px 16px;
+  padding: 6px 12px; /* Reducido */
   background: #28a745;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px; /* Reducido */
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-guardar:hover:not(:disabled) {
   background: #218838;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
 }
 
 .btn-guardar:disabled {
@@ -521,7 +539,7 @@ const cambiarFirma = () => {
   opacity: 0.6;
 }
 
-/* Modal */
+/* Modal - SIN CAMBIOS */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -629,7 +647,7 @@ const cambiarFirma = () => {
   background: #c82333;
 }
 
-/* Optimización para impresión */
+/* ✅ Optimización para impresión */
 @media print {
   .no-imprimir {
     display: none !important;
@@ -638,49 +656,72 @@ const cambiarFirma = () => {
   .firma-section {
     max-height: none;
     page-break-inside: avoid;
+    overflow: visible;
   }
 
   .firma-preview {
     justify-content: flex-start;
   }
 
+  .firma-imagen {
+    width: 200px !important;
+    height: 80px !important;
+  }
+
   /* Mostrar X en lugar de radio button al imprimir */
-  .radio-label input[type="radio"]:checked::before {
+  input[type="radio"]:checked::after {
     content: 'X';
-    display: block;
-    text-align: center;
+    position: absolute;
+    left: 2px;
+    top: -2px;
+    font-size: 14px;
     font-weight: bold;
+    color: #000;
   }
 }
 
-/* Responsive */
+/* ✅ Responsive - AJUSTADO */
 @media (max-width: 768px) {
+  .firma-section {
+    max-height: none; /* Permitir altura automática en móviles */
+    overflow: visible;
+  }
+
   .datos-firma-container {
     flex-direction: column;
+    gap: 0.5rem;
   }
 
   .firma-preview {
     flex-direction: column;
     gap: 0.5rem;
+    align-items: center;
+  }
+
+  .firma-imagen {
+    width: 180px;
+    height: 72px;
   }
 
   .firma-acciones {
     width: 100%;
+    flex-direction: row;
   }
 
   .btn-eliminar,
   .btn-cambiar {
-    width: 100%;
+    flex: 1;
   }
 
   .firma-footer {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 0.5rem;
   }
 
   .firma-label {
     max-width: 100%;
+    text-align: center;
   }
 
   .btn-guardar {
@@ -690,6 +731,23 @@ const cambiarFirma = () => {
   .radio-inline-group {
     display: flex;
     margin: 8px 0;
+  }
+}
+
+/* ✅ AJUSTE ADICIONAL: Asegurar que todo quepa en la página */
+@media screen and (max-height: 900px) {
+  .firma-section {
+    max-height: 380px;
+  }
+  
+  .signature-container {
+    min-height: 100px;
+    max-height: 100px;
+  }
+  
+  .firma-imagen {
+    width: 180px;
+    height: 72px;
   }
 }
 </style>
