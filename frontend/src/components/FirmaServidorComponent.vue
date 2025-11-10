@@ -353,15 +353,16 @@ const cambiarFirma = () => {
   user-select: none;
 }
 
+
 /* ✅ Contenedor principal CON altura controlada */
 .firma-section {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem; /* Reducido */
-  max-height: none; /* ❌ REMOVIDO para permitir ver todo el contenido */
-  overflow: visible; /* ✅ CAMBIADO para permitir ver el botón */
-  padding: 0.4rem !important; /* Reducido */
+  gap: 0.3rem;
+  padding: 0.8rem !important; /* ✅ Aumentado para dar espacio interno */
   box-sizing: border-box;
+  margin-bottom: 1rem; /* ✅ Espacio inferior para separar del siguiente componente */
+  position: relative; /* ✅ Para contener elementos posicionados */
 }
 
 /* Contenedor de datos de ciudad y fecha */
