@@ -29,9 +29,8 @@ export const guardarExperiencia = async (req, res) => {
 
 export const obtenerExperiencias = async (req, res) => {
   try {
-    // Ordenar por createdAt descendente para que las más recientes aparezcan primero
     const experiencias = await Experiencia.find({ user: req.user.id })
-      .sort({ createdAt: -1 });
+      .sort({ fechaRetiro: -1 }); // ✅ Ordenar por fecha de retiro descendente
     
     return res.status(200).json(experiencias);
   } catch (error) {
