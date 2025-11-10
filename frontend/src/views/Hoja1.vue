@@ -181,9 +181,6 @@ function generarPDF() {
 }
 </script>
 
-<style scoped>
-
-</style>
 
 <style scoped>
 /* ===== ESTILOS OPTIMIZADOS PARA UNA SOLA PÁGINA ===== */
@@ -826,8 +823,8 @@ form {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   transform: translateY(-2px);
 }
-
+/*
 .compoFirma {
-  height: 300px; /* Reducido */
-}
+  height: 300px;  Reducido 
+}*/
 </style>

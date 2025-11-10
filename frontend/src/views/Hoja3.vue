@@ -12,7 +12,8 @@
         :totalMeses="totalMeses"
       />
 
-      <FirmaServidorComponent class="compoFirma" />
+      <!-- ✅ REMOVIDA la clase compoFirma -->
+      <FirmaServidorComponent />
       <RecursosHumComponent />
     </div>
 
