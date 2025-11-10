@@ -358,8 +358,8 @@ const cambiarFirma = () => {
   display: flex;
   flex-direction: column;
   gap: 0.3rem; /* Reducido */
-  max-height: 450px; /* Altura máxima ajustada */
-  overflow: hidden; /* Evitar desbordamiento */
+  max-height: none; /* ❌ REMOVIDO para permitir ver todo el contenido */
+  overflow: visible; /* ✅ CAMBIADO para permitir ver el botón */
   padding: 0.4rem !important; /* Reducido */
   box-sizing: border-box;
 }
@@ -726,6 +726,7 @@ const cambiarFirma = () => {
 
   .btn-guardar {
     width: 100%;
+    
   }
 
   .radio-inline-group {
