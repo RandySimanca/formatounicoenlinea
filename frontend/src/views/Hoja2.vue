@@ -83,3 +83,19 @@ function agrupar(array, tamano) {
 const primerasExperiencias = computed(() => experienciasOrdenadas.value.slice(0, 4));
 const experienciasAgrupadas = computed(() => agrupar(experienciasOrdenadas.value.slice(4), 4));
 </script>
+
+
+<style scoped>
+@media print {
+  .carta {
+    width: 8.5in !important;
+    height: 11in !important;
+    padding: 0.4in !important;
+    box-sizing: border-box;
+    page-break-after: always !important;
+  }
+  .modulo-experiencia {
+    margin-bottom: 1rem;
+  }
+}
+</style>
