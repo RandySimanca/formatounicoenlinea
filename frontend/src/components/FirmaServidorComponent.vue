@@ -8,23 +8,23 @@
 
     <div class="declaration">
       <p>
-        MANIFIESTO BAJO LA GRAVEDAD DEL JURAMENTO QUE 
-        <input 
-          type="radio" 
-          name="inhabilidad" 
-          value="SI" 
+        MANIFIESTO BAJO LA GRAVEDAD DEL JURAMENTO QUE
+        <input
+          type="radio"
+          name="inhabilidad"
+          value="SI"
           v-model="declaracionInhabilidad"
-        /> SI
-        <input 
-          type="radio" 
-          name="inhabilidad" 
-          value="NO" 
+        />
+        SI
+        <input
+          type="radio"
+          name="inhabilidad"
+          value="NO"
           v-model="declaracionInhabilidad"
-        /> NO
-        ME ENCUENTRO DENTRO
-        DE LAS CAUSALES DE INHABILIDAD E INCOMPATIBILIDAD DEL ORDEN
-        CONSTITUCIONAL O LEGAL, PARA EJERCER CARGOS EMPLEOS PÚBLICOS O PARA
-        CELEBRAR CONTRATOS DE PRESTACIÓN DE SERVICIOS CON LA ADMINISTRACIÓN
+        />
+        NO ME ENCUENTRO DENTRO DE LAS CAUSALES DE INHABILIDAD E INCOMPATIBILIDAD
+        DEL ORDEN CONSTITUCIONAL O LEGAL, PARA EJERCER CARGOS EMPLEOS PÚBLICOS O
+        PARA CELEBRAR CONTRATOS DE PRESTACIÓN DE SERVICIOS CON LA ADMINISTRACIÓN
         PÚBLICA.
       </p>
       <p>
@@ -139,7 +139,6 @@ import api from "../api/axios";
 // ✅ NUEVAS VARIABLES REACTIVAS
 const declaracionInhabilidad = ref("");
 
-
 const ciudadDiligenciamiento = ref("");
 const fechaDiligenciamiento = ref("");
 const firmaUrl = ref(null);
@@ -159,7 +158,7 @@ async function cargarFirma() {
     if (data) {
       // ✅ CARGAR DECLARACIONES
       declaracionInhabilidad.value = data.declaracionInhabilidad || "";
-           
+
       ciudadDiligenciamiento.value = data.ciudadDiligenciamiento || "";
       fechaDiligenciamiento.value =
         data.fechaDiligenciamiento?.substring(0, 10) || "";
@@ -197,7 +196,7 @@ const mostrarFirma = (event) => {
       canvas.height = 100;
       const ctx = canvas.getContext("2d");
 
-      if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+      if (file.type === "image/jpeg" || file.type === "image/jpg") {
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
@@ -221,7 +220,9 @@ const mostrarFirma = (event) => {
 const guardarFirma = async () => {
   // ✅ VALIDAR DECLARACIONES
   if (!declaracionInhabilidad.value) {
-    showError("❌ Por favor, selecciona una opción en la declaración de inhabilidad.");
+    showError(
+      "❌ Por favor, selecciona una opción en la declaración de inhabilidad."
+    );
     return;
   }
 
@@ -248,9 +249,7 @@ const guardarFirma = async () => {
 
     const response = await api.post("/firma-servidor", payload);
     console.log("✅ Guardado:", response.data);
-    showSuccess(
-      "✅ Firma y declaraciones guardadas correctamente."
-    );
+    showSuccess("✅ Firma y declaraciones guardadas correctamente.");
   } catch (error) {
     console.error(
       "❌ Error al guardar:",
@@ -352,7 +351,6 @@ const cambiarFirma = () => {
   font-size: 12px; /* Reducido */
   user-select: none;
 }
-
 
 /* ✅ Contenedor principal CON altura controlada */
 .firma-section {
@@ -508,6 +506,12 @@ const cambiarFirma = () => {
   min-height: 35px; /* Reducido */
   flex-shrink: 0; /* No reducir tamaño */
 }
+
+.firma-footer {
+    flex-direction: column;
+    /*align-items: stretch;*/
+    gap: 0.5rem;
+  }
 
 .firma-label {
   font-weight: 600;
@@ -674,7 +678,7 @@ const cambiarFirma = () => {
 
   /* Mostrar X en lugar de radio button al imprimir */
   input[type="radio"]:checked::after {
-    content: 'X';
+    content: "X";
     position: absolute;
     left: 2px;
     top: -2px;
@@ -730,7 +734,6 @@ const cambiarFirma = () => {
 
   .btn-guardar {
     width: 100%;
-    
   }
 
   .radio-inline-group {
@@ -744,12 +747,12 @@ const cambiarFirma = () => {
   .firma-section {
     max-height: 380px;
   }
-  
+
   .signature-container {
     min-height: 100px;
     max-height: 100px;
   }
-  
+
   .firma-imagen {
     width: 180px;
     height: 72px;
