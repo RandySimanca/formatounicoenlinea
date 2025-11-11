@@ -585,7 +585,21 @@ export default {
   margin-top: 1rem;
 }
 
-.boton-agregar {
+.boton-actualizar {
+  background-color: #1e90ff;
+  color: white;
+  padding: 8px 16px; /* Reducido */
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 20px; /* Reducido de 30px */
+  font-size: 13px;
+}
+
+
+/*.boton-agregar {
   background-color: #17a2b8 !important;
   color: white;
   border: none;
@@ -594,7 +608,7 @@ export default {
   cursor: pointer;
   font-weight: bold;
 }
-
+*/
 .boton-agregar:hover {
   background-color: #138496 !important;
 }
