@@ -199,7 +199,7 @@
 
               <td>
                 <button
-                  class="btn btn-danger btn-sm no-imprimir"
+                  class="btn btn-danger no-imprimir"
                   @click.prevent="removeFormacion(index)"
                   title="Eliminar formación"
                 >
@@ -611,6 +611,11 @@ export default {
 
 .boton-guardar-formacion:hover {
   background-color: #218838 !important;
+}
+
+.btn btn-danger {
+  line-height: 1;
+  padding: 0.3rem 0.6rem; /* Reducido */
 }
 
 /* Ajuste general para inputs */

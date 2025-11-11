@@ -685,10 +685,7 @@ form {
   background-color: #f0f0f0;
 }
 
-.btn btn-danger {
-  line-height: 1;
-  padding: 0.3rem 0.6rem; /* Reducido */
-}
+
 
 .compacto h3,
 .compacto h2,
