@@ -598,6 +598,10 @@ export default {
   font-size: 13px;
 }
 
+.boton-actualizar:hover {
+  background-color: #f37d87 !important;
+}
+
 
 /*.boton-agregar {
   background-color: #17a2b8 !important;
