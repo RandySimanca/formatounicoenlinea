@@ -216,7 +216,7 @@
         class="boton-guardar no-imprimir"
         @click="addFormacion"
       >
-        Agregar otra formación
+        Agregar formación
       </button>
 
       <button
