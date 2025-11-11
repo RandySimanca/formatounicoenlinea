@@ -221,7 +221,7 @@
 
       <button
         type="submit"
-        class="boton-guardar no-imprimir"
+        class="boton-actualizar no-imprimir"
         style="margin-left: 10px"
       >
         {{
