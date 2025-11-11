@@ -588,31 +588,21 @@ export default {
 .boton-actualizar {
   background-color: #1e90ff;
   color: white;
-  padding: 8px 16px; /* Reducido */
+  padding: 8px 16px; 
   border: none;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-left: 20px; /* Reducido de 30px */
+  margin-left: 20px; 
   font-size: 13px;
 }
 
 .boton-actualizar:hover {
-  background-color: #f37d87 !important;
+  background-color: #28a745 !important;
 }
 
 
-/*.boton-agregar {
-  background-color: #17a2b8 !important;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-*/
 .boton-agregar:hover {
   background-color: #138496 !important;
 }
