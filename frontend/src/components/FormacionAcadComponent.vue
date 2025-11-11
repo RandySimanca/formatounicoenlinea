@@ -143,18 +143,41 @@
         <tbody>
             <tr v-for="(formacion, index) in formacionesSuperior" :key="index">
               <td class="col-modalidad">
-                <select class="form-control" v-model="formacion.modalidad">
+                <select 
+                  v-if="formacion.modalidadPersonalizada !== true"
+                  class="form-control" 
+                  v-model="formacion.modalidad"
+                  @change="manejarCambioModalidad(index, $event)"
+                >
                   <option disabled value="">Seleccione modalidad</option>
-                  <option value="TC">TC</option>
-                  <option value="TL">TL</option>
-                  <option value="TE">TE</option>
-                  <option value="UN">UN</option>
-                  <option value="ES">ES</option>
-                  <option value="MG">MG</option>
-                  <option value="DOC">DOC</option>
+                  <option value="TC">TC - Técnico</option>
+                  <option value="TL">TL - Tecnológico</option>
+                  <option value="TE">TE - Tecnológico Especializado</option>
+                  <option value="UN">UN - Universitario</option>
+                  <option value="ES">ES - Especialización</option>
+                  <option value="MG">MG - Maestría</option>
+                  <option value="DOC">DOC - Doctorado</option>
+                  <option value="OTRA">✏️ Otra (escribir)</option>
                 </select>
+                
+                <!-- Input personalizado cuando se selecciona "Otra" -->
+                <div v-else class="input-personalizado-wrapper">
+                  <input 
+                    class="form-control11 input-modalidad-custom" 
+                    v-model="formacion.modalidad"
+                    placeholder="Escriba la modalidad"
+                    maxlength="20"
+                  />
+                  <button 
+                    type="button"
+                    class="btn-volver-select"
+                    @click="volverASelect(index)"
+                    title="Volver a opciones predefinidas"
+                  >
+                    ↩️
+                  </button>
+                </div>
               </td>
-
               <td class="col-semestre">
                 <input class="form-control11" v-model="formacion.semestres" />
               </td>
