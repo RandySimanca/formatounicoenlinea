@@ -623,9 +623,13 @@ export default {
 
 .btn btn-danger {
   line-height: 1;
-  padding: 0.3rem 0.6rem; /* Reducido */
+  padding: 0.3rem 0.6rem;
+  background-color: rgb(255, 6, 6); /* Reducido */
 }
 
+.btn btn-danger:hover {
+  background-color: #d85103 !important;
+}
 /* Ajuste general para inputs */
 
 @media print {
