@@ -215,7 +215,7 @@
         type="button"
         class="boton-guardar no-imprimir"
         @click="addFormacion"
-        title="Agregar Campo para Formacion"
+        title="Agregar campo para Formacion"
       >
         Agregar formación
       </button>
