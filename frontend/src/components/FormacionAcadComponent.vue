@@ -148,7 +148,7 @@
                   v-if="!formacion.modalidadPersonalizada"
                   class="form-control" 
                   v-model="formacion.modalidad"
-                  @change="manejarCambioModalidad(index, $event)"
+                  @change="manejarCambioModalidad(formacion, index)"
                 >
                   <option disabled value="">Seleccione modalidad</option>
                   <option value="TC">TC - Técnico</option>
@@ -158,6 +158,10 @@
                   <option value="ES">ES - Especialización</option>
                   <option value="MG">MG - Maestría</option>
                   <option value="DOC">DOC - Doctorado</option>
+                  <option value="TR">TALLER</option>
+                  <option value="DP">DIPLOMADO</option>
+                  <option value="CUR">CURSO</option>
+                  <option value="SEM">SEMINARIO</option>
                   <option value="OTRA">✏️ Otra (escribir)</option>
                 </select>
                 
@@ -168,12 +172,12 @@
                     v-model="formacion.modalidad"
                     placeholder="Escriba la modalidad"
                     maxlength="20"
-                    @blur="validarModalidadVacia(index)"
+                    @blur="validarModalidadVacia(formacion, index)"
                   />
                   <button 
                     type="button"
                     class="btn-volver-select"
-                    @click="volverASelect(index)"
+                    @click="volverASelect(formacion, index)"
                     title="Volver a opciones predefinidas"
                   >
                     ↩️
