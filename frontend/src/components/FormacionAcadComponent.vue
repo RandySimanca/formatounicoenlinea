@@ -199,7 +199,7 @@
 
               <td>
                 <button
-                  class="btn btn-danger no-imprimir"
+                  class="btn-danger no-imprimir"
                   @click.prevent="removeFormacion(index)"
                   title="Eliminar formación"
                 >
@@ -215,6 +215,7 @@
         type="button"
         class="boton-guardar no-imprimir"
         @click="addFormacion"
+        title="Agregar Formacion"
       >
         Agregar formación
       </button>
@@ -621,13 +622,13 @@ export default {
   background-color: #218838 !important;
 }
 
-.btn btn-danger {
+.btn-danger {
   line-height: 1;
   padding: 0.3rem 0.6rem;
   background-color: rgb(255, 6, 6); /* Reducido */
 }
 
-.btn btn-danger:hover {
+.btn-danger:hover {
   background-color: #d85103 !important;
 }
 /* Ajuste general para inputs */
