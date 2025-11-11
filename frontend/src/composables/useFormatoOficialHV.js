@@ -481,10 +481,17 @@ export function useFormatoOficialHV() {
     };
 }
 
+function separarDigitos(texto) {
+  if (!texto) return "";
+  return String(texto).split('').join('  '); // Dos espacios entre cada carácter
+}
+
+
 
   return {
     llenarFormatoOficial,
     descargarPDF,
     mapearDatosUsuario,
+    separarDigitos,
   };
 }
