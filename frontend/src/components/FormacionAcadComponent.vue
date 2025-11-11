@@ -161,7 +161,7 @@
                   <option value="Taller">TALLER</option>
                   <option value="Diplomado">DIPLOMADO</option>
                   <option value="Curso">CURSO</option>
-                  <option value="Seminarios">SEMINARIO</option>
+                  <option value="Seminario">SEMINARIO</option>
               
                 </select>
                 
