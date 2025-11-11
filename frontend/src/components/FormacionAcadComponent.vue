@@ -158,11 +158,11 @@
                   <option value="ES">ES - Especialización</option>
                   <option value="MG">MG - Maestría</option>
                   <option value="DOC">DOC - Doctorado</option>
-                  <option value="TR">TALLER</option>
-                  <option value="DP">DIPLOMADO</option>
-                  <option value="CUR">CURSO</option>
-                  <option value="SEM">SEMINARIO</option>
-                  <option value="OTRA">✏️ Otra (escribir)</option>
+                  <option value="Taller">TALLER</option>
+                  <option value="Diplomado">DIPLOMADO</option>
+                  <option value="Curso">CURSO</option>
+                  <option value="Seminarios">SEMINARIO</option>
+              
                 </select>
                 
                 <!-- Input cuando está en modo personalizado -->
