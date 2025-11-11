@@ -192,15 +192,32 @@ const mostrarFirma = (event) => {
       canvas.height = 100;
       const ctx = canvas.getContext("2d");
 
-      if (file.type === "image/jpeg" || file.type === "image/jpg") {
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-
+      // ✅ Dibujar imagen original
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+      // ✅ REMOVER FONDO BLANCO/CLARO
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      // Umbral para considerar un pixel como "blanco" o "fondo claro"
+      const threshold = 240; // Ajusta entre 200-250 según necesites
+
+      for (let i = 0; i < data.length; i += 4) {
+        const red = data[i];
+        const green = data[i + 1];
+        const blue = data[i + 2];
+        
+        // Si el pixel es muy claro (cercano a blanco), hacerlo transparente
+        if (red > threshold && green > threshold && blue > threshold) {
+          data[i + 3] = 0; // Canal alpha = 0 (transparente)
+        }
+      }
+
+      // ✅ Aplicar la imagen procesada
+      ctx.putImageData(imageData, 0, 0);
+
       firmaUrl.value = canvas.toDataURL("image/png");
-      console.log("✅ Firma procesada correctamente");
+      console.log("✅ Firma procesada correctamente con fondo transparente");
     };
     img.onerror = () => {
       showError("❌ Error al cargar la imagen.");
