@@ -143,8 +143,9 @@
         <tbody>
             <tr v-for="(formacion, index) in formacionesSuperior" :key="index">
               <td class="col-modalidad">
+                <!-- Select cuando NO está en modo personalizado -->
                 <select 
-                  v-if="formacion.modalidadPersonalizada !== true"
+                  v-if="!formacion.modalidadPersonalizada"
                   class="form-control" 
                   v-model="formacion.modalidad"
                   @change="manejarCambioModalidad(index, $event)"
@@ -160,13 +161,14 @@
                   <option value="OTRA">✏️ Otra (escribir)</option>
                 </select>
                 
-                <!-- Input personalizado cuando se selecciona "Otra" -->
+                <!-- Input cuando está en modo personalizado -->
                 <div v-else class="input-personalizado-wrapper">
                   <input 
                     class="form-control11 input-modalidad-custom" 
                     v-model="formacion.modalidad"
                     placeholder="Escriba la modalidad"
                     maxlength="20"
+                    @blur="validarModalidadVacia(index)"
                   />
                   <button 
                     type="button"
