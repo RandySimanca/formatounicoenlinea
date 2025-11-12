@@ -1,6 +1,7 @@
 // routes/usuarios.js
 import express from 'express';
 import { registrarUsuario }  from '../controllers/authController.js';
+import Usuario from '../models/Usuario.js';
 
 const router = express.Router();
 
