@@ -150,11 +150,23 @@
         </div>
       </div>
     </div>
+
+    <!-- Contador de usuarios -->
+<div class="user-counter">
+  <span class="counter-icon">👥</span>
+  <div class="counter-info">
+    <span v-if="!cargandoStats" class="counter-number">
+      {{ totalFormateado }}
+    </span>
+    <span v-else class="counter-loading">⏳</span>
+    <span class="counter-text">usuarios registrados</span>
+  </div>
+</div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import axios from "../api/axios"; 
 import { useHojaVidaStore } from "../stores/hojaVida";
@@ -166,6 +178,31 @@ const error = ref("");
 const loading = ref(false);
 const modoRegistro = ref(false);
 const router = useRouter();
+//nuevos
+const totalUsuarios = ref(0);
+const cargandoStats = ref(false);
+const totalFormateado = computed(() => {
+  return new Intl.NumberFormat('es-CO').format(totalUsuarios.value);
+});
+
+const cargarContadorUsuarios = async () => {
+  cargandoStats.value = true;
+  try {
+    const response = await axios.get(`${getApiUrl()}/api/usuarios/count`);
+    if (response.data.success) {
+      totalUsuarios.value = response.data.total;
+    }
+  } catch (error) {
+    console.error('Error cargando contador:', error);
+  } finally {
+    cargandoStats.value = false;
+  }
+};
+
+onMounted(() => {
+  cargarContadorUsuarios();
+});
+//hasta aqui
 
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
