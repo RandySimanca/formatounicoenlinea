@@ -26,6 +26,18 @@
             <p>+57 314 519 3285</p>
           </div>
         </div>
+
+        <!-- ✅ Contador compacto reposicionado -->
+        <div class="contact-item user-counter-compact">
+          <span class="icon counter-icon-small">👥</span>
+          <div>
+            <strong>Usuarios registrados</strong>
+            <p v-if="!cargandoStats" class="counter-value">
+              {{ totalFormateado }}
+            </p>
+            <p v-else class="counter-loading-small">Cargando...</p>
+          </div>
+        </div>
       </div>
     </div> 
 
@@ -107,7 +119,6 @@
         </p>
       </div>
 
-      <!-- Enlaces adicionales - ✅ ACTUALIZADO -->
       <div class="additional-links">
         <router-link to="/recuperar-password" class="link">
           🔐 ¿Olvidaste tu contraseña?
@@ -120,7 +131,6 @@
     <!-- Panel publicitario -->
     <div class="ads-panel">
       <div class="ads-container">
-        <!-- Anuncio principal -->
         <div class="main-ad">
           <div class="ad-header">
             <h3>🚀 Impulsa tu carrera</h3>
@@ -141,7 +151,6 @@
           </div>
         </div>
 
-        <!-- Banner publicitario externo (ejemplo) -->
         <div class="external-ad">
           <div class="ad-placeholder">
             <p>Espacio publicitario</p>
@@ -150,31 +159,18 @@
         </div>
       </div>
     </div>
-
-    <!-- Contador de usuarios -->
-<div class="user-counter">
-  <span class="counter-icon">👥</span>
-  <div class="counter-info">
-    <span v-if="!cargandoStats" class="counter-number">
-      {{ totalFormateado }}
-    </span>
-    <span v-else class="counter-loading">⏳</span>
-    <span class="counter-text">usuarios registrados</span>
-  </div>
-</div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import api from '../api/axios'; // ✅ IMPORTANTE: Usar esta instancia
+import api from '../api/axios';
 import { useHojaVidaStore } from '../stores/hojaVida';
 
 const router = useRouter();
 const hojaStore = useHojaVidaStore();
 
-// Variables existentes
 const email = ref('');
 const password = ref('');
 const nombre = ref('');
@@ -182,7 +178,7 @@ const error = ref('');
 const loading = ref(false);
 const modoRegistro = ref(false);
 
-// ✅ Variables para el contador
+// Variables para el contador
 const totalUsuarios = ref(0);
 const cargandoStats = ref(false);
 
@@ -190,11 +186,10 @@ const totalFormateado = computed(() => {
   return new Intl.NumberFormat('es-CO').format(totalUsuarios.value);
 });
 
-// ✅ Función corregida
 const cargarContadorUsuarios = async () => {
   cargandoStats.value = true;
   try {
-    const response = await api.get('/usuarios/count'); // ✅ Sin duplicar /api
+    const response = await api.get('/usuarios/count');
     
     if (response.data?.success) {
       totalUsuarios.value = response.data.total;
@@ -207,14 +202,6 @@ const cargarContadorUsuarios = async () => {
   }
 };
 
-// Función para obtener la URL base (si la necesitas para otras cosas)
-const getApiUrl = () => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:4000';
-  }
-  return window.location.origin;
-};
-
 const handleLogin = async () => {
   error.value = '';
   if (!email.value || !password.value) {
@@ -224,7 +211,7 @@ const handleLogin = async () => {
 
   loading.value = true;
   try {
-    const res = await api.post('/login', { // ✅ Usa 'api' aquí también
+    const res = await api.post('/login', {
       email: email.value,
       password: password.value,
     });
@@ -253,7 +240,7 @@ const handleRegister = async () => {
 
   loading.value = true;
   try {
-    await api.post('/usuarios', { // ✅ Usa 'api' aquí también
+    await api.post('/usuarios', {
       email: email.value,
       password: password.value,
       nombre: nombre.value,
@@ -270,7 +257,6 @@ const handleRegister = async () => {
   }
 };
 
-// ✅ Cargar contador al montar
 onMounted(() => {
   cargarContadorUsuarios();
 });
@@ -377,6 +363,45 @@ onMounted(() => {
   margin: 0;
   opacity: 0.8;
   font-size: 0.9rem;
+}
+
+/* ✅ Estilos del contador compacto */
+.user-counter-compact {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  margin-bottom: 0;
+}
+
+.user-counter-compact:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.counter-icon-small {
+  font-size: 1.3rem !important;
+}
+
+.counter-value {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.counter-loading-small {
+  font-size: 0.85rem !important;
+  opacity: 0.7 !important;
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 /* Formulario de login */
@@ -744,61 +769,5 @@ onMounted(() => {
   .separator {
     display: none;
   }
-}
-
-/* Estilos del contador */
-.user-counter {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  margin: 1.5rem 0;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.user-counter:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.counter-icon {
-  font-size: 2rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.counter-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.counter-number {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: white;
-  line-height: 1;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.counter-loading {
-  font-size: 1.5rem;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-.counter-text {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.9);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 500;
 }
 </style>
