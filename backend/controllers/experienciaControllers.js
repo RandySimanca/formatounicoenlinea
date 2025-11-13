@@ -5,7 +5,7 @@ import UsuarioEmbebido from '../models/UsuarioEmbebido.js';
 export const agregarExperiencia = async (req, res) => {
   try {
     const usuario = await UsuarioEmbebido.findByIdAndUpdate(
-      req.user.id,
+      req.user.uid, // ✅ corregido
       { $push: { experiencias: req.body } },
       { new: true, select: 'experiencias' }
     );
@@ -26,7 +26,7 @@ export const agregarExperiencia = async (req, res) => {
 
 export const obtenerExperiencias = async (req, res) => {
   try {
-    const usuario = await UsuarioEmbebido.findById(req.user.id, 'experiencias');
+    const usuario = await UsuarioEmbebido.findById(req.user.uid, 'experiencias'); // ✅ corregido
     
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -50,7 +50,7 @@ export const actualizarExperiencia = async (req, res) => {
     
     const usuario = await UsuarioEmbebido.findOneAndUpdate(
       { 
-        _id: req.user.id,
+        _id: req.user.uid, // ✅ corregido
         'experiencias._id': id
       },
       { 
@@ -78,7 +78,7 @@ export const eliminarExperiencia = async (req, res) => {
     const { id } = req.params;
 
     const usuario = await UsuarioEmbebido.findByIdAndUpdate(
-      req.user.id,
+      req.user.uid, // ✅ corregido
       { $pull: { experiencias: { _id: id } } },
       { new: true, select: 'experiencias' }
     );
@@ -96,6 +96,7 @@ export const eliminarExperiencia = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar experiencia' });
   }
 };
+
 
 /*import Experiencia from '../models/Experiencia.js';
 
