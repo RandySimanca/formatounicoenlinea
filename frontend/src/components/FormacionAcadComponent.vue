@@ -115,9 +115,9 @@
         </p>
       </div>
       <div v-if="formacionesSuperior.length > 0" class="tabla-container">
-      <table class="table">
-        <thead>
-          <tr>
+        <table class="table">
+          <thead>
+            <tr>
               <th class="col-modalidad">MODALIDAD ACADÉMICA</th>
               <th class="col-modalidad">No. SEMESTRES APROBADOS</th>
               <th colspan="2">GRADUADO</th>
@@ -139,14 +139,14 @@
               <th></th>
               <th></th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             <tr v-for="(formacion, index) in formacionesSuperior" :key="index">
               <td class="col-modalidad">
                 <!-- Select cuando NO está en modo personalizado -->
-                <select 
+                <select
                   v-if="!formacion.modalidadPersonalizada"
-                  class="form-control" 
+                  class="form-control"
                   v-model="formacion.modalidad"
                   @change="manejarCambioModalidad(formacion, index)"
                 >
@@ -162,19 +162,18 @@
                   <option value="Diplomado">DIPLOMADO</option>
                   <option value="Curso">CURSO</option>
                   <option value="Seminario">SEMINARIO</option>
-              
                 </select>
-                
+
                 <!-- Input cuando está en modo personalizado -->
                 <div v-else class="input-personalizado-wrapper">
-                  <input 
-                    class="form-control11 input-modalidad-custom" 
+                  <input
+                    class="form-control11 input-modalidad-custom"
                     v-model="formacion.modalidad"
                     placeholder="Escriba la modalidad"
                     maxlength="20"
                     @blur="validarModalidadVacia(formacion, index)"
                   />
-                  <button 
+                  <button
                     type="button"
                     class="btn-volver-select"
                     @click="volverASelect(formacion, index)"
@@ -237,7 +236,7 @@
               </td>
             </tr>
           </tbody>
-      </table>
+        </table>
       </div>
 
       <button
@@ -338,7 +337,7 @@ export default {
       this.tituloBachiller = this.formacion.tituloBachiller || "";
       this.mesGrado = this.formacion.mesGrado || "";
       this.anioGrado = this.formacion.anioGrado || "";
-      this.formacionesSuperior = this.formacion.formacionesSuperior || [
+      this.formacionesSuperior = this.formacion.formacionSuperior || [
         {
           modalidad: "",
           semestres: "",
@@ -349,6 +348,7 @@ export default {
           tarjeta: "",
         },
       ];
+
       this.modoEdicion = true;
       this.formacionId = this.formacion._id;
     },
@@ -363,7 +363,7 @@ export default {
           this.tituloBachiller = datos.tituloBachiller || "";
           this.mesGrado = datos.mesGrado || "";
           this.anioGrado = datos.anioGrado || "";
-          this.formacionesSuperior = datos.formacionesSuperior || [
+          this.formacionesSuperior = datos.formacionSuperior || [
             {
               modalidad: "",
               semestres: "",
@@ -374,6 +374,7 @@ export default {
               tarjeta: "",
             },
           ];
+
           this.modoEdicion = true;
           this.formacionId = datos._id;
         }
@@ -618,20 +619,19 @@ export default {
 .boton-actualizar {
   background-color: #1e90ff;
   color: white;
-  padding: 8px 16px; 
+  padding: 8px 16px;
   border: none;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-left: 20px; 
+  margin-left: 20px;
   font-size: 13px;
 }
 
 .boton-actualizar:hover {
   background-color: #28a745 !important;
 }
-
 
 .boton-agregar:hover {
   background-color: #138496 !important;
@@ -688,14 +688,11 @@ export default {
   box-sizing: border-box;
 }
 
-
 /* Columnas angostas */
 .col-modalidad,
 .col-semestres {
   width: 20px;
   max-width: 100px;
-
-
 }
 
 /* Columna más ancha para título */
@@ -713,8 +710,4 @@ export default {
   padding: 2px 4px;
   box-sizing: border-box;
 }
-
-
-
 </style>
-
