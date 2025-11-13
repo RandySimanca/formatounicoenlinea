@@ -6,18 +6,29 @@ import {
   agregarFormacionSuperior,
   eliminarFormacionSuperior
 } from "../controllers/formacionAcademicaControllers.js";
-import authMiddleware from "../middleware/auth.js";
+import verificarJWT from "../middlewares/verificarJWT.js"; // ✅ nombre correcto
 
 const router = express.Router();
 
-router.get("/", authMiddleware, obtenerFormacionAcademica);
-router.put("/", authMiddleware, actualizarFormacionAcademica);
-router.post("/superior", authMiddleware, agregarFormacionSuperior);
-router.delete("/superior/:subId", authMiddleware, eliminarFormacionSuperior);
+// 🔍 Ruta de prueba
+router.get("/test", (req, res) => {
+  res.send("🚀 Ruta de formación académica embebida activa");
+});
 
+// 📘 Obtener formación académica completa (básica + superior)
+router.get("/", verificarJWT, obtenerFormacionAcademica);
 
+// 🔄 Actualizar formación académica completa
+router.put("/", verificarJWT, actualizarFormacionAcademica);
+
+// ➕ Agregar una formación superior (universitaria, técnica, etc.)
+router.post("/superior", verificarJWT, agregarFormacionSuperior);
+
+// 🗑️ Eliminar una formación superior específica
+router.delete("/superior/:subId", verificarJWT, eliminarFormacionSuperior);
 
 export default router;
+
 
 /*import express from 'express';
 import {
