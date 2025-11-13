@@ -1,6 +1,32 @@
-//backend/middlewares/verificarJWT.js
-
+// backend/middlewares/verificarJWT.js
 import jwt from "jsonwebtoken";
+
+const verificarJWT = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token)
+    return res.status(401).json({ mensaje: "Token no proporcionado" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 🔥 Normalizamos el identificador del usuario
+    req.user = { 
+      id: decoded.id || decoded.uid || decoded._id, 
+      roles: decoded.roles 
+    };
+
+    console.log("🔐 Usuario autenticado:", req.user);
+    next();
+  } catch (error) {
+    console.error("❌ Error al verificar token:", error);
+    res.status(401).json({ mensaje: "Token inválido" });
+  }
+};
+
+export default verificarJWT;
+
+
+/*import jwt from "jsonwebtoken";
 
 const verificarJWT = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -17,4 +43,4 @@ const verificarJWT = (req, res, next) => {
   }
 };
 
-export default verificarJWT;
+export default verificarJWT;*/
