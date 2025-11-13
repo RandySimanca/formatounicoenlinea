@@ -36,7 +36,7 @@ const experienciaSchema = new Schema({
   cargo: String,
   dependencia: String,
   direccion: String
-}, { _id: true }); // Mantener _id para poder eliminar items específicos
+}, { _id: true });
 
 const formacionSuperiorSchema = new Schema({
   modalidad: String,
@@ -89,6 +89,10 @@ const usuarioEmbebidoSchema = new Schema({
   // Experiencia laboral
   experiencias: [experienciaSchema],
   
+  // Resumen de experiencia (campos adicionales)
+  experienciaPublica: String,
+  experienciaPrivada: String,
+  
   // Idiomas
   idiomas: [idiomaSchema],
   
@@ -103,7 +107,7 @@ const usuarioEmbebidoSchema = new Schema({
   ultimoAcceso: Date
 }, {
   timestamps: true,
-  collection: 'usuarios_embebidos' // Usar colección temporal primero
+  collection: 'usuarios_embebidos'
 });
 
 // Middleware de encriptación

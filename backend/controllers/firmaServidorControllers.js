@@ -1,5 +1,135 @@
 // backend/controllers/firmaServidorControllers.js
-import FirmaServidor from '../models/FirmaServidor.js';
+import UsuarioEmbebido from '../models/UsuarioEmbebido.js';
+
+export const guardarFirmaServidor = async (req, res) => {
+  try {
+    const { 
+      declaracionInhabilidad,
+      ciudadDiligenciamiento, 
+      fechaDiligenciamiento, 
+      firmaServidor 
+    } = req.body;
+
+    // ✅ VALIDACIONES
+    if (!declaracionInhabilidad) {
+      return res.status(400).json({ 
+        mensaje: 'La declaración de inhabilidad es obligatoria' 
+      });
+    }
+
+    if (!ciudadDiligenciamiento || !fechaDiligenciamiento || !firmaServidor) {
+      return res.status(400).json({ 
+        mensaje: 'Todos los campos son obligatorios' 
+      });
+    }
+
+    console.log('💾 Guardando firma con declaraciones:', {
+      userId: req.user.id,
+      declaracionInhabilidad,
+      ciudadDiligenciamiento
+    });
+
+    const usuario = await UsuarioEmbebido.findById(req.user.id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    // Actualizar campos de firma
+    usuario.declaracionInhabilidad = declaracionInhabilidad;
+    usuario.ciudadDiligenciamiento = ciudadDiligenciamiento;
+    usuario.fechaDiligenciamiento = fechaDiligenciamiento;
+    usuario.firmaServidor = firmaServidor;
+
+    await usuario.save();
+
+    console.log('✅ Firma guardada exitosamente');
+
+    res.status(200).json({ 
+      mensaje: 'Firma y declaraciones guardadas correctamente', 
+      data: usuario 
+    });
+  } catch (error) {
+    console.error('❌ Error al guardar firma:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al guardar firma', 
+      error: error.message 
+    });
+  }
+};
+
+export const obtenerFirmaServidor = async (req, res) => {
+  try {
+    const usuario = await UsuarioEmbebido.findById(req.user.id, 
+      'declaracionInhabilidad ciudadDiligenciamiento fechaDiligenciamiento firmaServidor'
+    );
+    
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    if (!usuario.firmaServidor) {
+      return res.status(200).json(null);
+    }
+
+    console.log('✅ Firma obtenida:', {
+      userId: req.user.id,
+      tieneDeclaraciones: !!(usuario.declaracionInhabilidad)
+    });
+
+    res.status(200).json(usuario);
+  } catch (error) {
+    console.error('❌ Error al obtener firma:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al obtener firma', 
+      error: error.message 
+    });
+  }
+};
+
+export const eliminarFirmaServidor = async (req, res) => {
+  try {
+    const usuario = await UsuarioEmbebido.findById(req.user.id);
+    
+    if (!usuario) {
+      return res.status(404).json({ 
+        mensaje: "Usuario no encontrado" 
+      });
+    }
+
+    if (!usuario.firmaServidor) {
+      return res.status(404).json({ 
+        mensaje: "No se encontró firma para eliminar" 
+      });
+    }
+
+    // Limpiar campos de firma
+    usuario.declaracionInhabilidad = undefined;
+    usuario.ciudadDiligenciamiento = undefined;
+    usuario.fechaDiligenciamiento = undefined;
+    usuario.firmaServidor = undefined;
+
+    await usuario.save();
+    
+    console.log('✅ Firma y declaraciones eliminadas:', {
+      userId: req.user.id
+    });
+
+    res.status(200).json({ 
+      mensaje: "Firma y declaraciones eliminadas exitosamente"
+    });
+    
+  } catch (error) {
+    console.error("❌ Error al eliminar firma:", error);
+    res.status(500).json({ 
+      mensaje: "Error al eliminar la firma",
+      error: error.message 
+    });
+  }
+};
+
+
+/*import FirmaServidor from '../models/FirmaServidor.js';
 
 export const guardarFirmaServidor = async (req, res) => {
   try {
@@ -79,10 +209,8 @@ export const obtenerFirmaServidor = async (req, res) => {
   }
 };
 
-/**
- * Eliminar firma del servidor
- * DELETE /api/firma-servidor
- */
+//Eliminar firma del servidor---DELETE /api/firma-servidor
+ 
 export const eliminarFirmaServidor = async (req, res) => {
   try {
     const resultado = await FirmaServidor.findOneAndDelete({ user: req.user.id });
@@ -109,4 +237,4 @@ export const eliminarFirmaServidor = async (req, res) => {
       error: error.message 
     });
   }
-};
+};*/
