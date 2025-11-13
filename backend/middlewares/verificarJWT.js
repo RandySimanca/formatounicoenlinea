@@ -8,8 +8,8 @@ const verificarJWT = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.uid, roles: decoded.roles };
-    //req.user = { uid: decoded.uid, roles: decoded.roles };
+    //req.user = { id: decoded.uid, roles: decoded.roles };
+    req.user = { uid: decoded.uid, roles: decoded.roles };
     console.log("🔐 req.usuario set to:", req.user);
     next();
   } catch (error) {
