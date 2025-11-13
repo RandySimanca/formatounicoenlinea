@@ -6,8 +6,15 @@
       <div class="section-title">
         <span class="section-number">3</span> EXPERIENCIA LABORAL
       </div>
-      <div v-if="experienciasOrdenadas.length === 0" class="no-experiencias-container">
-        <!-- ... mensaje sin experiencias ... -->
+      <div v-if="experienciaStore.experiencias.length === 0" class="no-experiencias-container">
+        <div class="no-experiencias-message">
+          <i class="fas fa-briefcase icon-large"></i>
+          <h3>No hay experiencias laborales registradas</h3>
+          <p>Para completar tu hoja de vida, registra tu experiencia laboral en el siguiente módulo.</p>
+          <button @click="irARegistrarExperiencia" class="btn-recordatorio">
+            📝 Ir a Registrar Experiencia
+          </button>
+        </div>
       </div>
 
       <div v-for="(exp, i) in primerasExperiencias" :key="`primera-${exp._id || i}`" class="modulo-experiencia">
