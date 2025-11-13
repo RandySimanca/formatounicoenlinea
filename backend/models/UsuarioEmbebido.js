@@ -98,6 +98,7 @@ const usuarioEmbebidoSchema = new Schema({
   
   // Firma y declaraciones
   firmaServidor: String,
+  firmaBase64: String, // ✅ Campo adicional para experienciaTot
   declaracionInhabilidad: { type: String, enum: ['SI', 'NO', ''] },
   ciudadDiligenciamiento: String,
   fechaDiligenciamiento: Date,
