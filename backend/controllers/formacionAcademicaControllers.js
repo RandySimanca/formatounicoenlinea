@@ -1,5 +1,137 @@
 //controllers/formacionAcademicaControllers.js
-import FormacionAcademica from '../models/FormacionAcademica.js';
+import UsuarioEmbebido from "../models/UsuarioEmbebido.js";
+
+/**
+ * Obtener la formación académica del usuario autenticado
+ */
+export const obtenerFormacionAcademica = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const usuario = await UsuarioEmbebido.findById(userId);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    const datos = {
+      gradoBasica: usuario.gradoBasica,
+      tituloBachiller: usuario.tituloBachiller,
+      mesGrado: usuario.mesGrado,
+      anioGrado: usuario.anioGrado,
+      formacionSuperior: usuario.formacionSuperior || []
+    };
+
+    res.json(datos);
+  } catch (error) {
+    console.error("❌ Error al obtener formación académica:", error);
+    res.status(500).json({
+      mensaje: "Error al obtener la formación académica",
+      detalle: error.message
+    });
+  }
+};
+
+/**
+ * Crear o actualizar la formación académica embebida del usuario
+ */
+export const actualizarFormacionAcademica = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const body = req.body;
+
+    const usuario = await UsuarioEmbebido.findById(userId);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    // Actualizar campos principales
+    usuario.gradoBasica = body.gradoBasica;
+    usuario.tituloBachiller = body.tituloBachiller;
+    usuario.mesGrado = body.mesGrado;
+    usuario.anioGrado = body.anioGrado;
+
+    // Actualizar formaciones superiores si vienen en la petición
+    if (body.formacionSuperior) {
+      usuario.formacionSuperior = body.formacionSuperior;
+    }
+
+    await usuario.save();
+
+    res.json({
+      mensaje: "Formación académica actualizada correctamente",
+      data: usuario.formacionSuperior
+    });
+  } catch (error) {
+    console.error("❌ Error al actualizar formación académica:", error);
+    res.status(500).json({
+      mensaje: "Error al actualizar la formación académica",
+      detalle: error.message
+    });
+  }
+};
+
+/**
+ * Agregar una nueva formación superior
+ */
+export const agregarFormacionSuperior = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const usuario = await UsuarioEmbebido.findById(userId);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    usuario.formacionSuperior.push(req.body);
+    await usuario.save();
+
+    res.json({
+      mensaje: "Formación superior agregada correctamente",
+      data: usuario.formacionSuperior
+    });
+  } catch (error) {
+    console.error("❌ Error al agregar formación superior:", error);
+    res.status(500).json({
+      mensaje: "Error al agregar formación superior",
+      detalle: error.message
+    });
+  }
+};
+
+/**
+ * Eliminar una formación superior específica
+ */
+export const eliminarFormacionSuperior = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const { subId } = req.params;
+
+    const usuario = await UsuarioEmbebido.findById(userId);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    usuario.formacionSuperior = usuario.formacionSuperior.filter(
+      (f) => f._id.toString() !== subId
+    );
+
+    await usuario.save();
+
+    res.json({
+      mensaje: "Formación superior eliminada correctamente",
+      data: usuario.formacionSuperior
+    });
+  } catch (error) {
+    console.error("❌ Error al eliminar formación superior:", error);
+    res.status(500).json({
+      mensaje: "Error al eliminar formación superior",
+      detalle: error.message
+    });
+  }
+};
+
+
+/*import FormacionAcademica from '../models/FormacionAcademica.js';
 
 export const crearFormacionAcademica = async (req, res) => {
   try {
@@ -152,3 +284,4 @@ export const eliminarFormacionSuperior = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+*/

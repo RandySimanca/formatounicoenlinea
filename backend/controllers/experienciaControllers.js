@@ -1,5 +1,5 @@
 // backend/controllers/experienciaController.js
-// backend/controllers/experienciaControllers.js (NUEVO)
+
 import UsuarioEmbebido from '../models/UsuarioEmbebido.js';
 
 export const agregarExperiencia = async (req, res) => {
