@@ -114,7 +114,9 @@
           LA TARJETA PROFESIONAL (SI ÉSTA HA SIDO PREVISTA EN UNA LEY).
         </p>
       </div>
-      <div v-if="formacionesSuperior.length > 0" class="tabla-container">
+
+      <!-- ✅ CAMBIO 1: Usar formacionSuperior (sin 's') -->
+      <div v-if="formacionSuperior.length > 0" class="tabla-container">
         <table class="table">
           <thead>
             <tr>
@@ -141,9 +143,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(formacion, index) in formacionesSuperior" :key="index">
+            <!-- ✅ CAMBIO 2: Iterar sobre formacionSuperior -->
+            <tr v-for="(formacion, index) in formacionSuperior" :key="index">
               <td class="col-modalidad">
-                <!-- Select cuando NO está en modo personalizado -->
                 <select
                   v-if="!formacion.modalidadPersonalizada"
                   class="form-control"
@@ -164,7 +166,6 @@
                   <option value="Seminario">SEMINARIO</option>
                 </select>
 
-                <!-- Input cuando está en modo personalizado -->
                 <div v-else class="input-personalizado-wrapper">
                   <input
                     class="form-control11 input-modalidad-custom"
@@ -271,7 +272,6 @@ import {
   showWarning,
   showConfirm,
 } from "../utils/showMessage.js";
-import { eliminarFormacionSuperior } from "../api/datosAPI"; // ✅ Import estático
 
 export default {
   name: "FormacionAcadComponent",
@@ -288,8 +288,8 @@ export default {
       mesGrado: "",
       anioGrado: "",
 
-      // Fila inicial + dinámicas
-      formacionesSuperior: [
+      // ✅ CAMBIO 3: Usar formacionSuperior (sin 's')
+      formacionSuperior: [
         {
           modalidad: "",
           semestres: "",
@@ -321,7 +321,8 @@ export default {
     },
 
     addFormacion() {
-      this.formacionesSuperior.push({
+      // ✅ CAMBIO 4: Agregar a formacionSuperior
+      this.formacionSuperior.push({
         modalidad: "",
         semestres: "",
         graduado: "",
@@ -337,7 +338,9 @@ export default {
       this.tituloBachiller = this.formacion.tituloBachiller || "";
       this.mesGrado = this.formacion.mesGrado || "";
       this.anioGrado = this.formacion.anioGrado || "";
-      this.formacionesSuperior = this.formacion.formacionSuperior || [
+      
+      // ✅ CAMBIO 5: Cargar formacionSuperior desde props
+      this.formacionSuperior = this.formacion.formacionSuperior || [
         {
           modalidad: "",
           semestres: "",
@@ -363,7 +366,9 @@ export default {
           this.tituloBachiller = datos.tituloBachiller || "";
           this.mesGrado = datos.mesGrado || "";
           this.anioGrado = datos.anioGrado || "";
-          this.formacionesSuperior = datos.formacionSuperior || [
+          
+          // ✅ CAMBIO 6: Cargar formacionSuperior desde API
+          this.formacionSuperior = datos.formacionSuperior || [
             {
               modalidad: "",
               semestres: "",
@@ -377,6 +382,11 @@ export default {
 
           this.modoEdicion = true;
           this.formacionId = datos._id;
+          
+          console.log('✅ Formación cargada:', {
+            formaciones: this.formacionSuperior.length,
+            modoEdicion: this.modoEdicion
+          });
         }
       } catch (error) {
         if (error.response?.status !== 404) {
@@ -401,13 +411,19 @@ export default {
         return;
       }
 
+      // ✅ CAMBIO 7: Enviar formacionSuperior (sin 's')
       const formacion = {
         gradoBasica: this.selectedGrado,
         tituloBachiller: this.tituloBachiller,
         mesGrado: this.mesGrado,
         anioGrado: this.anioGrado,
-        formacionesSuperior: this.formacionesSuperior,
+        formacionSuperior: this.formacionSuperior, // Sin 's'
       };
+
+      console.log('📤 Enviando formación:', {
+        basica: formacion.gradoBasica,
+        superior: formacion.formacionSuperior.length
+      });
 
       try {
         let response;
@@ -451,21 +467,17 @@ export default {
       }
     },
 
-    // ✅ MÉTODO CORREGIDO - usando import estático
-    // Método actualizado que siempre deja al menos una fila vacía:
-    // Método corregido para removeFormacion
     async removeFormacion(index) {
-      const formacion = this.formacionesSuperior[index];
+      const formacion = this.formacionSuperior[index];
 
-      // Si es la única fila, verificar si está vacía
-      if (this.formacionesSuperior.length === 1) {
+      // ✅ CAMBIO 8: Validar formacionSuperior
+      if (this.formacionSuperior.length === 1) {
         if (this.esFormacionVacia(formacion)) {
           showError(
             "⚠️ Debe mantener al menos una fila para agregar formaciones"
           );
           return;
         } else {
-          // Si la única fila tiene datos, mostrar confirmación especial (Sí/No)
           const confirmacion = await showConfirm({
             title: "Eliminar formación",
             text: "¿Deseas eliminar esta formación? Se creará una nueva fila vacía.",
@@ -475,7 +487,6 @@ export default {
           if (!confirmacion) return;
         }
       } else {
-        // Si hay múltiples filas, confirmación con modal (Sí/No)
         const confirmacion = await showConfirm({
           title: "Eliminar formación",
           text: "¿Estás seguro de que deseas eliminar esta formación?",
@@ -486,26 +497,18 @@ export default {
       }
 
       try {
-        // Si la formación tiene un ID (ya está en MongoDB) y tenemos el ID del documento
+        // ✅ CAMBIO 9: Si tiene ID, eliminar del servidor
         if (formacion._id && this.formacionId) {
-          console.log("🗑️ Eliminando formación de MongoDB:", {
-            docId: this.formacionId,
-            subId: formacion._id,
-          });
-
-          await eliminarFormacionSuperior(this.formacionId, formacion._id);
-          showSuccess(
-            "✅ Formación eliminada correctamente de la base de datos"
-          );
-          showWarning(
-            "⚠️No olvides actualizar la formacion academica para eliminar completamente la formación."
-          );
+          console.log("🗑️ Eliminando formación del servidor:", formacion._id);
+          
+          await api.delete(`/formacion-academica/superior/${formacion._id}`);
+          
+          showSuccess("✅ Formación eliminada correctamente");
+          showWarning("⚠️ Guarda los cambios para confirmar la eliminación.");
         }
 
         // Eliminar del array local
-        this.formacionesSuperior.splice(index, 1);
-
-        // CRÍTICO: Asegurar que siempre hay al menos una fila vacía
+        this.formacionSuperior.splice(index, 1);
         this.asegurarFilaVaciaDisponible();
 
         if (!formacion._id) {
@@ -513,21 +516,10 @@ export default {
         }
       } catch (error) {
         console.error("❌ Error al eliminar:", error);
-
-        if (error.message === "FORMACION_NO_ENCONTRADA") {
-          // La formación no existe en MongoDB, solo la quitamos localmente
-          this.formacionesSuperior.splice(index, 1);
-          this.asegurarFilaVaciaDisponible();
-          showSuccess(
-            "✅ Formación eliminada. Guarda el formulario para confirmar los cambios."
-          );
-        } else {
-          showError("❌ No se pudo eliminar la formación. Intenta nuevamente.");
-        }
+        showError("❌ No se pudo eliminar la formación.");
       }
     },
 
-    // Método auxiliar mejorado para verificar si una formación está vacía
     esFormacionVacia(formacion) {
       return (
         !formacion.modalidad?.trim() &&
@@ -540,57 +532,45 @@ export default {
       );
     },
 
-    // Método auxiliar para asegurar que siempre hay una fila vacía disponible
     asegurarFilaVaciaDisponible() {
-      // Si no hay filas, crear una
-      if (this.formacionesSuperior.length === 0) {
+      if (this.formacionSuperior.length === 0) {
         this.addFormacion();
         return;
       }
 
-      // Verificar si hay al menos una fila vacía
-      const hayFilaVacia = this.formacionesSuperior.some((formacion) =>
+      const hayFilaVacia = this.formacionSuperior.some((formacion) =>
         this.esFormacionVacia(formacion)
       );
 
-      // Si no hay ninguna fila vacía, agregar una nueva
       if (!hayFilaVacia) {
         this.addFormacion();
         console.log("✅ Se agregó una nueva fila vacía automáticamente");
       }
     },
 
-    // Método addFormacion mejorado (opcional)
-    addFormacion() {
-      const nuevaFormacion = {
-        modalidad: "",
-        semestres: "",
-        graduado: "",
-        titulo: "",
-        mesTermino: "",
-        anioTermino: "",
-        tarjeta: "",
-      };
+    manejarCambioModalidad(formacion, index) {
+      // Método auxiliar para manejar cambios en modalidad
+      console.log('Modalidad cambiada:', formacion.modalidad);
+    },
 
-      this.formacionesSuperior.push(nuevaFormacion);
+    validarModalidadVacia(formacion, index) {
+      // Método auxiliar para validar modalidad vacía
+      if (!formacion.modalidad?.trim()) {
+        showWarning('⚠️ La modalidad no puede estar vacía');
+      }
+    },
 
-      // Scroll suave hacia la nueva fila (opcional)
-      this.$nextTick(() => {
-        const tabla = document.querySelector(".table tbody");
-        if (tabla) {
-          const ultimaFila = tabla.lastElementChild;
-          if (ultimaFila) {
-            ultimaFila.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }
-      });
+    volverASelect(formacion, index) {
+      // Método auxiliar para volver al select
+      formacion.modalidadPersonalizada = false;
+      formacion.modalidad = '';
     },
   },
 };
 </script>
 
 <style scoped>
-/* Estilos adicionales para el nuevo diseño */
+/* Tus estilos existentes */
 .tabla-container {
   margin: 1rem 0;
 }
@@ -633,75 +613,34 @@ export default {
   background-color: #28a745 !important;
 }
 
-.boton-agregar:hover {
-  background-color: #138496 !important;
-}
-
-.boton-guardar-formacion {
-  background-color: #28a745 !important;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.boton-guardar-formacion:hover {
-  background-color: #218838 !important;
-}
-
 .btn-danger {
   line-height: 1;
   padding: 0.3rem 0.6rem;
-  background-color: rgb(255, 6, 6); /* Reducido */
+  background-color: rgb(255, 6, 6);
 }
 
 .btn-danger:hover {
   background-color: #d85103 !important;
 }
-/* Ajuste general para inputs */
-
-@media print {
-  .col-modalidad-academica,
-  .col-semestres {
-    width: 70px !important;
-  }
-
-  .col-titulo {
-    width: 300px !important;
-  }
-
-  select,
-  input {
-    font-size: 9px !important;
-    padding: 1px !important;
-    height: auto !important;
-    vertical-align: top !important;
-  }
-}
 
 .form-control11 {
   width: 100%;
-  padding: 3px; /* Reducido */
+  padding: 3px;
   border: 1px;
   box-sizing: border-box;
 }
 
-/* Columnas angostas */
 .col-modalidad,
 .col-semestres {
   width: 20px;
   max-width: 100px;
 }
 
-/* Columna más ancha para título */
 .col-titulo {
   width: 280px;
   max-width: 100%;
 }
 
-/* Ajuste para inputs internos */
 .col-modalidad select,
 .col-semestres input,
 .col-titulo input {
