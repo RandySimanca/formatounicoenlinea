@@ -6,6 +6,7 @@ export function useFormatoOficialHV() {
     try {
       console.log("💼 Experiencias recibidas:", datosUsuario.experienciaLaboral);
       console.log("📋 Datos recibidos para llenar PDF:", datosUsuario);
+      console.log("📚 Educación Superior recibida:", datosUsuario.educacionSuperior);
       console.log("⚖️ Declaración de inhabilidad:", datosUsuario.declaracionInhabilidad);
 
       let pdfDoc;
@@ -102,11 +103,14 @@ export function useFormatoOficialHV() {
         write(page1, datosUsuario.mesGradoBasica || "", 350, 475, 12);
         write(page1, datosUsuario.anoGradoBasica || "", 410, 475, 12);
 
-        if (Array.isArray(datosUsuario.educacionSuperior)) {
+        // EDUCACIÓN SUPERIOR EN PÁGINA 1
+        if (Array.isArray(datosUsuario.educacionSuperior) && datosUsuario.educacionSuperior.length > 0) {
+          console.log("📖 Dibujando educación superior:", datosUsuario.educacionSuperior.length, "registros");
           let yEdu = 590;
           const espacioEntreFilas = 18;
           datosUsuario.educacionSuperior.forEach((edu, idx) => {
             if (idx < 6) {
+              console.log(`  ✏️ Formación ${idx + 1}:`, edu.titulo);
               write(page1, edu.modalidad || "", 62, yEdu, 10);
               write(page1, edu.semestres || "", 115, yEdu, 10);
               if (edu.graduado === true || edu.graduado === "SI") write(page1, "X", 180, yEdu, 10);
@@ -118,8 +122,11 @@ export function useFormatoOficialHV() {
               yEdu += espacioEntreFilas;
             }
           });
+        } else {
+          console.log("⚠️ No hay educación superior para dibujar");
         }
 
+        // IDIOMAS EN PÁGINA 1
         if (Array.isArray(datosUsuario.idiomas)) {
           let yIdioma = 718;
           datosUsuario.idiomas.forEach((idioma, idx) => {
@@ -140,27 +147,29 @@ export function useFormatoOficialHV() {
         }
       }
 
-       // ========================== PÁGINA 2 =============================
-       console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
+      // ========================== EXPERIENCIA LABORAL (PÁGINAS 2+) =============================
+      console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
 
-       const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
-         ? datosUsuario.experienciaLaboral
-         : [];
- 
-       if (experiencias.length > 0 && pages[1]) {
-         const experienciasPorPagina = 4;
-         const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
- 
-         const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
-         const pdfBase = await PDFDocument.load(formatoBaseBytes);
- 
-         // Insertar páginas adicionales ANTES de la última página
-         for (let i = 1; i < totalPaginasExperiencia; i++) {
-           const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]);
-           pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2);
-         }
- 
-         const updatedPages = pdfDoc.getPages();
+      const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
+        ? datosUsuario.experienciaLaboral
+        : [];
+
+      if (experiencias.length > 0 && pages[1]) {
+        const experienciasPorPagina = 4;
+        const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
+        console.log(`📄 Se necesitan ${totalPaginasExperiencia} páginas para ${experiencias.length} experiencias`);
+
+        const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
+        const pdfBase = await PDFDocument.load(formatoBaseBytes);
+
+        // Insertar páginas adicionales ANTES de la última página
+        for (let i = 1; i < totalPaginasExperiencia; i++) {
+          const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]);
+          pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2);
+          console.log(`➕ Página de experiencia ${i + 1} agregada`);
+        }
+
+        const updatedPages = pdfDoc.getPages();
 
         const bloques = [
           { yBase: 240 },
@@ -175,15 +184,7 @@ export function useFormatoOficialHV() {
           const { yBase } = bloques[posicion];
           const page = updatedPages[paginaIndex];
 
-          if (posicion === 0 && paginaIndex > 1) {
-            page.drawText("", {
-              x: 200,
-              y: page.getSize().height - 60,
-              size: 12,
-              font: fontBold,
-              color: rgb(0, 0, 0),
-            });
-          }
+          console.log(`  💼 Experiencia ${idx + 1}: ${exp.empresa} en página ${paginaIndex + 1}, posición ${posicion + 1}`);
 
           write(page, exp.empresa || "", 60, yBase, 10);
           if (exp.tipo === "publica") write(page, "X", 350, yBase, 10);
@@ -208,33 +209,36 @@ export function useFormatoOficialHV() {
         });
       }
 
-      // ========================== PÁGINA 3 =============================
-      // uso la página 3 por índice fijo (más fiable si agregas páginas dinámicas)
-      const page3 = pdfDoc.getPages()[2];
-      if (page3) {
-        const { height } = page3.getSize();
+      // ========================== ÚLTIMA PÁGINA (RESUMEN Y FIRMA) =============================
+      const todasLasPaginas = pdfDoc.getPages();
+      const ultimaPagina = todasLasPaginas[todasLasPaginas.length - 1];
+      const indicePaginaFinal = todasLasPaginas.length - 1;
+      
+      console.log(`📄 Total de páginas en el documento: ${todasLasPaginas.length}`);
+      console.log(`📝 Escribiendo resumen en última página (índice ${indicePaginaFinal})`);
+      
+      if (ultimaPagina) {
+        const { height } = ultimaPagina.getSize();
 
+        // TIEMPO DE EXPERIENCIA
         const t = datosUsuario.tiempoExperiencia || {};
-        write(page3, t.servidorPublico?.anos || "", 400, 200, 14);
-        write(page3, t.servidorPublico?.meses || "", 450, 200, 14);
-        write(page3, t.sectorPrivado?.anos || "", 400, 220, 14);
-        write(page3, t.sectorPrivado?.meses || "", 450, 220, 14);
-        write(page3, t.independiente?.anos || "", 400, 250, 14);
-        write(page3, t.independiente?.meses || "", 450, 250, 14);
-        write(page3, t.total?.anos || "", 400, 280, 14);
-        write(page3, t.total?.meses || "", 450, 280, 14);
+        write(ultimaPagina, t.servidorPublico?.anos || "", 400, 200, 14);
+        write(ultimaPagina, t.servidorPublico?.meses || "", 450, 200, 14);
+        write(ultimaPagina, t.sectorPrivado?.anos || "", 400, 220, 14);
+        write(ultimaPagina, t.sectorPrivado?.meses || "", 450, 220, 14);
+        write(ultimaPagina, t.independiente?.anos || "", 400, 250, 14);
+        write(ultimaPagina, t.independiente?.meses || "", 450, 250, 14);
+        write(ultimaPagina, t.total?.anos || "", 400, 280, 14);
+        write(ultimaPagina, t.total?.meses || "", 450, 280, 14);
 
-        // Coordenadas sugeridas: AJUSTA SI/NO como necesites.
-        // Basadas en la prueba que hiciste (la X roja), están muy cerca de la posición final.
-        // SI suele estar a la IZQ del grupo, NO a la DER. Ajusta los valores X.
+        // DECLARACIÓN DE INHABILIDAD
         const coordInhabilidad = {
-          SI: { x: 250, y: 373 }, // <- prueba primero, luego ajusta
-          NO: { x: 300, y: 373 }  // <- prueba primero, luego ajusta
+          SI: { x: 250, y: 373 },
+          NO: { x: 300, y: 373 }
         };
 
-        // Dibujo la X usando drawText (queda en primer plano)
         if (datosUsuario.declaracionInhabilidad === "SI") {
-          page3.drawText("X", {
+          ultimaPagina.drawText("X", {
             x: coordInhabilidad.SI.x,
             y: height - coordInhabilidad.SI.y,
             size: 12,
@@ -242,7 +246,7 @@ export function useFormatoOficialHV() {
             color: rgb(0, 0, 0),
           });
         } else if (datosUsuario.declaracionInhabilidad === "NO") {
-          page3.drawText("X", {
+          ultimaPagina.drawText("X", {
             x: coordInhabilidad.NO.x,
             y: height - coordInhabilidad.NO.y,
             size: 12,
@@ -251,31 +255,34 @@ export function useFormatoOficialHV() {
           });
         }
 
+        // FECHA Y LUGAR DE DILIGENCIAMIENTO
         if (datosUsuario.ciudadDiligenciamiento && datosUsuario.fechaDiligenciamiento) {
           const fechaObj = new Date(datosUsuario.fechaDiligenciamiento);
           const ciudadFecha = `${datosUsuario.ciudadDiligenciamiento}, ${fechaObj.toLocaleDateString("es-CO")}`;
-          write(page3, ciudadFecha, 220, 455, 10);
+          write(ultimaPagina, ciudadFecha, 220, 455, 10);
         } else {
           const fechaHoy = new Date();
           const municipio = datosUsuario.direccionCorrespondencia?.municipio || "Bogotá";
           const ciudadFecha = `${municipio}, ${fechaHoy.toLocaleDateString("es-CO")}`;
-          write(page3, ciudadFecha, 220, 455, 10);
+          write(ultimaPagina, ciudadFecha, 220, 455, 10);
         }
 
+        // FIRMA
         if (datosUsuario.firmaServidor) {
           try {
             const firmaBase64 = datosUsuario.firmaServidor.replace(/^data:image\/\w+;base64,/, "");
             const firmaImage = await pdfDoc.embedPng(firmaBase64);
             const firmaDims = firmaImage.scale(0.5);
             const firmaX = 250;
-            const firmaY = page3.getSize().height - 500;
+            const firmaY = ultimaPagina.getSize().height - 500;
 
-            page3.drawImage(firmaImage, {
+            ultimaPagina.drawImage(firmaImage, {
               x: firmaX,
               y: firmaY,
               width: firmaDims.width,
               height: firmaDims.height,
             });
+            console.log("✅ Firma insertada correctamente");
           } catch (error) {
             console.error("❌ Error al insertar la firma:", error);
           }
@@ -480,14 +487,12 @@ export function useFormatoOficialHV() {
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
     };
-}
+  }
 
-function separarDigitos(texto) {
-  if (!texto) return "";
-  return String(texto).split('').join('  '); // Dos espacios entre cada carácter
-}
-
-
+  function separarDigitos(texto) {
+    if (!texto) return "";
+    return String(texto).split('').join('  ');
+  }
 
   return {
     llenarFormatoOficial,
