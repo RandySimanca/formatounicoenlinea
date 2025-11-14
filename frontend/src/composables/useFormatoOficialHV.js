@@ -382,9 +382,11 @@ export function useFormatoOficialHV() {
     });
 
     const convertirMesesDecimales = (totalMesesDecimal) => {
-      const mesesEnteros = Math.floor(totalMesesDecimal);
-      const anios = Math.floor(mesesEnteros / 12);
-      const meses = mesesEnteros % 12;
+      // Mantener los decimales en los meses como en el formulario web (2 decimales)
+      const anios = Math.floor(totalMesesDecimal / 12);
+      const mesesRestantes = totalMesesDecimal % 12;
+      // Mantener hasta 2 decimales, pero eliminar ceros innecesarios al final
+      const meses = Number(mesesRestantes.toFixed(2));
       return { anios, meses };
     };
 
@@ -504,19 +506,28 @@ export function useFormatoOficialHV() {
       tiempoExperiencia: {
         servidorPublico: {
           anos: String(tiemposCalculados.publico.anios),
-          meses: String(tiemposCalculados.publico.meses),
+          // Mantener decimales si existen (ej: 2.5, 3.1, 0.5)
+          meses: tiemposCalculados.publico.meses % 1 === 0 
+            ? String(Math.round(tiemposCalculados.publico.meses))
+            : String(Number(tiemposCalculados.publico.meses.toFixed(2))),
         },
         sectorPrivado: {
           anos: String(tiemposCalculados.privado.anios),
-          meses: String(tiemposCalculados.privado.meses),
+          meses: tiemposCalculados.privado.meses % 1 === 0 
+            ? String(Math.round(tiemposCalculados.privado.meses))
+            : String(Number(tiemposCalculados.privado.meses.toFixed(2))),
         },
         independiente: {
           anos: String(tiemposCalculados.independiente.anios),
-          meses: String(tiemposCalculados.independiente.meses),
+          meses: tiemposCalculados.independiente.meses % 1 === 0 
+            ? String(Math.round(tiemposCalculados.independiente.meses))
+            : String(Number(tiemposCalculados.independiente.meses.toFixed(2))),
         },
         total: {
           anos: String(tiemposCalculados.total.anios),
-          meses: String(tiemposCalculados.total.meses),
+          meses: tiemposCalculados.total.meses % 1 === 0 
+            ? String(Math.round(tiemposCalculados.total.meses))
+            : String(Number(tiemposCalculados.total.meses.toFixed(2))),
         },
       },
 
