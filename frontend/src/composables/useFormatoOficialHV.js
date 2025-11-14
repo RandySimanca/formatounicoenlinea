@@ -4,9 +4,25 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 export function useFormatoOficialHV() {
   async function llenarFormatoOficial(datosUsuario, urlFormato = "/FORMATO_UNICO_HOJA_DE_VIDA.pdf") {
     try {
-      console.log("💼 Experiencias recibidas:", datosUsuario.experienciaLaboral);
+      // Normalizar nombres de campo por seguridad (puede venir raw API o ya mapeado)
+      const educacionSuperior = Array.isArray(datosUsuario.educacionSuperior)
+        ? datosUsuario.educacionSuperior
+        : Array.isArray(datosUsuario.formacionSuperior)
+          ? datosUsuario.formacionSuperior
+          : Array.isArray(datosUsuario.formacionesSuperior)
+            ? datosUsuario.formacionesSuperior
+            : [];
+
+      const idiomas = Array.isArray(datosUsuario.idiomas) ? datosUsuario.idiomas : [];
+      const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
+        ? datosUsuario.experienciaLaboral
+        : Array.isArray(datosUsuario.experiencias)
+          ? datosUsuario.experiencias
+          : [];
+
+      console.log("💼 Experiencias recibidas (normalizadas):", experiencias);
       console.log("📋 Datos recibidos para llenar PDF:", datosUsuario);
-      console.log("📚 Educación Superior recibida:", datosUsuario.educacionSuperior);
+      console.log("📚 Educación Superior (normalizada):", educacionSuperior);
       console.log("⚖️ Declaración de inhabilidad:", datosUsuario.declaracionInhabilidad);
 
       let pdfDoc;
@@ -30,7 +46,7 @@ export function useFormatoOficialHV() {
       const fontSizeSmall = 7;
 
       const write = (page, text, x, y, size = fontSize, fontType = font) => {
-        if (!text && text !== 0) return;
+        if (text === undefined || text === null || text === "") return;
         const { height } = page.getSize();
         const textoFinal = String(text).substring(0, 50);
         page.drawText(textoFinal, {
@@ -103,37 +119,37 @@ export function useFormatoOficialHV() {
         write(page1, datosUsuario.mesGradoBasica || "", 350, 475, 12);
         write(page1, datosUsuario.anoGradoBasica || "", 410, 475, 12);
 
-        console.log("==== EDUCACION SUPERIOR RECIBIDA ====");
-        console.log(JSON.stringify(datosUsuario.educacionSuperior, null, 2));
+        console.log("==== EDUCACION SUPERIOR (USANDO educacionSuperior) ====");
+        console.log(JSON.stringify(educacionSuperior, null, 2));
 
-
-        // EDUCACIÓN SUPERIOR EN PÁGINA 1
-        if (Array.isArray(datosUsuario.educacionSuperior) && datosUsuario.educacionSuperior.length > 0) {
-          console.log("📖 Dibujando educación superior:", datosUsuario.educacionSuperior.length, "registros");
+        // EDUCACIÓN SUPERIOR EN PÁGINA 1 - usar la variable normalizada 'educacionSuperior'
+        if (Array.isArray(educacionSuperior) && educacionSuperior.length > 0) {
+          console.log("📖 Dibujando educación superior:", educacionSuperior.length, "registros");
           let yEdu = 590;
           const espacioEntreFilas = 18;
-          datosUsuario.educacionSuperior.forEach((edu, idx) => {
+          educacionSuperior.forEach((edu, idx) => {
             if (idx < 6) {
-              console.log(`  ✏️ Formación ${idx + 1}:`, edu.titulo);
-              write(page1, edu.modalidad || "", 62, yEdu, 10);
+              console.log(`  ✏️ Formación ${idx + 1}:`, edu?.titulo || edu?.tituloFormacion || "(sin título)");
+              write(page1, edu.modalidad || edu.modalidadFormacion || "", 62, yEdu, 10);
               write(page1, edu.semestres || "", 115, yEdu, 10);
-              if (edu.graduado === true || edu.graduado === "SI") write(page1, "X", 180, yEdu, 10);
+              if (edu.graduado === true || String(edu.graduado).toUpperCase() === "SI") write(page1, "X", 180, yEdu, 10);
               else write(page1, "X", 210, yEdu, 10);
-              write(page1, edu.titulo || "", 230, yEdu, 9);
-              write(page1, edu.mesGrado || "", 425, yEdu, 12);
-              write(page1, edu.anoGrado || "", 450, yEdu, 12);
-              write(page1, edu.tarjetaProfesional || "", 525, yEdu, 10);
+              write(page1, edu.titulo || edu.tituloFormacion || "", 230, yEdu, 9);
+              // mes/ano pueden venir con nombres distintos (mesTermino / mesGrado / mes)
+              write(page1, edu.mesGrado || edu.mesTermino || edu.mes || "", 425, yEdu, 12);
+              write(page1, edu.anoGrado || edu.anioTermino || edu.anio || "", 450, yEdu, 12);
+              write(page1, edu.tarjetaProfesional || edu.tarjeta || "", 525, yEdu, 10);
               yEdu += espacioEntreFilas;
             }
           });
         } else {
-          console.log("⚠️ No hay educación superior para dibujar");
+          console.log("⚠️ No hay educación superior para dibujar (educacionSuperior vacío)");
         }
 
         // IDIOMAS EN PÁGINA 1
-        if (Array.isArray(datosUsuario.idiomas)) {
+        if (Array.isArray(idiomas)) {
           let yIdioma = 718;
-          datosUsuario.idiomas.forEach((idioma, idx) => {
+          idiomas.forEach((idioma, idx) => {
             if (idx < 3) {
               write(page1, idioma.nombre || idioma.idioma || "", 200, yIdioma, 10);
               if (idioma.habla === "R") write(page1, "X", 305, yIdioma, 10);
@@ -152,11 +168,7 @@ export function useFormatoOficialHV() {
       }
 
       // ========================== EXPERIENCIA LABORAL (PÁGINAS 2+) =============================
-      console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
-
-      const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
-        ? datosUsuario.experienciaLaboral
-        : [];
+      console.log("💼 Procesando experiencia laboral (normalizada):", experiencias);
 
       if (experiencias.length > 0 && pages[1]) {
         const experienciasPorPagina = 4;
@@ -191,14 +203,14 @@ export function useFormatoOficialHV() {
           console.log(`  💼 Experiencia ${idx + 1}: ${exp.empresa} en página ${paginaIndex + 1}, posición ${posicion + 1}`);
 
           write(page, exp.empresa || "", 60, yBase, 10);
-          if (exp.tipo === "publica") write(page, "X", 350, yBase, 10);
-          else if (exp.tipo === "privada") write(page, "X", 390, yBase, 10);
+          if ((exp.tipo || exp.tipoEntidad || "").toLowerCase() === "publica") write(page, "X", 350, yBase, 10);
+          else if ((exp.tipo || exp.tipoEntidad || "").toLowerCase() === "privada") write(page, "X", 390, yBase, 10);
           write(page, exp.pais || "", 485, yBase, 10);
 
           write(page, exp.departamento || "", 60, yBase + 30, 10);
           write(page, exp.municipio || "", 235, yBase + 30, 10);
-          write(page, exp.emailEntidad || "", 410, yBase + 30, 8);
-          write(page, exp.telefono || "", 60, yBase + 60, 10);
+          write(page, exp.emailEntidad || exp.correoEntidad || "", 410, yBase + 30, 8);
+          write(page, exp.telefono || exp.telefonos || "", 60, yBase + 60, 10);
 
           write(page, exp.fechaIngreso?.dia || "", 265, yBase + 60, 10);
           write(page, exp.fechaIngreso?.mes || "", 310, yBase + 60, 10);
@@ -217,10 +229,10 @@ export function useFormatoOficialHV() {
       const todasLasPaginas = pdfDoc.getPages();
       const ultimaPagina = todasLasPaginas[todasLasPaginas.length - 1];
       const indicePaginaFinal = todasLasPaginas.length - 1;
-      
+
       console.log(`📄 Total de páginas en el documento: ${todasLasPaginas.length}`);
       console.log(`📝 Escribiendo resumen en última página (índice ${indicePaginaFinal})`);
-      
+
       if (ultimaPagina) {
         const { height } = ultimaPagina.getSize();
 
@@ -398,22 +410,22 @@ export function useFormatoOficialHV() {
         anio: fecha.anio ?? ""
       };
     };
-  
+
     const normalizarInhabilidad = (valor) => {
       if (!valor) return "NO";
       const v = String(valor).trim().toUpperCase();
       if (["SI", "S", "TRUE", "X", "1"].includes(v)) return "SI";
       return "NO";
     };
-  
+
     const experienciasMapeadas = (usuarioLocal.experienciaLaboral || usuarioLocal.experiencias || []).map(exp => ({
       empresa: exp.empresa || "",
-      tipo: exp.tipoEntidad ? exp.tipoEntidad.toLowerCase() : "",
+      tipo: exp.tipoEntidad ? exp.tipoEntidad.toLowerCase() : (exp.tipo || ""),
       pais: exp.pais || "Colombia",
-      departamento: exp.departamento || "",
+      departamento: exp.departamento || exp.depto || "",
       municipio: exp.municipio || "",
-      emailEntidad: exp.correoEntidad || "",
-      telefono: exp.telefonos || "",
+      emailEntidad: exp.correoEntidad || exp.emailEntidad || "",
+      telefono: exp.telefonos || exp.telefono || "",
       fechaIngreso: exp.fechaIngreso,
       fechaRetiro: exp.fechaRetiro,
       cargo: exp.cargo || "",
@@ -421,16 +433,35 @@ export function useFormatoOficialHV() {
       direccion: exp.direccion || "",
       tipoEntidad: exp.tipoEntidad || exp.tipo || ""
     }));
-  
+
     const tiemposCalculados = calcularTiempoExperiencia(experienciasMapeadas);
-  
-    // 🔥 CORRECCIÓN: Buscar formacionSuperior (sin 's')
+
+    // Buscar en varias propiedades donde la formación pueda existir
+    const rawFormaciones = usuarioLocal.formacionSuperior
+      || usuarioLocal.formacionesSuperior
+      || usuarioLocal.educacionSuperior
+      || usuarioLocal.formacionAcademica // por si alguna otra ruta usa este nombre
+      || [];
+
     console.log("🔍 DEBUG - Buscando formación superior en:", {
       formacionSuperior: usuarioLocal.formacionSuperior,
       formacionesSuperior: usuarioLocal.formacionesSuperior,
-      length: (usuarioLocal.formacionSuperior || usuarioLocal.formacionesSuperior || []).length
+      educacionSuperior: usuarioLocal.educacionSuperior,
+      rawFormacionesLength: Array.isArray(rawFormaciones) ? rawFormaciones.length : typeof rawFormaciones
     });
-  
+
+    const educacionSuperior = Array.isArray(rawFormaciones)
+      ? rawFormaciones.map(f => ({
+        modalidad: f.modalidad ?? f.modalidadFormacion ?? "",
+        semestres: f.semestres ?? "",
+        graduado: f.graduado ?? "",
+        titulo: f.titulo ?? f.tituloFormacion ?? "",
+        mesGrado: f.mesTermino ?? f.mesGrado ?? f.mes ?? "",
+        anoGrado: f.anioTermino ?? f.anio ?? f.anioGrado ?? "",
+        tarjetaProfesional: f.tarjeta ?? f.tarjetaProfesional ?? ""
+      }))
+      : [];
+
     return {
       apellido1: usuarioLocal.apellido1 || "",
       apellido2: usuarioLocal.apellido2 || "",
@@ -445,37 +476,27 @@ export function useFormatoOficialHV() {
       dm: usuarioLocal.dm || "",
       fechaNacimiento: usuarioLocal.fechaNacimiento || {},
       direccionCorrespondencia: usuarioLocal.direccionCorrespondencia || {},
-  
+
       idiomas: (usuarioLocal.idiomas || []).map(i => ({
         nombre: i.nombre || i.idioma || "",
         habla: i.habla || "",
         lee: i.lee || "",
         escribe: i.escribe || ""
       })),
-  
+
       gradoAprobado: usuarioLocal.gradoBasica || 11,
       tituloBasica: usuarioLocal.tituloBachiller || "Bachiller",
-      mesGradoBasica: usuarioLocal.mesGrado || "",
-      anoGradoBasica: usuarioLocal.anioGrado || "",
-  
-     // 🔥 CORRECCIÓN PRINCIPAL: Usar formacionSuperior (sin 's') primero, luego probar con 's' como fallback
-      educacionSuperior: (usuarioLocal.formacionSuperior || []).map(f => ({
-        modalidad: f.modalidad ?? "",
-        semestres: f.semestres ?? "",
-        graduado: f.graduado ?? "",
-        titulo: f.titulo ?? "",
-        mesGrado: f.mesTermino ?? "",
-        anoGrado: f.anioTermino ?? "",
-        tarjetaProfesional: f.tarjeta ?? ""
-      })),
-      
-  
+      mesGradoBasica: usuarioLocal.mesGrado || usuarioLocal.mesGradoBasica || "",
+      anoGradoBasica: usuarioLocal.anioGrado || usuarioLocal.anoGradoBasica || "",
+
+      educacionSuperior, // ya normalizada
+
       experienciaLaboral: experienciasMapeadas.map(exp => ({
         ...exp,
         fechaIngreso: normalizarFecha(exp.fechaIngreso),
         fechaRetiro: normalizarFecha(exp.fechaRetiro)
       })),
-  
+
       tiempoExperiencia: {
         servidorPublico: {
           anos: String(tiemposCalculados.publico.anios),
@@ -494,7 +515,7 @@ export function useFormatoOficialHV() {
           meses: String(tiemposCalculados.total.meses),
         },
       },
-  
+
       declaracionInhabilidad: normalizarInhabilidad(usuarioLocal.declaracionInhabilidad),
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
@@ -505,7 +526,6 @@ export function useFormatoOficialHV() {
   return {
     llenarFormatoOficial,
     descargarPDF,
-    mapearDatosUsuario,  
-
+    mapearDatosUsuario,
   };
 }
