@@ -6,28 +6,29 @@ import {
   agregarFormacionSuperior,
   eliminarFormacionSuperior
 } from "../controllers/formacionAcademicaControllers.js";
-import verificarJWT from "../middlewares/verificarJWT.js"; // ✅ nombre correcto
+import verificarJWT from "../middlewares/verificarJWT.js";
 
 const router = express.Router();
 
-// 🔍 Ruta de prueba
+// Ruta de prueba
 router.get("/test", (req, res) => {
   res.send("🚀 Ruta de formación académica embebida activa");
 });
 
-// 📘 Obtener formación académica completa (básica + superior)
+// Obtener formación académica
 router.get("/", verificarJWT, obtenerFormacionAcademica);
 
-// 🔄 Actualizar formación académica completa
+// Actualizar formación académica
 router.put("/", verificarJWT, actualizarFormacionAcademica);
 
-// ➕ Agregar una formación superior (universitaria, técnica, etc.)
+// Agregar nueva educación superior
 router.post("/superior", verificarJWT, agregarFormacionSuperior);
 
-// 🗑️ Eliminar una formación superior específica
+// Eliminar educación superior específica
 router.delete("/superior/:subId", verificarJWT, eliminarFormacionSuperior);
 
 export default router;
+
 
 
 /*import express from 'express';
