@@ -21,6 +21,8 @@ export const obtenerFormacionAcademica = async (req, res) => {
       formacionSuperior: usuario.formacionSuperior || []
     };
 
+    console.log(`✅ Formación obtenida: ${datos.formacionSuperior.length} formaciones`);
+
     res.json(datos);
   } catch (error) {
     console.error("❌ Error al obtener formación académica:", error);
@@ -39,6 +41,12 @@ export const actualizarFormacionAcademica = async (req, res) => {
     const userId = req.user.uid;
     const body = req.body;
 
+    console.log('📥 Actualizando formación para usuario:', userId);
+    console.log('📦 Datos recibidos:', {
+      gradoBasica: body.gradoBasica,
+      formacionSuperior: body.formacionSuperior?.length || 0
+    });
+
     const usuario = await UsuarioEmbebido.findById(userId);
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
@@ -50,16 +58,30 @@ export const actualizarFormacionAcademica = async (req, res) => {
     usuario.mesGrado = body.mesGrado;
     usuario.anioGrado = body.anioGrado;
 
-    // Actualizar formaciones superiores si vienen en la petición
+    // ✅ CRÍTICO: Actualizar formaciones superiores si vienen en la petición
     if (body.formacionSuperior) {
-      usuario.formacionSuperior = body.formacionSuperior;
+      // Limpiar formaciones vacías antes de guardar
+      const formacionesLimpias = body.formacionSuperior.filter(f => {
+        return f.modalidad?.trim() || f.titulo?.trim() || f.semestres?.trim();
+      });
+
+      usuario.formacionSuperior = formacionesLimpias;
+      console.log(`✅ Guardando ${formacionesLimpias.length} formaciones superiores`);
     }
 
     await usuario.save();
 
+    console.log('✅ Formación académica actualizada correctamente');
+
     res.json({
       mensaje: "Formación académica actualizada correctamente",
-      data: usuario.formacionSuperior
+      data: {
+        gradoBasica: usuario.gradoBasica,
+        tituloBachiller: usuario.tituloBachiller,
+        mesGrado: usuario.mesGrado,
+        anioGrado: usuario.anioGrado,
+        formacionSuperior: usuario.formacionSuperior
+      }
     });
   } catch (error) {
     console.error("❌ Error al actualizar formación académica:", error);
@@ -82,8 +104,12 @@ export const agregarFormacionSuperior = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
+    console.log('➕ Agregando nueva formación superior');
+
     usuario.formacionSuperior.push(req.body);
     await usuario.save();
+
+    console.log(`✅ Formación agregada. Total: ${usuario.formacionSuperior.length}`);
 
     res.json({
       mensaje: "Formación superior agregada correctamente",
@@ -106,20 +132,37 @@ export const eliminarFormacionSuperior = async (req, res) => {
     const userId = req.user.uid;
     const { subId } = req.params;
 
+    console.log('🗑️ Eliminando formación:', { userId, subId });
+
     const usuario = await UsuarioEmbebido.findById(userId);
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
+    const longitudAntes = usuario.formacionSuperior.length;
+
+    // Filtrar la formación a eliminar
     usuario.formacionSuperior = usuario.formacionSuperior.filter(
       (f) => f._id.toString() !== subId
     );
 
+    const longitudDespues = usuario.formacionSuperior.length;
+
+    if (longitudAntes === longitudDespues) {
+      return res.status(404).json({ 
+        mensaje: "Formación superior no encontrada",
+        subId 
+      });
+    }
+
     await usuario.save();
+
+    console.log(`✅ Formación eliminada. Total restante: ${longitudDespues}`);
 
     res.json({
       mensaje: "Formación superior eliminada correctamente",
-      data: usuario.formacionSuperior
+      data: usuario.formacionSuperior,
+      eliminada: subId
     });
   } catch (error) {
     console.error("❌ Error al eliminar formación superior:", error);
@@ -129,7 +172,6 @@ export const eliminarFormacionSuperior = async (req, res) => {
     });
   }
 };
-
 
 /*import FormacionAcademica from '../models/FormacionAcademica.js';
 
