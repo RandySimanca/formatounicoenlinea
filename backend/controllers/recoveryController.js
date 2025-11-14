@@ -74,7 +74,8 @@ export const solicitarRecuperacion = async (req, res) => {
       to: email,
       subject: "Código de recuperación de contraseña",
       text: `Hola ${usuario.nombre || ""},\n\nTu código de recuperación es: ${codigo}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste este código, ignora este correo.
-      \n\n\nIngresa a esta direccion web para acceder a tu perfil: https://formatounicoenlinea-a17641bda7dd.herokuapp.com/login\n\nAtte. Soporte Técnico`,
+      \n\n\nIngresa a esta direccion web para acceder a tu perfil: https://formatounicoenlinea-a17641bda7dd.herokuapp.com/login
+      \n\nAtte.\nRandy Simanca. \nSoporte Técnico.\n💬314-5193285`,
     };
 
     try {
