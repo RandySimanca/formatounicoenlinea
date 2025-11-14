@@ -92,11 +92,12 @@ export function calcularTiemposTotales(experiencias) {
     }
   });
 
-  // Convertir meses decimales a años y meses
+  // Convertir meses decimales a años y meses (redondeando meses a enteros)
   const convertirMesesDecimales = (totalMesesDecimal) => {
     const anios = Math.floor(totalMesesDecimal / 12);
     const mesesRestantes = totalMesesDecimal % 12;
-    const meses = Number(mesesRestantes.toFixed(2)); // Siempre 2 decimales
+    // Redondear a entero: < 0.5 hacia abajo, >= 0.5 hacia arriba
+    const meses = Math.round(mesesRestantes);
     return { anios, meses };
   };
 

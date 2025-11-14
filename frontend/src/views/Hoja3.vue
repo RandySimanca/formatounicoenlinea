@@ -99,9 +99,9 @@ const totalMeses = computed(() => {
     publico.anios * 12 + publico.meses +
     privado.anios * 12 + privado.meses +
     independiente.anios * 12 + independiente.meses;
-  // Mantener 2 decimales para consistencia con el PDF
+  // Redondear a entero: < 0.5 hacia abajo, >= 0.5 hacia arriba
   const mesesRestantes = totalMeses % 12;
-  return Number(mesesRestantes.toFixed(2));
+  return Math.round(mesesRestantes);
 });
 </script>
 
