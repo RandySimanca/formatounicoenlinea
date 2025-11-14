@@ -455,18 +455,16 @@ export function useFormatoOficialHV() {
       anoGradoBasica: usuarioLocal.anioGrado || "",
   
       // 🔥 CORRECCIÓN PRINCIPAL: Usar formacionSuperior (sin 's') primero, luego probar con 's' como fallback
-      educacionSuperior: (usuarioLocal.formacionSuperior || usuarioLocal.formacionesSuperior || []).map(f => {
-        console.log("  📚 Mapeando formación:", f.titulo);
-        return {
-          modalidad: f.modalidad || "",
-          semestres: f.semestres || "",
-          graduado: f.graduado || "",
-          titulo: f.titulo || "",
-          mesGrado: f.mesTermino || "",
-          anoGrado: f.anioTermino || "",
-          tarjetaProfesional: f.tarjeta || ""
-        };
-      }),
+      educacionSuperior: (usuarioLocal.formacionSuperior || []).map(f => ({
+        modalidad: f.modalidad ?? "",
+        semestres: f.semestres ?? "",
+        graduado: f.graduado ?? "",
+        titulo: f.titulo ?? "",
+        mesGrado: f.mesTermino ?? "",
+        anoGrado: f.anioTermino ?? "",
+        tarjetaProfesional: f.tarjeta ?? ""
+      })),
+      
   
       experienciaLaboral: experienciasMapeadas.map(exp => ({
         ...exp,
@@ -504,6 +502,6 @@ export function useFormatoOficialHV() {
     llenarFormatoOficial,
     descargarPDF,
     mapearDatosUsuario,  
-      
+
   };
 }
