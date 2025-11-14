@@ -503,7 +503,7 @@ export function useFormatoOficialHV() {
   return {
     llenarFormatoOficial,
     descargarPDF,
-    mapearDatosUsuario,
-    separarDigitos,
+    mapearDatosUsuario,  
+      
   };
 }
