@@ -1,4 +1,4 @@
-//routes/formacionAcademica.js
+// routes/formacionAcademica.js
 import express from "express";
 import {
   obtenerFormacionAcademica,
@@ -21,14 +21,13 @@ router.get("/", verificarJWT, obtenerFormacionAcademica);
 // Actualizar formación académica
 router.put("/", verificarJWT, actualizarFormacionAcademica);
 
-// Agregar nueva educación superior
+// Agregar formación superior
 router.post("/superior", verificarJWT, agregarFormacionSuperior);
 
-// Eliminar educación superior específica
+// Eliminar formación superior
 router.delete("/superior/:subId", verificarJWT, eliminarFormacionSuperior);
 
 export default router;
-
 
 
 /*import express from 'express';

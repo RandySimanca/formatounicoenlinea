@@ -1,8 +1,8 @@
-//controllers/formacionAcademicaControllers.js
+// controllers/formacionAcademicaControllers.js
 import UsuarioEmbebido from "../models/UsuarioEmbebido.js";
 
 /**
- * Obtener la formación académica del usuario autenticado
+ * Obtener formación académica del usuario
  */
 export const obtenerFormacionAcademica = async (req, res) => {
   try {
@@ -18,7 +18,7 @@ export const obtenerFormacionAcademica = async (req, res) => {
       tituloBachiller: usuario.tituloBachiller,
       mesGrado: usuario.mesGrado,
       anioGrado: usuario.anioGrado,
-      educacionSuperior: usuario.formacionSuperior || [] // 👈 CAMBIO CLAVE
+      educacionSuperior: usuario.formacionSuperior || []
     };
 
     console.log(`✅ Formación obtenida: ${datos.educacionSuperior.length} formaciones`);
@@ -34,34 +34,33 @@ export const obtenerFormacionAcademica = async (req, res) => {
 };
 
 /**
- * Actualizar formación académica completa
+ * Crear o actualizar formación académica
  */
 export const actualizarFormacionAcademica = async (req, res) => {
   try {
     const userId = req.user.uid;
     const body = req.body;
 
-    console.log('📥 Actualizando formación para usuario:', userId);
+    console.log("📥 Actualizando formación académica:", body);
 
     const usuario = await UsuarioEmbebido.findById(userId);
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
-    // Actualizar campos principales
     usuario.gradoBasica = body.gradoBasica;
     usuario.tituloBachiller = body.tituloBachiller;
     usuario.mesGrado = body.mesGrado;
     usuario.anioGrado = body.anioGrado;
 
-    // Actualizar educación superior
     if (body.educacionSuperior) {
-      const formacionesLimpias = body.educacionSuperior.filter(f =>
-        f.modalidad?.trim() || f.titulo?.trim() || f.semestres?.trim()
-      );
+      const limpias = body.educacionSuperior.filter(f => {
+        return f.modalidad?.trim() || f.titulo?.trim() || f.semestres?.trim();
+      });
 
-      usuario.formacionSuperior = formacionesLimpias;  // 👈 GUARDAMOS EN EL MODELO ORIGINAL
-      console.log(`✅ Guardando ${formacionesLimpias.length} educaciones superiores`);
+      usuario.formacionSuperior = limpias;
+
+      console.log(`✅ Guardando ${limpias.length} educaciones superiores`);
     }
 
     await usuario.save();
@@ -73,9 +72,10 @@ export const actualizarFormacionAcademica = async (req, res) => {
         tituloBachiller: usuario.tituloBachiller,
         mesGrado: usuario.mesGrado,
         anioGrado: usuario.anioGrado,
-        educacionSuperior: usuario.formacionSuperior // 👈 SALIDA UNIFICADA
+        educacionSuperior: usuario.formacionSuperior
       }
     });
+
   } catch (error) {
     console.error("❌ Error al actualizar formación académica:", error);
     res.status(500).json({
@@ -97,6 +97,8 @@ export const agregarFormacionSuperior = async (req, res) => {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
+    console.log("➕ Agregando educación superior:", req.body);
+
     usuario.formacionSuperior.push(req.body);
     await usuario.save();
 
@@ -104,6 +106,7 @@ export const agregarFormacionSuperior = async (req, res) => {
       mensaje: "Educación superior agregada correctamente",
       data: usuario.formacionSuperior
     });
+
   } catch (error) {
     console.error("❌ Error al agregar educación superior:", error);
     res.status(500).json({
@@ -114,7 +117,7 @@ export const agregarFormacionSuperior = async (req, res) => {
 };
 
 /**
- * Eliminar una educación superior específica
+ * Eliminar formación superior por ID
  */
 export const eliminarFormacionSuperior = async (req, res) => {
   try {
@@ -122,34 +125,40 @@ export const eliminarFormacionSuperior = async (req, res) => {
     const { subId } = req.params;
 
     const usuario = await UsuarioEmbebido.findById(userId);
+
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
     const antes = usuario.formacionSuperior.length;
 
-    usuario.formacionSuperior = usuario.formacionSuperior.filter(
-      f => f._id.toString() !== subId
-    );
+    usuario.formacionSuperior = usuario.formacionSuperior.filter(f => f._id.toString() !== subId);
 
-    if (antes === usuario.formacionSuperior.length) {
-      return res.status(404).json({ mensaje: "Educación superior no encontrada" });
+    const despues = usuario.formacionSuperior.length;
+
+    if (antes === despues) {
+      return res.status(404).json({
+        mensaje: "Formación superior no encontrada",
+        subId
+      });
     }
 
     await usuario.save();
 
     res.json({
-      mensaje: "Educación superior eliminada correctamente",
+      mensaje: "Formación superior eliminada correctamente",
       data: usuario.formacionSuperior
     });
+
   } catch (error) {
-    console.error("❌ Error al eliminar educación superior:", error);
+    console.error("❌ Error al eliminar formación superior:", error);
     res.status(500).json({
-      mensaje: "Error al eliminar educación superior",
+      mensaje: "Error al eliminar formación superior",
       detalle: error.message
     });
   }
 };
+
 
 
 /*import FormacionAcademica from '../models/FormacionAcademica.js';
