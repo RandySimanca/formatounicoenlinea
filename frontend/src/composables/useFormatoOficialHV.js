@@ -6,12 +6,8 @@ export function useFormatoOficialHV() {
     try {
       // Normalizar nombres de campo por seguridad (puede venir raw API o ya mapeado)
       const educacionSuperior = Array.isArray(datosUsuario.educacionSuperior)
-        ? datosUsuario.educacionSuperior
-        : Array.isArray(datosUsuario.formacionSuperior)
-          ? datosUsuario.formacionSuperior
-          : Array.isArray(datosUsuario.formacionesSuperior)
-            ? datosUsuario.formacionesSuperior
-            : [];
+      ? datosUsuario.educacionSuperior
+      : [];
 
       const idiomas = Array.isArray(datosUsuario.idiomas) ? datosUsuario.idiomas : [];
       const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
