@@ -1,5 +1,6 @@
 // src/composables/useFormatoOficialHV.js
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { calcularTiemposTotales } from "../utils/experienciaUtils";
 
 export function useFormatoOficialHV() {
   async function llenarFormatoOficial(datosUsuario, urlFormato = "/FORMATO_UNICO_HOJA_DE_VIDA.pdf") {
@@ -335,68 +336,8 @@ export function useFormatoOficialHV() {
   }
 
   function calcularTiempoExperiencia(experiencias) {
-    let totalPublicoMeses = 0, totalPrivadoMeses = 0, totalIndependienteMeses = 0;
-
-    experiencias.forEach(exp => {
-      let fechaIngreso, fechaRetiro;
-
-      if (exp.fechaIngreso) {
-        if (typeof exp.fechaIngreso === 'string') {
-          fechaIngreso = new Date(exp.fechaIngreso);
-        } else {
-          fechaIngreso = new Date(
-            exp.fechaIngreso.anio || exp.fechaIngreso.año || 2000,
-            (exp.fechaIngreso.mes || 1) - 1,
-            exp.fechaIngreso.dia || 1
-          );
-        }
-      }
-
-      if (exp.fechaRetiro) {
-        if (typeof exp.fechaRetiro === 'string') {
-          fechaRetiro = new Date(exp.fechaRetiro);
-        } else {
-          fechaRetiro = new Date(
-            exp.fechaRetiro.anio || exp.fechaRetiro.año || new Date().getFullYear(),
-            (exp.fechaRetiro.mes || new Date().getMonth() + 1) - 1,
-            exp.fechaRetiro.dia || new Date().getDate()
-          );
-        }
-      }
-
-      if (!fechaIngreso || !fechaRetiro) return;
-
-      const diffTime = fechaRetiro.getTime() - fechaIngreso.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      const mesesDecimal = diffDays / 30;
-
-      const tipo = (exp.tipoEntidad || exp.tipo || "").toLowerCase();
-
-      if (tipo === "publica" || tipo === "pública") {
-        totalPublicoMeses += mesesDecimal;
-      } else if (tipo === "privada") {
-        totalPrivadoMeses += mesesDecimal;
-      } else if (tipo === "independiente") {
-        totalIndependienteMeses += mesesDecimal;
-      }
-    });
-
-    const convertirMesesDecimales = (totalMesesDecimal) => {
-      // Mantener los decimales en los meses como en el formulario web (2 decimales)
-      const anios = Math.floor(totalMesesDecimal / 12);
-      const mesesRestantes = totalMesesDecimal % 12;
-      // Mantener hasta 2 decimales, pero eliminar ceros innecesarios al final
-      const meses = Number(mesesRestantes.toFixed(2));
-      return { anios, meses };
-    };
-
-    const publico = convertirMesesDecimales(totalPublicoMeses);
-    const privado = convertirMesesDecimales(totalPrivadoMeses);
-    const independiente = convertirMesesDecimales(totalIndependienteMeses);
-    const totalMesesDecimal = totalPublicoMeses + totalPrivadoMeses + totalIndependienteMeses;
-    const total = convertirMesesDecimales(totalMesesDecimal);
-
-    return { publico, privado, independiente, total };
+    // Usar la función compartida para asegurar consistencia con el formulario web
+    return calcularTiemposTotales(experiencias);
   }
 
   function mapearDatosUsuario(usuarioLocal) {

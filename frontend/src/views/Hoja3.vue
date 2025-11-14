@@ -42,6 +42,7 @@ import RecursosHumComponent from "../components/RecursosHumComponent.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import { useHojaVidaStore } from "../stores/hojaVida";
 import api from "../api/axios";
+import { calcularDuracionExperiencia, calcularTiemposTotales } from "../utils/experienciaUtils";
 
 // Store
 const hojaStore = useHojaVidaStore();
@@ -72,61 +73,17 @@ async function cargarExperiencias() {
   }
 }
 
-function calcularDuracion(fechaIngreso, fechaRetiro) {
-  const desde = new Date(fechaIngreso);
-  const hasta = new Date(fechaRetiro);
-
-  if (isNaN(desde) || isNaN(hasta) || hasta < desde) {
-    return { anios: 0, meses: 0 };
-  }
-
-  const diffTime = hasta - desde;
-  const totalDias = diffTime / (1000 * 60 * 60 * 24);
-
-  // Asumimos 30 días por mes exactos
-  const totalMeses = totalDias / 30;
-  const anios = Math.floor(totalMeses / 12);
-  const meses = Number((totalMeses % 12).toFixed(1)); // ⚠️ Decimales reales
-
-  return { anios, meses };
-}
-
-function acumularPorTipo(tipoEntidad, anios, meses) {
-  let destino;
-  switch (tipoEntidad?.toLowerCase()) {
-    case "publica":
-      destino = publico;
-      break;
-    case "privada":
-      destino = privado;
-      break;
-    case "independiente":
-      destino = independiente;
-      break;
-    default:
-      console.warn(`⚠️ Tipo no reconocido: ${tipoEntidad}`);
-      return;
-  }
-
-  // Convertir todo a meses decimales
-  const totalActual = destino.anios * 12 + destino.meses;
-  const nuevoTotal = anios * 12 + meses;
-  const totalFinal = totalActual + nuevoTotal;
-
-  destino.anios = Math.floor(totalFinal / 12);
-  destino.meses = Number((totalFinal % 12).toFixed(2)); // Mantener precisión
-}
-
 function recalcularTotales() {
-  publico.anios = publico.meses = 0;
-  privado.anios = privado.meses = 0;
-  independiente.anios = independiente.meses = 0;
-
-  experiencias.value.forEach((exp) => {
-    if (!exp.fechaIngreso || !exp.fechaRetiro) return;
-    const { anios, meses } = calcularDuracion(exp.fechaIngreso, exp.fechaRetiro);
-    acumularPorTipo(exp.tipoEntidad, anios, meses);
-  });
+  // Usar la función compartida para calcular tiempos totales
+  const tiempos = calcularTiemposTotales(experiencias.value);
+  
+  // Actualizar los objetos reactivos
+  publico.anios = tiempos.publico.anios;
+  publico.meses = tiempos.publico.meses;
+  privado.anios = tiempos.privado.anios;
+  privado.meses = tiempos.privado.meses;
+  independiente.anios = tiempos.independiente.anios;
+  independiente.meses = tiempos.independiente.meses;
 }
 
 const totalAnios = computed(() => {
@@ -142,7 +99,9 @@ const totalMeses = computed(() => {
     publico.anios * 12 + publico.meses +
     privado.anios * 12 + privado.meses +
     independiente.anios * 12 + independiente.meses;
-  return Number((totalMeses % 12).toFixed(2)); // Decimales reales
+  // Mantener 2 decimales para consistencia con el PDF
+  const mesesRestantes = totalMeses % 12;
+  return Number(mesesRestantes.toFixed(2));
 });
 </script>
 
