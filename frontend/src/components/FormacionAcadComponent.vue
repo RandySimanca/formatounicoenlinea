@@ -468,57 +468,70 @@ export default {
     },
 
     async removeFormacion(index) {
-      const formacion = this.formacionSuperior[index];
+  const formacion = this.formacionSuperior[index];
 
-      // ✅ CAMBIO 8: Validar formacionSuperior
-      if (this.formacionSuperior.length === 1) {
-        if (this.esFormacionVacia(formacion)) {
-          showError(
-            "⚠️ Debe mantener al menos una fila para agregar formaciones"
-          );
-          return;
-        } else {
-          const confirmacion = await showConfirm({
-            title: "Eliminar formación",
-            text: "¿Deseas eliminar esta formación? Se creará una nueva fila vacía.",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "No",
-          });
-          if (!confirmacion) return;
-        }
-      } else {
-        const confirmacion = await showConfirm({
-          title: "Eliminar formación",
-          text: "¿Estás seguro de que deseas eliminar esta formación?",
-          confirmButtonText: "Sí, eliminar",
-          cancelButtonText: "No",
-        });
-        if (!confirmacion) return;
-      }
+  // Validar si es la única formación
+  if (this.formacionSuperior.length === 1) {
+    if (this.esFormacionVacia(formacion)) {
+      showError(
+        "⚠️ Debe mantener al menos una fila para agregar formaciones"
+      );
+      return;
+    } else {
+      const confirmacion = await showConfirm({
+        title: "Eliminar formación",
+        text: "¿Deseas eliminar esta formación? Se creará una nueva fila vacía.",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "No",
+      });
+      if (!confirmacion) return;
+    }
+  } else {
+    const confirmacion = await showConfirm({
+      title: "Eliminar formación",
+      text: "¿Estás seguro de que deseas eliminar esta formación?",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "No",
+    });
+    if (!confirmacion) return;
+  }
 
-      try {
-        // ✅ CAMBIO 9: Si tiene ID, eliminar del servidor
-        if (formacion._id && this.formacionId) {
-          console.log("🗑️ Eliminando formación del servidor:", formacion._id);
-          
-          await api.delete(`/formacion-academica/superior/${formacion._id}`);
-          
-          showSuccess("✅ Formación eliminada correctamente");
-          showWarning("⚠️ Guarda los cambios para confirmar la eliminación.");
-        }
+  try {
+    // 🔥 SOLUCIÓN: Eliminar del array local primero
+    this.formacionSuperior.splice(index, 1);
+    
+    // Si el array queda vacío, agregar una fila vacía
+    this.asegurarFilaVaciaDisponible();
 
-        // Eliminar del array local
-        this.formacionSuperior.splice(index, 1);
-        this.asegurarFilaVaciaDisponible();
+    // 🔥 SOLUCIÓN: Guardar el estado actualizado en el servidor
+    if (this.modoEdicion && this.formacionId) {
+      const formacion = {
+        gradoBasica: this.selectedGrado,
+        tituloBachiller: this.tituloBachiller,
+        mesGrado: this.mesGrado,
+        anioGrado: this.anioGrado,
+        formacionSuperior: this.formacionSuperior,
+      };
 
-        if (!formacion._id) {
-          showSuccess("✅ Formación eliminada del formulario");
-        }
-      } catch (error) {
-        console.error("❌ Error al eliminar:", error);
-        showError("❌ No se pudo eliminar la formación.");
-      }
-    },
+      await api.put("/formacion-academica", formacion);
+      console.log("✅ Formación actualizada después de eliminar");
+    }
+
+    if (formacion._id) {
+      showSuccess("✅ Formación eliminada correctamente");
+    } else {
+      showSuccess("✅ Formación eliminada del formulario");
+    }
+    
+    console.log(`🗑️ Total restante: ${this.formacionSuperior.length}`);
+    
+  } catch (error) {
+    console.error("❌ Error al eliminar:", error);
+    showError("❌ No se pudo eliminar la formación.");
+    // Recargar datos en caso de error
+    await this.cargarDatos();
+  }
+},
 
     esFormacionVacia(formacion) {
       return (

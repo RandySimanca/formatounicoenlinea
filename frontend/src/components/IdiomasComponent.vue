@@ -140,7 +140,7 @@
 
       <!-- Mensaje cuando no hay idiomas -->
       <div v-else class="sin-idiomas-mensaje">
-      
+        <p class="texto-sin-datos">No hay idiomas registrados</p>
       </div>
 
       <div class="botones-accion no-imprimir">
@@ -152,12 +152,13 @@
           Agregar Idioma
         </button>
 
+        <!-- 🔥 SOLUCIÓN: Mostrar SIEMPRE el botón de guardar cuando estamos en modo edición -->
         <button
           type="submit"
           class="boton-guardar boton-guardar-idiomas"
-          v-if="idiomas.length > 0"
+          v-if="idiomas.length > 0 || modoEdicion"
         >
-          Guardar Idiomas
+          {{ idiomas.length > 0 ? 'Guardar Idiomas' : 'Confirmar Eliminación' }}
         </button>
       </div>
     </div>
@@ -169,14 +170,13 @@ import api from "../api/axios";
 import { showSuccess, showError } from "../utils/showMessage.js";
 import { useHojaVidaStore } from "../stores/hojaVida";
 
-
 export default {
   name: "IdiomasComponent",
   data() {
     return {
-      idiomas: [], // ✅ Array vacío por defecto - sin filas iniciales
+      idiomas: [],
       modoEdicion: false,
-      docId: null, // To store the document ID if in edit mode
+      docId: null,
     };
   },
   computed: {
@@ -185,13 +185,10 @@ export default {
     }
   },
   mounted() {
-    // Usar datos del store en lugar de cargar por separado
     this.sincronizarConStore();
-    // 🔥 CRÍTICO: Cargar docId desde el servidor
     this.obtenerDocId();
   },
   watch: {
-    // Observar cambios en el store
     'hojaStore.idiomas': {
       handler(newIdiomas) {
         if (newIdiomas && newIdiomas.length > 0) {
@@ -210,7 +207,6 @@ export default {
   },
   methods: {
     sincronizarConStore() {
-      // Sincronizar con datos del store
       const idiomasStore = this.hojaStore.idiomas;
       if (idiomasStore && idiomasStore.length > 0) {
         this.idiomas = [...idiomasStore];
@@ -223,7 +219,6 @@ export default {
       }
     },
 
-    // 🆕 MÉTODO CRÍTICO: Obtener docId del servidor
     async obtenerDocId() {
       try {
         const response = await api.get("/idiomas");
@@ -248,7 +243,6 @@ export default {
     },
 
     addIdioma() {
-      // ✅ Crear nueva fila de idioma
       const nuevoIdioma = { 
         nombre: "", 
         habla: "", 
@@ -258,7 +252,6 @@ export default {
       
       this.idiomas.push(nuevoIdioma);
       
-      // Scroll suave hacia la nueva fila (opcional)
       this.$nextTick(() => {
         const tabla = document.querySelector('.tabla-idiomas-compacta tbody');
         if (tabla && tabla.lastElementChild) {
@@ -272,73 +265,60 @@ export default {
       console.log(`✅ Idioma agregado. Total: ${this.idiomas.length}`);
     },
     
+    // 🔥 SOLUCIÓN PRINCIPAL: Método removeIdioma actualizado
     async removeIdioma(index) {
-  if (this.idiomas.length === 0) {
-    showError("⚠️ No hay idiomas para eliminar.");
-    return;
-  }
-  
-  try {
-    console.log("🔍 DEBUG - Eliminando idioma en índice:", index);
-    
-    // Eliminar del estado local
-    this.idiomas.splice(index, 1);
-    
-    // Si estamos en modo edición (hay un documento guardado), actualizar la BD
-    if (this.modoEdicion && this.docId) {
-      let payload;
-      
-      // Si queda vacío, eliminar todo el documento de la BD
       if (this.idiomas.length === 0) {
-        console.log("🔍 Array vacío detectado - eliminando documento completo de la BD");
-        
-        // Eliminar todo el documento de la base de datos
-        await api.delete(`/idiomas/${this.docId}`);
-        console.log("🗑️ Documento eliminado completamente de la BD");
-        
-        // Resetear el estado de edición
-        this.modoEdicion = false;
-        this.docId = null;
-        
-        showSuccess("✅ Todos los idiomas eliminados. El documento se ha eliminado de la base de datos.");
+        showError("⚠️ No hay idiomas para eliminar.");
         return;
-        
-      } else {
-        // Si aún quedan idiomas, usar el payload normal
-        payload = { idiomas: this.idiomas };
       }
       
-      console.log("🔍 Enviando payload:", JSON.stringify(payload, null, 2));
-      
-      const response = await api.put(`/idiomas/${this.docId}`, payload);
-      console.log("✅ Respuesta del servidor:", response.data);
-    }
-    
-    if (this.idiomas.length === 0) {
-      showSuccess("✅ Todos los idiomas eliminados. La tabla está ahora vacía.");
-    } else {
-      showSuccess(`✅ Idioma eliminado. Quedan ${this.idiomas.length} idioma(s).`);
-    }
-    
-    console.log(`🗑️ Idioma eliminado. Total restante: ${this.idiomas.length}`);
-    
-  } catch (error) {
-    console.error("❌ Error al eliminar el idioma:", error);
-    
-    // Mostrar error más específico
-    const errorMessage = error.response?.data?.message || error.message;
-    const errorDetails = error.response?.data?.errors || [];
-    
-    console.error("🔍 Error details:", errorDetails);
-    showError(`Error al eliminar el idioma: ${errorMessage}`);
-    
-    // Revertir cambios en caso de error
-    await this.cargarDatos();
-  }
-},
+      try {
+        console.log("🔍 DEBUG - Eliminando idioma en índice:", index);
+        
+        // Eliminar del estado local
+        this.idiomas.splice(index, 1);
+        
+        // 🔥 SOLUCIÓN: Guardar automáticamente después de eliminar
+        if (this.modoEdicion) {
+          if (this.idiomas.length === 0) {
+            // Si no quedan idiomas, eliminar el documento completo
+            console.log("🗑️ Eliminando documento completo de la BD");
+            await api.delete("/idiomas");
+            
+            this.modoEdicion = false;
+            this.docId = null;
+            
+            showSuccess("✅ Todos los idiomas eliminados correctamente.");
+          } else {
+            // Si quedan idiomas, actualizar el documento
+            console.log("🔄 Actualizando documento después de eliminar");
+            const payload = { idiomas: this.idiomas };
+            await api.put("/idiomas", payload);
+            
+            showSuccess(`✅ Idioma eliminado. Quedan ${this.idiomas.length} idioma(s).`);
+          }
+        } else {
+          // Si no estaba en modo edición, solo eliminar localmente
+          showSuccess("✅ Idioma eliminado del formulario");
+        }
+        
+        console.log(`🗑️ Idioma eliminado. Total restante: ${this.idiomas.length}`);
+        
+      } catch (error) {
+        console.error("❌ Error al eliminar el idioma:", error);
+        
+        const errorMessage = error.response?.data?.message || error.message;
+        const errorDetails = error.response?.data?.errors || [];
+        
+        console.error("🔍 Error details:", errorDetails);
+        showError(`Error al eliminar el idioma: ${errorMessage}`);
+        
+        // Revertir cambios en caso de error
+        await this.cargarDatos(true);
+      }
+    },
     
     async cargarDatos(forzar = false) {
-      // Solo cargar si se fuerza o si no hay datos en el store
       if (!forzar && this.hojaStore.idiomas && this.hojaStore.idiomas.length > 0) {
         console.log("ℹ️ Usando datos del store, no se carga desde API");
         return;
@@ -347,30 +327,27 @@ export default {
       try {
         const response = await api.get("/idiomas");
         if (response.data && response.data.idiomas) {
-          // ✅ Solo cargar si realmente hay idiomas guardados
           if (response.data.idiomas.length > 0) {
             this.idiomas = response.data.idiomas;
-            this.docId = response.data._id; // 🔥 ASEGURAR QUE SE ESTABLEZCA EL docId
+            this.docId = response.data._id;
             this.modoEdicion = true;
             
-            // 🔍 DEBUG: Verificar que docId se estableció
             console.log("🔍 Datos cargados:");
             console.log("- docId establecido:", this.docId);
             console.log("- modoEdicion:", this.modoEdicion);
             console.log(`✅ ${this.idiomas.length} idioma(s) cargado(s) desde el servidor`);
           } else {
-            // Si el array está vacío en el servidor, mantener vacío localmente
             this.idiomas = [];
             this.modoEdicion = false;
-            this.docId = null; // 🔥 RESETEAR docId si no hay datos
+            this.docId = null;
             console.log("ℹ️ No hay idiomas guardados en el servidor");
           }
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {
           this.modoEdicion = false;
-          this.docId = null; // 🔥 RESETEAR docId en caso de 404
-          this.idiomas = []; // ✅ Mantener vacío si no existe el documento
+          this.docId = null;
+          this.idiomas = [];
           console.log("ℹ️ No se encontraron datos de idiomas (404)");
         } else {
           console.error("❌ Error al cargar los idiomas:", error);
@@ -379,96 +356,79 @@ export default {
       }
     },
 
-    // 🆕 Método auxiliar para guardar cambios
-    async guardarCambios() {
-      const payload = { idiomas: this.idiomas };
+    async enviarFormulario() {
+      console.log("🔍 DEBUG enviarFormulario:");
+      console.log("- modoEdicion:", this.modoEdicion);
+      console.log("- docId:", this.docId);
+      console.log("- idiomas.length:", this.idiomas.length);
       
-      try {
-        let response;
-        if (this.docId) {
-          // Si tenemos docId, usar endpoint específico con PUT
-          response = await api.put(`/idiomas/${this.docId}`, payload);
-          console.log("✅ Idiomas actualizados con docId específico");
-        } else {
-          // Si no tenemos docId, usar endpoint general con PUT
-          response = await api.put("/idiomas", payload);
-          console.log("✅ Idiomas actualizados con endpoint general");
-        }
-        return response;
-      } catch (updateError) {
-        // Si no existe, crear nuevo
-        if (updateError.response && updateError.response.status === 404) {
-          const response = await api.post("/idiomas", payload);
-          this.docId = response.data.data?._id;
-          this.modoEdicion = true;
-          console.log("✅ Nuevo documento de idiomas creado");
-          return response;
-        } else {
-          throw updateError;
+      // 🔥 SOLUCIÓN: Permitir guardar incluso con array vacío para confirmar eliminación
+      if (this.idiomas.length === 0 && this.modoEdicion) {
+        try {
+          console.log("🗑️ Confirmando eliminación de todos los idiomas");
+          await api.delete("/idiomas");
+          
+          this.modoEdicion = false;
+          this.docId = null;
+          
+          showSuccess("✅ Todos los idiomas eliminados correctamente.");
+          return;
+        } catch (error) {
+          console.error("❌ Error al eliminar idiomas:", error);
+          showError("Error al eliminar los idiomas.");
+          return;
         }
       }
+
+      if (this.idiomas.length === 0) {
+        showError("⚠️ No hay idiomas para guardar.");
+        return;
+      }
+
+      try {
+        const payload = { idiomas: this.idiomas };
+        let response;
+
+        if (!this.docId || !this.modoEdicion) {
+          console.log("🆕 Creando nuevo documento (POST)");
+          response = await api.post('/idiomas', payload);
+          
+          this.modoEdicion = true;
+          this.docId = response.data.data?._id;
+          
+          console.log("✅ Documento creado con ID:", this.docId);
+          
+        } else {
+          console.log("🔄 Actualizando documento existente (PUT)");
+          response = await api.put("/idiomas", payload);
+          console.log("✅ Documento actualizado");
+        }
+        
+        showSuccess(`✅ Idiomas guardados correctamente. Total: ${this.idiomas.length}`);
+        console.log("🎯 Respuesta del servidor:", response.data);
+        
+      } catch (error) {
+        console.error("❌ Error al guardar idiomas:", error);
+        
+        if (error.response) {
+          console.log("🔍 Detalles del error:");
+          console.log("- Status:", error.response.status);
+          console.log("- Data:", error.response.data);
+        }
+        
+        const errorMessage = error.response?.data?.message || 
+                            error.response?.data || 
+                            error.message;
+        
+        showError(`Error al guardar idiomas: ${errorMessage}`);
+      }
     },
-    
-    async enviarFormulario() {
-  console.log("🔍 DEBUG enviarFormulario:");
-  console.log("- modoEdicion:", this.modoEdicion);
-  console.log("- docId:", this.docId);
-  console.log("- idiomas.length:", this.idiomas.length);
-  
-  if (this.idiomas.length === 0) {
-    showError("⚠️ No hay idiomas para guardar.");
-    return;
-  }
-
-  try {
-    const payload = { idiomas: this.idiomas };
-    let response;
-
-    // Si NO hay docId o modoEdicion es false = CREAR nuevo documento
-    if (!this.docId || !this.modoEdicion) {
-      console.log("🆕 Creando nuevo documento (POST)");
-      response = await api.post('/idiomas', payload);
-      
-      // Actualizar el estado después de crear
-      this.modoEdicion = true;
-      this.docId = response.data.id || response.data._id || response.data.docId;
-      
-      console.log("✅ Documento creado con ID:", this.docId);
-      
-    } else {
-      // Si hay docId = ACTUALIZAR documento existente
-      console.log("🔄 Actualizando documento existente (PUT)");
-      console.log("- URL:", `/idiomas/${this.docId}`);
-      
-      response = await api.put(`/idiomas/${this.docId}`, payload);
-      console.log("✅ Documento actualizado");
-    }
-    
-    showSuccess(`✅ Idiomas guardados correctamente. Total: ${this.idiomas.length}`);
-    console.log("🎯 Respuesta del servidor:", response.data);
-    
-  } catch (error) {
-    console.error("❌ Error al guardar idiomas:", error);
-    
-    if (error.response) {
-      console.log("🔍 Detalles del error:");
-      console.log("- Status:", error.response.status);
-      console.log("- Data:", error.response.data);
-    }
-    
-    const errorMessage = error.response?.data?.message || 
-                        error.response?.data || 
-                        error.message;
-    
-    showError(`Error al guardar idiomas: ${errorMessage}`);
-  }
-},
   },
 };
 </script>
 
 <style scoped>
-/* ===== ESTILOS COMPACTOS PARA IDIOMAS ===== */
+/* Estilos existentes... */
 .section-idiomas-compacta {
   padding: 0.5rem !important;
   margin-bottom: 0.3rem !important;
@@ -502,7 +462,6 @@ export default {
   font-size: 8px !important;
 }
 
-/* Columnas específicas */
 .columna-idioma {
   width: 25% !important;
   text-align: left !important;
@@ -525,7 +484,6 @@ export default {
   font-size: 7px !important;
 }
 
-/* Celdas de la tabla */
 .celda-nombre-idioma {
   text-align: left !important;
   padding: 1px !important;
@@ -541,7 +499,6 @@ export default {
   text-align: center !important;
 }
 
-/* Inputs */
 .input-idioma {
   width: 100% !important;
   padding: 2px !important;
@@ -556,7 +513,6 @@ export default {
   transform: scale(0.8);
 }
 
-/* Botones */
 .botones-accion {
   display: flex;
   gap: 0.5rem;
@@ -607,7 +563,23 @@ export default {
   background-color: #f9f9f9;
 }
 
-/* Responsive para impresión */
+/* 🔥 NUEVO: Estilos para mensaje sin idiomas */
+.sin-idiomas-mensaje {
+  text-align: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 0.25rem;
+  margin: 0.5rem 0;
+}
+
+.texto-sin-datos {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 10px;
+  margin: 0;
+}
+
 @media print {
   .section-idiomas-compacta {
     padding: 0.2rem !important;
@@ -638,10 +610,9 @@ export default {
   }
 }
 
-/* Ajustes específicos para la primera página */
 @media screen {
   .section-idiomas-compacta {
-    max-height: 200px; /* Limitar altura para que quepa en la página */
+    max-height: 200px;
     overflow: visible;
   }
 }
