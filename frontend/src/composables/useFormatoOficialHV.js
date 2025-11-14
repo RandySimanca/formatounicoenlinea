@@ -103,6 +103,10 @@ export function useFormatoOficialHV() {
         write(page1, datosUsuario.mesGradoBasica || "", 350, 475, 12);
         write(page1, datosUsuario.anoGradoBasica || "", 410, 475, 12);
 
+        console.log("==== EDUCACION SUPERIOR RECIBIDA ====");
+        console.log(JSON.stringify(datosUsuario.educacionSuperior, null, 2));
+
+
         // EDUCACIÓN SUPERIOR EN PÁGINA 1
         if (Array.isArray(datosUsuario.educacionSuperior) && datosUsuario.educacionSuperior.length > 0) {
           console.log("📖 Dibujando educación superior:", datosUsuario.educacionSuperior.length, "registros");
@@ -454,7 +458,7 @@ export function useFormatoOficialHV() {
       mesGradoBasica: usuarioLocal.mesGrado || "",
       anoGradoBasica: usuarioLocal.anioGrado || "",
   
-      // 🔥 CORRECCIÓN PRINCIPAL: Usar formacionSuperior (sin 's') primero, luego probar con 's' como fallback
+     // 🔥 CORRECCIÓN PRINCIPAL: Usar formacionSuperior (sin 's') primero, luego probar con 's' como fallback
       educacionSuperior: (usuarioLocal.formacionSuperior || []).map(f => ({
         modalidad: f.modalidad ?? "",
         semestres: f.semestres ?? "",
