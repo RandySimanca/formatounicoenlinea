@@ -18,7 +18,8 @@ router.get("/test", (req, res) => {
 // Obtener formación académica
 router.get("/", verificarJWT, obtenerFormacionAcademica);
 
-// Actualizar formación académica
+// Crear o actualizar formación académica (POST y PUT usan la misma lógica)
+router.post("/", verificarJWT, actualizarFormacionAcademica);
 router.put("/", verificarJWT, actualizarFormacionAcademica);
 
 // Agregar formación superior

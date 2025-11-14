@@ -5,9 +5,11 @@ export function useFormatoOficialHV() {
   async function llenarFormatoOficial(datosUsuario, urlFormato = "/FORMATO_UNICO_HOJA_DE_VIDA.pdf") {
     try {
       // Normalizar nombres de campo por seguridad (puede venir raw API o ya mapeado)
-      const educacionSuperior = Array.isArray(datosUsuario.educacionSuperior)
-      ? datosUsuario.educacionSuperior
-      : [];
+      const educacionSuperior = Array.isArray(datosUsuario.formacionSuperior)
+        ? datosUsuario.formacionSuperior
+        : Array.isArray(datosUsuario.educacionSuperior)
+          ? datosUsuario.educacionSuperior
+          : [];
 
       const idiomas = Array.isArray(datosUsuario.idiomas) ? datosUsuario.idiomas : [];
       const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
@@ -128,8 +130,14 @@ export function useFormatoOficialHV() {
               console.log(`  ✏️ Formación ${idx + 1}:`, edu?.titulo || edu?.tituloFormacion || "(sin título)");
               write(page1, edu.modalidad || edu.modalidadFormacion || "", 62, yEdu, 10);
               write(page1, edu.semestres || "", 115, yEdu, 10);
-              if (edu.graduado === true || String(edu.graduado).toUpperCase() === "SI") write(page1, "X", 180, yEdu, 10);
-              else write(page1, "X", 210, yEdu, 10);
+              // Marcar graduado solo si tiene un valor válido
+              if (edu.graduado) {
+                if (edu.graduado === true || String(edu.graduado).toUpperCase() === "SI") {
+                  write(page1, "X", 180, yEdu, 10);
+                } else if (String(edu.graduado).toUpperCase() === "NO") {
+                  write(page1, "X", 210, yEdu, 10);
+                }
+              }
               write(page1, edu.titulo || edu.tituloFormacion || "", 230, yEdu, 9);
               // mes/ano pueden venir con nombres distintos (mesTermino / mesGrado / mes)
               write(page1, edu.mesGrado || edu.mesTermino || edu.mes || "", 425, yEdu, 12);

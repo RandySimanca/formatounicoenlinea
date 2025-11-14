@@ -18,10 +18,10 @@ export const obtenerFormacionAcademica = async (req, res) => {
       tituloBachiller: usuario.tituloBachiller,
       mesGrado: usuario.mesGrado,
       anioGrado: usuario.anioGrado,
-      educacionSuperior: usuario.formacionSuperior || []
+      formacionSuperior: usuario.formacionSuperior || []
     };
 
-    console.log(`✅ Formación obtenida: ${datos.educacionSuperior.length} formaciones`);
+    console.log(`✅ Formación obtenida: ${datos.formacionSuperior.length} formaciones`);
 
     res.json(datos);
   } catch (error) {
@@ -53,14 +53,16 @@ export const actualizarFormacionAcademica = async (req, res) => {
     usuario.mesGrado = body.mesGrado;
     usuario.anioGrado = body.anioGrado;
 
-    if (body.educacionSuperior) {
-      const limpias = body.educacionSuperior.filter(f => {
+    // Aceptar tanto formacionSuperior como educacionSuperior para compatibilidad
+    const formaciones = body.formacionSuperior || body.educacionSuperior;
+    if (formaciones) {
+      const limpias = formaciones.filter(f => {
         return f.modalidad?.trim() || f.titulo?.trim() || f.semestres?.trim();
       });
 
       usuario.formacionSuperior = limpias;
 
-      console.log(`✅ Guardando ${limpias.length} educaciones superiores`);
+      console.log(`✅ Guardando ${limpias.length} formaciones superiores`);
     }
 
     await usuario.save();
@@ -68,11 +70,12 @@ export const actualizarFormacionAcademica = async (req, res) => {
     res.json({
       mensaje: "Formación académica actualizada correctamente",
       data: {
+        _id: usuario._id,
         gradoBasica: usuario.gradoBasica,
         tituloBachiller: usuario.tituloBachiller,
         mesGrado: usuario.mesGrado,
         anioGrado: usuario.anioGrado,
-        educacionSuperior: usuario.formacionSuperior
+        formacionSuperior: usuario.formacionSuperior
       }
     });
 

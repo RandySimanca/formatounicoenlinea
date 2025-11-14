@@ -519,7 +519,7 @@ async function obtenerDatosCompletos() {
       tituloBachiller: resFormacion.data?.tituloBachiller || 'Bachiller',
       mesGrado: resFormacion.data?.mesGrado || '',
       anioGrado: resFormacion.data?.anioGrado || '',
-      formacionesSuperior: resFormacion.data?.formacionesSuperior || [],
+      formacionSuperior: resFormacion.data?.formacionSuperior || resFormacion.data?.educacionSuperior || [],
       idiomas: resIdiomas.data?.idiomas || [],
       experienciaLaboral: Array.isArray(resExperiencia.data)
         ? resExperiencia.data

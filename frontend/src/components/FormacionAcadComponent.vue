@@ -339,8 +339,9 @@ export default {
       this.mesGrado = this.formacion.mesGrado || "";
       this.anioGrado = this.formacion.anioGrado || "";
       
-      // ✅ CAMBIO 5: Cargar formacionSuperior desde props
-      this.formacionSuperior = this.formacion.formacionSuperior || [
+      // ✅ Cargar formacionSuperior desde props (con fallback para compatibilidad)
+      const formaciones = this.formacion.formacionSuperior || this.formacion.educacionSuperior || [];
+      this.formacionSuperior = formaciones.length > 0 ? formaciones : [
         {
           modalidad: "",
           semestres: "",
@@ -367,8 +368,9 @@ export default {
           this.mesGrado = datos.mesGrado || "";
           this.anioGrado = datos.anioGrado || "";
           
-          // ✅ CAMBIO 6: Cargar formacionSuperior desde API
-          this.formacionSuperior = datos.formacionSuperior || [
+          // ✅ Cargar formacionSuperior desde API (con fallback para compatibilidad)
+          const formaciones = datos.formacionSuperior || datos.educacionSuperior || [];
+          this.formacionSuperior = formaciones.length > 0 ? formaciones : [
             {
               modalidad: "",
               semestres: "",
@@ -436,7 +438,7 @@ export default {
           showSuccess("✅ ¡Formación académica guardada correctamente!");
 
           this.modoEdicion = true;
-          this.formacionId = response.data.data._id;
+          this.formacionId = response.data.data?._id || null;
         }
 
         const result = response.data;
