@@ -394,15 +394,15 @@ export function useFormatoOficialHV() {
         anio: fecha.anio ?? ""
       };
     };
-
+  
     const normalizarInhabilidad = (valor) => {
       if (!valor) return "NO";
       const v = String(valor).trim().toUpperCase();
       if (["SI", "S", "TRUE", "X", "1"].includes(v)) return "SI";
       return "NO";
     };
-
-    const experienciasMapeadas = (usuarioLocal.experienciaLaboral || []).map(exp => ({
+  
+    const experienciasMapeadas = (usuarioLocal.experienciaLaboral || usuarioLocal.experiencias || []).map(exp => ({
       empresa: exp.empresa || "",
       tipo: exp.tipoEntidad ? exp.tipoEntidad.toLowerCase() : "",
       pais: exp.pais || "Colombia",
@@ -417,9 +417,16 @@ export function useFormatoOficialHV() {
       direccion: exp.direccion || "",
       tipoEntidad: exp.tipoEntidad || exp.tipo || ""
     }));
-
+  
     const tiemposCalculados = calcularTiempoExperiencia(experienciasMapeadas);
-
+  
+    // 🔥 CORRECCIÓN: Buscar formacionSuperior (sin 's')
+    console.log("🔍 DEBUG - Buscando formación superior en:", {
+      formacionSuperior: usuarioLocal.formacionSuperior,
+      formacionesSuperior: usuarioLocal.formacionesSuperior,
+      length: (usuarioLocal.formacionSuperior || usuarioLocal.formacionesSuperior || []).length
+    });
+  
     return {
       apellido1: usuarioLocal.apellido1 || "",
       apellido2: usuarioLocal.apellido2 || "",
@@ -434,35 +441,39 @@ export function useFormatoOficialHV() {
       dm: usuarioLocal.dm || "",
       fechaNacimiento: usuarioLocal.fechaNacimiento || {},
       direccionCorrespondencia: usuarioLocal.direccionCorrespondencia || {},
-
+  
       idiomas: (usuarioLocal.idiomas || []).map(i => ({
         nombre: i.nombre || i.idioma || "",
         habla: i.habla || "",
         lee: i.lee || "",
         escribe: i.escribe || ""
       })),
-
+  
       gradoAprobado: usuarioLocal.gradoBasica || 11,
       tituloBasica: usuarioLocal.tituloBachiller || "Bachiller",
       mesGradoBasica: usuarioLocal.mesGrado || "",
       anoGradoBasica: usuarioLocal.anioGrado || "",
-
-      educacionSuperior: (usuarioLocal.formacionesSuperior || []).map(f => ({
-        modalidad: f.modalidad || "",
-        semestres: f.semestres || "",
-        graduado: f.graduado || "",
-        titulo: f.titulo || "",
-        mesGrado: f.mesTermino || "",
-        anoGrado: f.anioTermino || "",
-        tarjetaProfesional: f.tarjeta || ""
-      })),
-
+  
+      // 🔥 CORRECCIÓN PRINCIPAL: Usar formacionSuperior (sin 's') primero, luego probar con 's' como fallback
+      educacionSuperior: (usuarioLocal.formacionSuperior || usuarioLocal.formacionesSuperior || []).map(f => {
+        console.log("  📚 Mapeando formación:", f.titulo);
+        return {
+          modalidad: f.modalidad || "",
+          semestres: f.semestres || "",
+          graduado: f.graduado || "",
+          titulo: f.titulo || "",
+          mesGrado: f.mesTermino || "",
+          anoGrado: f.anioTermino || "",
+          tarjetaProfesional: f.tarjeta || ""
+        };
+      }),
+  
       experienciaLaboral: experienciasMapeadas.map(exp => ({
         ...exp,
         fechaIngreso: normalizarFecha(exp.fechaIngreso),
         fechaRetiro: normalizarFecha(exp.fechaRetiro)
       })),
-
+  
       tiempoExperiencia: {
         servidorPublico: {
           anos: String(tiemposCalculados.publico.anios),
@@ -481,17 +492,12 @@ export function useFormatoOficialHV() {
           meses: String(tiemposCalculados.total.meses),
         },
       },
-
+  
       declaracionInhabilidad: normalizarInhabilidad(usuarioLocal.declaracionInhabilidad),
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
       firmaServidor: usuarioLocal.firmaServidor || null,
     };
-  }
-
-  function separarDigitos(texto) {
-    if (!texto) return "";
-    return String(texto).split('').join('  ');
   }
 
   return {
