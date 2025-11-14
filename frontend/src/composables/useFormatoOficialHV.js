@@ -140,26 +140,27 @@ export function useFormatoOficialHV() {
         }
       }
 
-      // ========================== PÁGINA 2 =============================
-      console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
+       // ========================== PÁGINA 2 =============================
+       console.log("💼 Procesando experiencia laboral:", datosUsuario.experienciaLaboral);
 
-      const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
-        ? datosUsuario.experienciaLaboral
-        : [];
-
-      if (experiencias.length > 0 && pages[1]) {
-        const experienciasPorPagina = 4;
-        const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
-
-        const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
-        const pdfBase = await PDFDocument.load(formatoBaseBytes);
-
-        for (let i = 1; i < totalPaginasExperiencia; i++) {
-          const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]);
-          pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2);
-        }
-
-        const updatedPages = pdfDoc.getPages();
+       const experiencias = Array.isArray(datosUsuario.experienciaLaboral)
+         ? datosUsuario.experienciaLaboral
+         : [];
+ 
+       if (experiencias.length > 0 && pages[1]) {
+         const experienciasPorPagina = 4;
+         const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
+ 
+         const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
+         const pdfBase = await PDFDocument.load(formatoBaseBytes);
+ 
+         // Insertar páginas adicionales ANTES de la última página
+         for (let i = 1; i < totalPaginasExperiencia; i++) {
+           const [copiaPagina2] = await pdfDoc.copyPages(pdfBase, [1]);
+           pdfDoc.insertPage(pdfDoc.getPageCount() - 1, copiaPagina2);
+         }
+ 
+         const updatedPages = pdfDoc.getPages();
 
         const bloques = [
           { yBase: 240 },
