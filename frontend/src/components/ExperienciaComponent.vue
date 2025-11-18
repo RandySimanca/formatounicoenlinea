@@ -264,23 +264,22 @@ export default {
       return new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia));
     },
 
-    // ==========================================
-    // ============  MÉTODO CORREGIDO ===========
-    // ==========================================
     async guardarExperiencia() {
       this.cargando = true;
 
       try {
-        // Validación fechas
+        // Validación de fechas
         const valIng = this.validarFechasCampos(this.experienciaLocal.fechaIngreso);
         if (!valIng.ok) {
           showError("❌ Fecha de ingreso inválida: " + valIng.msg);
+          this.cargando = false;
           return;
         }
 
         const valRet = this.validarFechasCampos(this.experienciaLocal.fechaRetiro);
         if (!valRet.ok) {
           showError("❌ Fecha de retiro inválida: " + valRet.msg);
+          this.cargando = false;
           return;
         }
 
@@ -289,6 +288,7 @@ export default {
 
         if (dIng > dRet) {
           showError("❌ La fecha de ingreso no puede ser mayor que la fecha de retiro.");
+          this.cargando = false;
           return;
         }
 
@@ -298,36 +298,28 @@ export default {
           fechaRetiro: this.convertirFecha(this.experienciaLocal.fechaRetiro),
         };
 
-        let response;
-
         // ========== ACTUALIZAR ==========
         if (this.modoEdicion && this.experienciaLocal._id) {
           await api.put(`/experiencia/${this.experienciaLocal._id}`, experienciaFormateada);
-
           showSuccess("✅ ¡Experiencia laboral actualizada correctamente!");
-
+          
           setTimeout(() => {
             window.location.reload();
-          }, 500);
-
+          }, 800);
           return;
         }
-      
+
         // ========== CREAR ==========
         await api.post("/experiencia", experienciaFormateada);
-
         showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
         
-
         setTimeout(() => {
           window.location.reload();
-        }, 500);
+        }, 800);
 
-        return;
       } catch (error) {
         console.error("❌ Error al procesar experiencia:", error.response?.data || error.message);
         showError("❌ Ocurrió un error al procesar los datos.");
-      } finally {
         this.cargando = false;
       }
     },
@@ -355,19 +347,16 @@ export default {
 
       try {
         await api.delete(`/experiencia/${this.experienciaLocal._id}`);
-
         showSuccess("✅ Experiencia eliminada correctamente");
-
         this.$emit("experiencia-eliminada", this.experienciaLocal._id);
 
         setTimeout(() => {
           window.location.reload();
-        }, 300);
+        }, 800);
 
       } catch (error) {
         console.error("❌ Error al eliminar experiencia:", error.response?.data || error.message);
         showError("❌ Ocurrió un error al eliminar la experiencia.");
-      } finally {
         this.cargando = false;
       }
     },
@@ -376,7 +365,6 @@ export default {
 </script>
 
 <style scoped>
-/* ====== estilos originales aquí ====== */
 .correo-input {
   width: 100%;
 }
