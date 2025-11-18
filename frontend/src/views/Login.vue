@@ -1,5 +1,19 @@
 <template>
   <div class="login-wrapper">
+    <!-- ✅ NUEVO: Mensaje de orientación horizontal -->
+    <transition name="slide-down">
+      <div v-if="mostrarMensajeOrientacion" class="orientation-banner">
+        <div class="orientation-content">
+          <span class="rotate-icon">📱↻</span>
+          <div class="orientation-text">
+            <strong>Mejor experiencia</strong>
+            <p>Gira tu dispositivo horizontalmente para una mejor navegación</p>
+          </div>
+          <button @click="cerrarMensaje" class="close-banner">✕</button>
+        </div>
+      </div>
+    </transition>
+
     <!-- Panel de información de contacto -->
     <div class="contact-panel">
       <div class="contact-header">
@@ -27,7 +41,6 @@
           </div>
         </div>
 
-        <!-- ✅ Contador compacto reposicionado -->
         <div class="contact-item user-counter-compact">
           <span class="icon counter-icon-small">👥</span>
           <div>
@@ -163,7 +176,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '../api/axios';
 import { useHojaVidaStore } from '../stores/hojaVida';
@@ -181,6 +194,10 @@ const modoRegistro = ref(false);
 // Variables para el contador
 const totalUsuarios = ref(0);
 const cargandoStats = ref(false);
+
+// ✅ NUEVO: Variables para el mensaje de orientación
+const mostrarMensajeOrientacion = ref(false);
+const mensajeCerradoManualmente = ref(false);
 
 const totalFormateado = computed(() => {
   return new Intl.NumberFormat('es-CO').format(totalUsuarios.value);
@@ -200,6 +217,28 @@ const cargarContadorUsuarios = async () => {
   } finally {
     cargandoStats.value = false;
   }
+};
+
+// ✅ NUEVO: Función para detectar si es móvil en orientación vertical
+const verificarOrientacion = () => {
+  if (mensajeCerradoManualmente.value) return;
+  
+  const esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+  const esVertical = window.innerHeight > window.innerWidth;
+  const anchoMovil = window.innerWidth <= 768;
+  
+  mostrarMensajeOrientacion.value = esMovil && esVertical && anchoMovil;
+};
+
+// ✅ NUEVO: Función para cerrar el mensaje manualmente
+const cerrarMensaje = () => {
+  mensajeCerradoManualmente.value = true;
+  mostrarMensajeOrientacion.value = false;
+  
+  // Guardar en localStorage para no mostrar nuevamente en esta sesión
+  localStorage.setItem('orientacion-mensaje-cerrado', 'true');
 };
 
 const handleLogin = async () => {
@@ -259,6 +298,25 @@ const handleRegister = async () => {
 
 onMounted(() => {
   cargarContadorUsuarios();
+  
+  // ✅ NUEVO: Verificar si el mensaje fue cerrado anteriormente
+  const mensajeCerrado = localStorage.getItem('orientacion-mensaje-cerrado');
+  if (mensajeCerrado === 'true') {
+    mensajeCerradoManualmente.value = true;
+  }
+  
+  // Verificar orientación al cargar
+  verificarOrientacion();
+  
+  // Escuchar cambios de orientación y redimensionamiento
+  window.addEventListener('orientationchange', verificarOrientacion);
+  window.addEventListener('resize', verificarOrientacion);
+});
+
+onUnmounted(() => {
+  // Limpiar eventos al desmontar el componente
+  window.removeEventListener('orientationchange', verificarOrientacion);
+  window.removeEventListener('resize', verificarOrientacion);
 });
 </script>
 
@@ -272,6 +330,93 @@ onMounted(() => {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+/* ✅ NUEVO: Estilos del banner de orientación */
+.orientation-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  color: white;
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.orientation-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.rotate-icon {
+  font-size: 2rem;
+  animation: rotate-phone 2s ease-in-out infinite;
+}
+
+@keyframes rotate-phone {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-15deg); }
+  75% { transform: rotate(15deg); }
+}
+
+.orientation-text {
+  flex: 1;
+}
+
+.orientation-text strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.orientation-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.95;
+}
+
+.close-banner {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.close-banner:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Animación de entrada del banner */
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.4s ease;
+}
+
+.slide-down-enter-from {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.slide-down-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
 }
 
 /* Panel de contacto */
@@ -365,7 +510,6 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
-/* ✅ Estilos del contador compacto */
 .user-counter-compact {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -752,6 +896,19 @@ onMounted(() => {
   .form-header h2 {
     font-size: 1.5rem;
   }
+
+  /* ✅ Ajustar tamaño del banner en móvil */
+  .orientation-text strong {
+    font-size: 0.9rem;
+  }
+
+  .orientation-text p {
+    font-size: 0.8rem;
+  }
+
+  .rotate-icon {
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -768,6 +925,15 @@ onMounted(() => {
   
   .separator {
     display: none;
+  }
+
+  /* ✅ Compactar más el banner en pantallas muy pequeñas */
+  .orientation-banner {
+    padding: 0.75rem;
+  }
+
+  .orientation-content {
+    gap: 0.75rem;
   }
 }
 </style>
