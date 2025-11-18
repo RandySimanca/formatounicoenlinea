@@ -409,6 +409,8 @@ export default {
       } finally {
         this.cargando = false;
       }
+
+      window.location.reload();
     },
 
     async recargarExperiencias() {
@@ -496,7 +498,7 @@ export default {
       this.modoEdicion = false;
     },
   },
-};
+  };
 </script>
 
 <style scoped>
