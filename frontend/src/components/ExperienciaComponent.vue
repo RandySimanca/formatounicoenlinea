@@ -308,11 +308,11 @@ export default {
 
           setTimeout(() => {
             window.location.reload();
-          }, 300);
+          }, 500);
 
           return;
         }
-
+      
         // ========== CREAR ==========
         await api.post("/experiencia", experienciaFormateada);
 
@@ -320,7 +320,7 @@ export default {
 
         setTimeout(() => {
           window.location.reload();
-        }, 300);
+        }, 500);
 
         return;
       } catch (error) {
