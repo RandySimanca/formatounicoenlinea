@@ -26,6 +26,7 @@
         </button>
         <div class="content-header__info">
           <p>Panel de administración</p>
+          <p>Si estas en el celular usa la app horizontalmente</p>
         </div>
       </header>
 
