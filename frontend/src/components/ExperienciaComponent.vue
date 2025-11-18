@@ -189,7 +189,6 @@
             {{ modoEdicion ? "Actualizar experiencia" : "Guardar experiencia" }}
           </button>
 
-          <!-- Botón eliminar (solo se muestra si hay un ID, es decir, experiencia existente) -->
           <button
             v-if="experienciaLocal._id"
             type="button"
@@ -211,7 +210,6 @@ import {
   showSuccess,
   showError,
   showConfirm,
-  showWarning,
 } from "../utils/showMessage.js";
 import api from "../api/axios";
 
@@ -242,8 +240,6 @@ export default {
         direccion: "",
         datosPrecargados: false,
       },
-      envioExitoso: false,
-      errorEnvio: null,
       cargando: false,
       modoEdicion: false,
     };
@@ -253,8 +249,8 @@ export default {
   },
   watch: {
     experiencia: {
-      handler(nuevaExp) {
-        this.sincronizarExperiencia(nuevaExp);
+      handler(nueva) {
+        this.sincronizarExperiencia(nueva);
       },
       immediate: true,
       deep: true,
@@ -268,33 +264,37 @@ export default {
 
     validarFechasCampos(f) {
       if (!f) return { ok: false, msg: "Fechas incompletas" };
+
       const { dia, mes, anio } = f;
+
       if (!this.esNumeroEnRango(dia, 1, 31))
         return { ok: false, msg: "El día debe estar entre 1 y 31" };
+
       if (!this.esNumeroEnRango(mes, 1, 12))
         return { ok: false, msg: "El mes debe estar entre 1 y 12" };
+
       if (!Number.isFinite(parseInt(anio, 10)))
         return { ok: false, msg: "El año es requerido" };
+
       return { ok: true };
     },
 
     construirDate({ dia, mes, anio }) {
-      const d = parseInt(dia, 10),
-        m = parseInt(mes, 10),
-        y = parseInt(anio, 10);
-      return new Date(y, m - 1, d);
+      return new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia));
     },
 
     normalizarFecha(fecha) {
       if (!fecha) return { dia: "", mes: "", anio: "" };
+
       if (typeof fecha === "string" || fecha instanceof Date) {
         const f = new Date(fecha);
         return {
-          dia: String(f.getDate()).padStart(2, "0"),
-          mes: String(f.getMonth() + 1).padStart(2, "0"),
+          dia: String(f.getDate()).padStart(2,"0"),
+          mes: String(f.getMonth() + 1).padStart(2,"0"),
           anio: String(f.getFullYear()),
         };
       }
+
       return {
         dia: fecha.dia ?? "",
         mes: fecha.mes ?? "",
@@ -305,8 +305,6 @@ export default {
     sincronizarExperiencia(exp) {
       if (!exp) return;
 
-      // Si estamos en modo edición *y* ya cargamos datos desde el padre,
-      // no sobrescribimos (evita doble re-precarga).
       if (this.modoEdicion && this.experienciaLocal.datosPrecargados) return;
 
       this.experienciaLocal = {
@@ -323,38 +321,32 @@ export default {
 
     convertirFecha({ dia, mes, anio }) {
       if (!dia || !mes || !anio) return null;
-      const d = parseInt(dia),
-        m = parseInt(mes),
-        y = parseInt(anio);
-      return new Date(y, m - 1, d);
+      return new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia));
     },
 
     async guardarExperiencia() {
       this.cargando = true;
+
       try {
-        const valIng = this.validarFechasCampos(
-          this.experienciaLocal.fechaIngreso
-        );
+        const valIng = this.validarFechasCampos(this.experienciaLocal.fechaIngreso);
         if (!valIng.ok) {
-          showError(`❌ Fecha de ingreso inválida: ${valIng.msg}`);
+          showError("❌ Fecha de ingreso inválida: " + valIng.msg);
           this.cargando = false;
           return;
         }
-        const valRet = this.validarFechasCampos(
-          this.experienciaLocal.fechaRetiro
-        );
+
+        const valRet = this.validarFechasCampos(this.experienciaLocal.fechaRetiro);
         if (!valRet.ok) {
-          showError(`❌ Fecha de retiro inválida: ${valRet.msg}`);
+          showError("❌ Fecha de retiro inválida: " + valRet.msg);
           this.cargando = false;
           return;
         }
 
         const dIng = this.construirDate(this.experienciaLocal.fechaIngreso);
         const dRet = this.construirDate(this.experienciaLocal.fechaRetiro);
+
         if (dIng > dRet) {
-          showError(
-            "❌ La fecha de ingreso no puede ser mayor que la fecha de retiro."
-          );
+          showError("❌ La fecha de ingreso no puede ser mayor que la fecha de retiro.");
           this.cargando = false;
           return;
         }
@@ -367,81 +359,56 @@ export default {
 
         let response;
 
+        // =============================
+        // =======     UPDATE     ======
+        // =============================
         if (this.modoEdicion && this.experienciaLocal._id) {
-          // ----------------------
-          // ACTUALIZACIÓN (PUT)
-          // ----------------------
           response = await api.put(
             `/experiencia/${this.experienciaLocal._id}`,
             experienciaFormateada
           );
+
           showSuccess("✅ ¡Experiencia laboral actualizada correctamente!");
 
-          // recargamos lista y NO limpiamos el formulario (porque es edición)
-          await this.recargarExperiencias();
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
 
-          // opcional: si quieres que el padre deje de seleccionar este item:
-          // this.$emit("experiencia-seleccionada", {});
-        } else {
-          // ----------------------
-          // CREACIÓN (POST)
-          // ----------------------
-          response = await api.post("/experiencia", experienciaFormateada);
-          showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
-
-          // LIMPIAR INMEDIATAMENTE para evitar duplicados al pulsar guardar de nuevo.
-          this.resetFormulario();
-
-          // luego recargamos la lista (el padre puede actualizar su estado)
-          await this.recargarExperiencias();
-
-          // opcional: emitir selección vacía al padre por si el padre mantiene la seleccion
-          // this.$emit("experiencia-seleccionada", {});
+          return;
         }
 
-        console.log("✅ Experiencia procesada:", response?.data);
+        // =============================
+        // =======     CREATE     ======
+        // =============================
+        response = await api.post("/experiencia", experienciaFormateada);
+
+        showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
+
+        return;
+
       } catch (error) {
-        console.error(
-          "❌ Error al procesar experiencia:",
-          error.response?.data || error.message
-        );
+        console.error("❌ Error al procesar experiencia:", error.response?.data || error.message);
         showError("❌ Ocurrió un error al procesar los datos.");
       } finally {
         this.cargando = false;
-      }
-
-      window.location.reload();
-    },
-
-    async recargarExperiencias() {
-      try {
-        const { data } = await api.get("/experiencia");
-
-        // Ordenar en el frontend también
-        const experienciasOrdenadas = data.sort((a, b) => {
-          const fechaA = new Date(a.fechaRetiro);
-          const fechaB = new Date(b.fechaRetiro);
-          return fechaB - fechaA; // Más reciente primero
-        });
-
-        // Emitir evento para que Hoja2.vue actualice la lista
-        this.$emit("experiencias-actualizadas", experienciasOrdenadas);
-      } catch (error) {
-        console.error("Error al recargar experiencias:", error);
       }
     },
 
     async confirmarEliminacion() {
       const empresa = this.experienciaLocal.empresa || "esta experiencia";
-      const confirmacion = await showConfirm({
+
+      const confirm = await showConfirm({
         title: "Eliminar experiencia",
-        text: `¿Estás seguro de que deseas eliminar la experiencia en "${empresa}"? Esta acción no se puede deshacer.`,
+        text: `¿Estás seguro de eliminar "${empresa}"? Esta acción no se puede deshacer.`,
         confirmButtonText: "Sí, eliminar",
         cancelButtonText: "No",
       });
-      if (confirmacion) {
-        this.eliminarExperiencia();
-      }
+
+      if (confirm) this.eliminarExperiencia();
     },
 
     async eliminarExperiencia() {
@@ -451,6 +418,7 @@ export default {
       }
 
       this.cargando = true;
+
       try {
         await api.delete(`/experiencia/${this.experienciaLocal._id}`);
 
@@ -458,55 +426,28 @@ export default {
 
         this.$emit("experiencia-eliminada", this.experienciaLocal._id);
 
-        console.log("✅ Experiencia eliminada:", this.experienciaLocal._id);
-      } catch (error) {
-        console.error(
-          "❌ Error al eliminar experiencia:",
-          error.response?.data || error.message
-        );
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
 
-        if (error.response?.status === 404) {
-          showError(
-            "❌ La experiencia ya no existe o no tienes permisos para eliminarla."
-          );
-        } else {
-          showError("❌ Ocurrió un error al eliminar la experiencia.");
-        }
+      } catch (error) {
+        console.error("❌ Error al eliminar experiencia:", error.response?.data || error.message);
+
+        showError("❌ Ocurrió un error al eliminar la experiencia.");
       } finally {
         this.cargando = false;
       }
     },
-
-    resetFormulario() {
-      this.experienciaLocal = {
-        _id: null,
-        empresa: "",
-        tipoEntidad: "",
-        pais: "",
-        departamento: "",
-        municipio: "",
-        correoEntidad: "",
-        telefonos: "",
-        fechaIngreso: { dia: "", mes: "", anio: "" },
-        fechaRetiro: { dia: "", mes: "", anio: "" },
-        cargo: "",
-        dependencia: "",
-        direccion: "",
-        datosPrecargados: false,
-      };
-
-      this.modoEdicion = false;
-    },
   },
-  };
+};
 </script>
 
 <style scoped>
+/* ====== estilos originales aquí ====== */
 .correo-input {
   width: 100%;
 }
 
-/* Clases de columnas para pantalla normal */
 .col-amplio {
   flex: 0 0 40%;
   max-width: 50%;
@@ -529,19 +470,15 @@ export default {
   max-width: 32%;
 }
 
-/* Ocultar texto de impresión en pantalla */
 .solo-impresion {
   display: none;
 }
 
-/* Estilos específicos para impresión */
 @media print {
-  /* Ocultar inputs en impresión solo para el campo empresa */
   .solo-pantalla {
     display: none !important;
   }
 
-  /* Mostrar texto plano en impresión */
   .solo-impresion {
     display: block !important;
     width: 100% !important;
@@ -553,8 +490,6 @@ export default {
     box-sizing: border-box !important;
     word-wrap: break-word !important;
     white-space: normal !important;
-    line-height: 1.4 !important;
-    background-color: white !important;
   }
 
   .form-control {
@@ -563,7 +498,6 @@ export default {
     padding: 2px 3px !important;
   }
 
-  /* Mantener las proporciones en impresión */
   .col-amplio {
     flex: 0 0 40% !important;
     max-width: 50% !important;
@@ -572,8 +506,6 @@ export default {
   .col-pequeno {
     flex: 0 0 10% !important;
     max-width: 20% !important;
-    margin-left: auto;
-    margin-right: auto;
   }
 
   .col-medio {
