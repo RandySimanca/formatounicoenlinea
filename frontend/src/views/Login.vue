@@ -246,7 +246,7 @@ const mostrarBienvenida = (nombreUsuario) => {
     icon: 'success',
     confirmButtonText: 'Entendido',
     confirmButtonColor: '#667eea',
-    timer: esMobilVertical ? 8000 : 5000, // Más tiempo si hay mensaje de orientación
+    //timer: esMobilVertical ? 8000 : 5000, // Más tiempo si hay mensaje de orientación
     timerProgressBar: true,
     allowOutsideClick: false,
     customClass: {
