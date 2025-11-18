@@ -317,6 +317,7 @@ export default {
         await api.post("/experiencia", experienciaFormateada);
 
         showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
+        
 
         setTimeout(() => {
           window.location.reload();
