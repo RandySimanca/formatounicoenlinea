@@ -375,6 +375,7 @@ export default {
         }
 
         await this.recargarExperiencias();
+        this.resetFormulario();
 
         console.log("✅ Experiencia procesada:", response.data);
       } catch (error) {
@@ -386,7 +387,8 @@ export default {
       } finally {
         this.cargando = false;
       }
-    },
+
+        },
 
     async recargarExperiencias() {
       try {
@@ -451,8 +453,31 @@ export default {
         this.cargando = false;
       }
     },
+
+    resetFormulario() {
+  this.experienciaLocal = {
+    _id: null,
+    empresa: "",
+    tipoEntidad: "",
+    pais: "",
+    departamento: "",
+    municipio: "",
+    correoEntidad: "",
+    telefonos: "",
+    fechaIngreso: { dia: "", mes: "", anio: "" },
+    fechaRetiro: { dia: "", mes: "", anio: "" },
+    cargo: "",
+    dependencia: "",
+    direccion: "",
+    datosPrecargados: false,
+  };
+
+  this.modoEdicion = false;
+}
+
   },
-};
+
+ };
 </script>
 
 <style scoped>
