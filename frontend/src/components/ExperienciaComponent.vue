@@ -303,7 +303,8 @@ export default {
     },
 
     sincronizarExperiencia(exp) {
-      if (!exp || this.experienciaLocal.datosPrecargados) return;
+      if (!exp) return;
+      if (this.modoEdicion && this.experienciaLocal.datosPrecargados) return;
 
       this.experienciaLocal = {
         ...this.experienciaLocal,
@@ -387,8 +388,7 @@ export default {
       } finally {
         this.cargando = false;
       }
-
-        },
+    },
 
     async recargarExperiencias() {
       try {
@@ -455,29 +455,27 @@ export default {
     },
 
     resetFormulario() {
-  this.experienciaLocal = {
-    _id: null,
-    empresa: "",
-    tipoEntidad: "",
-    pais: "",
-    departamento: "",
-    municipio: "",
-    correoEntidad: "",
-    telefonos: "",
-    fechaIngreso: { dia: "", mes: "", anio: "" },
-    fechaRetiro: { dia: "", mes: "", anio: "" },
-    cargo: "",
-    dependencia: "",
-    direccion: "",
-    datosPrecargados: false,
-  };
+      this.experienciaLocal = {
+        _id: null,
+        empresa: "",
+        tipoEntidad: "",
+        pais: "",
+        departamento: "",
+        municipio: "",
+        correoEntidad: "",
+        telefonos: "",
+        fechaIngreso: { dia: "", mes: "", anio: "" },
+        fechaRetiro: { dia: "", mes: "", anio: "" },
+        cargo: "",
+        dependencia: "",
+        direccion: "",
+        datosPrecargados: false,
+      };
 
-  this.modoEdicion = false;
-}
-
+      this.modoEdicion = false;
+    },
   },
-
- };
+};
 </script>
 
 <style scoped>
