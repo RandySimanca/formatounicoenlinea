@@ -223,7 +223,7 @@ export default {
       default: () => ({}),
     },
   },
-  emits: ["experiencia-eliminada"],
+  emits: ["experiencia-eliminada", "experiencias-actualizadas", "experiencia-seleccionada"],
   data() {
     return {
       experienciaLocal: {
@@ -304,6 +304,9 @@ export default {
 
     sincronizarExperiencia(exp) {
       if (!exp) return;
+
+      // Si estamos en modo edición *y* ya cargamos datos desde el padre,
+      // no sobrescribimos (evita doble re-precarga).
       if (this.modoEdicion && this.experienciaLocal.datosPrecargados) return;
 
       this.experienciaLocal = {
@@ -334,6 +337,7 @@ export default {
         );
         if (!valIng.ok) {
           showError(`❌ Fecha de ingreso inválida: ${valIng.msg}`);
+          this.cargando = false;
           return;
         }
         const valRet = this.validarFechasCampos(
@@ -341,6 +345,7 @@ export default {
         );
         if (!valRet.ok) {
           showError(`❌ Fecha de retiro inválida: ${valRet.msg}`);
+          this.cargando = false;
           return;
         }
 
@@ -350,6 +355,7 @@ export default {
           showError(
             "❌ La fecha de ingreso no puede ser mayor que la fecha de retiro."
           );
+          this.cargando = false;
           return;
         }
 
@@ -362,23 +368,38 @@ export default {
         let response;
 
         if (this.modoEdicion && this.experienciaLocal._id) {
+          // ----------------------
+          // ACTUALIZACIÓN (PUT)
+          // ----------------------
           response = await api.put(
             `/experiencia/${this.experienciaLocal._id}`,
             experienciaFormateada
           );
           showSuccess("✅ ¡Experiencia laboral actualizada correctamente!");
+
+          // recargamos lista y NO limpiamos el formulario (porque es edición)
+          await this.recargarExperiencias();
+
+          // opcional: si quieres que el padre deje de seleccionar este item:
+          // this.$emit("experiencia-seleccionada", {});
         } else {
+          // ----------------------
+          // CREACIÓN (POST)
+          // ----------------------
           response = await api.post("/experiencia", experienciaFormateada);
           showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
 
-          this.experienciaLocal._id = response.data.data._id;
-          this.modoEdicion = true;
+          // LIMPIAR INMEDIATAMENTE para evitar duplicados al pulsar guardar de nuevo.
+          this.resetFormulario();
+
+          // luego recargamos la lista (el padre puede actualizar su estado)
+          await this.recargarExperiencias();
+
+          // opcional: emitir selección vacía al padre por si el padre mantiene la seleccion
+          // this.$emit("experiencia-seleccionada", {});
         }
 
-        await this.recargarExperiencias();
-        this.resetFormulario();
-
-        console.log("✅ Experiencia procesada:", response.data);
+        console.log("✅ Experiencia procesada:", response?.data);
       } catch (error) {
         console.error(
           "❌ Error al procesar experiencia:",
