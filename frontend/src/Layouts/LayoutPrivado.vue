@@ -110,7 +110,7 @@ onBeforeUnmount(() => {
 }
 
 .sidebar-panel--open {
-  transform: translateX(0);
+  transform: translateX(0) !important;
 }
 
 .content-area {
