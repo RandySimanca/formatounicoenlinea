@@ -2,7 +2,10 @@
   <div class="private-layout">
     <aside
       class="sidebar-panel"
-      :class="{ 'sidebar-panel--open': sidebarOpen, 'sidebar-panel--desktop': isDesktop }"
+      :class="{
+        'sidebar-panel--open': sidebarOpen,
+        'sidebar-panel--desktop': isDesktop,
+      }"
     >
       <MenuComponent @close="handleCloseSidebar" />
     </aside>
@@ -26,7 +29,6 @@
         </button>
         <div class="content-header__info">
           <p>Panel de administración</p>
-          <p>Si estas en el celular usa la app horizontalmente</p>
         </div>
       </header>
 
@@ -44,10 +46,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import MenuComponent from '../components/MenuComponents.vue';
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import MenuComponent from "../components/MenuComponents.vue";
 
-const initialDesktop = typeof window !== 'undefined' ? window.innerWidth >= 1024 : false;
+const initialDesktop =
+  typeof window !== "undefined" ? window.innerWidth >= 1024 : false;
 const sidebarOpen = ref(initialDesktop);
 const isDesktop = ref(initialDesktop);
 
@@ -72,11 +75,11 @@ const handleCloseSidebar = () => {
 
 onMounted(() => {
   evaluateViewport();
-  window.addEventListener('resize', evaluateViewport);
+  window.addEventListener("resize", evaluateViewport);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', evaluateViewport);
+  window.removeEventListener("resize", evaluateViewport);
 });
 </script>
 
