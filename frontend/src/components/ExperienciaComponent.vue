@@ -395,6 +395,11 @@ export default {
         showError("❌ Ocurrió un error al procesar los datos.");
       } finally {
         this.cargando = false;
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 200);
+        
       }
     },
 
