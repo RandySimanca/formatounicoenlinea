@@ -129,16 +129,17 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: rgb(23, 105, 148); /* NUEVO */
+  border-bottom: none; /* NUEVO */
+  color: #fff; /* NUEVO */
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
 .content-header__info {
-  color: #4b5563;
   font-size: 0.95rem;
+  color: #e8f6fc; /* NUEVO */
 }
 
 .menu-toggle {
@@ -147,17 +148,22 @@ onBeforeUnmount(() => {
   gap: 0.5rem;
   padding: 0.6rem 1rem;
   border-radius: 999px;
-  border: 1px solid #d1d5db;
   background: #fff;
-  color: #111827;
   font-weight: 600;
   cursor: pointer;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  /* NUEVO */
+  color: rgb(61, 186, 243);
+  border: 1px solid rgb(61, 186, 243);
 }
 
 .menu-toggle svg {
   width: 20px;
   height: 20px;
+
+  /* NUEVO */
+  stroke: rgb(61, 186, 243);
 }
 
 .menu-toggle:active {
