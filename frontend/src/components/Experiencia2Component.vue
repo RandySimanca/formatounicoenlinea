@@ -119,8 +119,24 @@
 import { showSuccess, showError } from "../utils/showMessage.js";
 import api from "../api/axios.js";
 
+const crearExperienciaVacia = () => ({
+  empresa: '',
+  tipoEntidad: '',
+  pais: '',
+  departamento: '',
+  municipio: '',
+  correoEntidad: '',
+  telefonos: '',
+  fechaIngreso: { dia: '', mes: '', anio: '' },
+  fechaRetiro: { dia: '', mes: '', anio: '' },
+  cargo: '',
+  dependencia: '',
+  direccion: '',
+});
+
 export default {
   name: "ExperienciaComponent",
+  emits: ['saved'],
   props: {
     experienciaLocal: {
       type: Object,
@@ -129,63 +145,51 @@ export default {
   },
   data() {
     return {
-     experiencia: {
-        empresa: '',
-        tipoEntidad: '',
-        pais: '',
-        departamento: '',
-        municipio: '',
-        correoEntidad: '',
-        telefonos: '',
-        fechaIngreso: {  dia: '', mes: '', anio: '' },
-        fechaRetiro: { dia: '', mes: '', anio: '' },
-        cargo: '',
-        dependencia: '',
-        direccion: '',
-
-        datosPrecargados: false,
-
-// feedback visual
-envioExitoso: false,
-errorEnvio: null,
-cargando: false,
-
-      }
+      experiencia: crearExperienciaVacia(),
+      datosPrecargados: false,
+      envioExitoso: false,
+      errorEnvio: null,
+      cargando: false,
     };
   },
 
-
   mounted() {
-    if (this.experiencia) {
-      this.experiencia = {...this.experiencia };
-    }
+    this.precargarDatos();
+  },
 
-    if (this.experiencia) {
-      this.empresa = this.experiencia.empresa || '';
-      this.tipoEntidad = this.experiencia.tipoEntidad || '';
-      this.pais = this.experiencia.pais || '';
-      this.departamento = this.experiencia.departamento || '';
-      this.municipio = this.experiencia.municipio || '';
-      this.correoEntidad = this.experiencia.correoEntidad || '';
-      this.telefonos = this.experiencia.telefonos || '';
-      this.fechaIngreso = {
-        dia: this.experiencia.fechaIngreso?.dia || '',
-        mes: this.experiencia.fechaIngreso?.mes || '',
-        año: this.experiencia.fechaIngreso?.anio || ''
-      };
-      this.fechaRetiro = {
-        dia: this.experiencia.fechaRetiro?.dia || '',
-        mes: this.experiencia.fechaRetiro?.mes || '',
-        año: this.experiencia.fechaRetiro?.anio || ''
-      };
-      this.cargo = this.experiencia.cargo || '';
-      this.dependencia = this.experiencia.dependencia || '';
-      this.direccion = this.experiencia.direccion || '';
-      this.datosPrecargados = true;
-    }
-
+  watch: {
+    experienciaLocal: {
+      handler() {
+        this.precargarDatos();
+      },
+      deep: true,
+    },
   },
   methods: {
+    precargarDatos() {
+      if (!this.experienciaLocal || Object.keys(this.experienciaLocal).length === 0) {
+        return;
+      }
+      this.experiencia = {
+        ...crearExperienciaVacia(),
+        ...this.experienciaLocal,
+        fechaIngreso: {
+          ...crearExperienciaVacia().fechaIngreso,
+          ...this.experienciaLocal.fechaIngreso,
+        },
+        fechaRetiro: {
+          ...crearExperienciaVacia().fechaRetiro,
+          ...this.experienciaLocal.fechaRetiro,
+        },
+      };
+      this.datosPrecargados = true;
+    },
+    resetFormulario() {
+      this.experiencia = crearExperienciaVacia();
+      this.datosPrecargados = false;
+      this.envioExitoso = false;
+      this.errorEnvio = null;
+    },
     esNumeroEnRango(valor, min, max) {
       const n = parseInt(valor, 10);
       return Number.isFinite(n) && n >= min && n <= max;
@@ -225,6 +229,8 @@ cargando: false,
         const res = await api.post("/experiencia", experienciaFormateada);
         console.log("✅ Experiencia enviada correctamente:", res.data);
         showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
+        this.resetFormulario();
+        this.$emit('saved', experienciaFormateada);
       } catch (error) {
         console.error("❌ Error al guardar experiencia:", error.response?.data || error.message);
         showError("❌ Ocurrió un error al guardar los datos.");
