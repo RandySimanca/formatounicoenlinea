@@ -1,33 +1,3 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUsuarioStore } from '../stores/usuarios';
-
-const emit = defineEmits(['close']);
-
-const router = useRouter();
-const usuarioStore = useUsuarioStore();
-
-const nombre = ref('Invitado');
-
-const cerrarSesion = () => {
-  usuarioStore.$reset();
-  localStorage.clear();
-  router.push('/login');
-  location.reload();
-  emit('close');
-};
-
-const handleNavigate = () => {
-  emit('close');
-};
-
-onMounted(() => {
-  const datos = JSON.parse(localStorage.getItem('usuario'));
-  if (datos?.nombre) nombre.value = datos.nombre;
-});
-</script>
-
 <template>
   <div class="sidebar-content">
     <div class="sidebar-header">
@@ -76,6 +46,36 @@ onMounted(() => {
     </button>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUsuarioStore } from '../stores/usuarios';
+
+const emit = defineEmits(['close']);
+
+const router = useRouter();
+const usuarioStore = useUsuarioStore();
+
+const nombre = ref('Invitado');
+
+const cerrarSesion = () => {
+  usuarioStore.$reset();
+  localStorage.clear();
+  router.push('/login');
+  location.reload();
+  emit('close');
+};
+
+const handleNavigate = () => {
+  emit('close');
+};
+
+onMounted(() => {
+  const datos = JSON.parse(localStorage.getItem('usuario'));
+  if (datos?.nombre) nombre.value = datos.nombre;
+});
+</script>
 
 <style scoped>
 .sidebar-content {

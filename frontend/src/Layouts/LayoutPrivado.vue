@@ -185,6 +185,7 @@ onBeforeUnmount(() => {
 
   .content-area {
     min-height: auto;
+    background-color: #4b5563;
   }
 
   .content-header {
