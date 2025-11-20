@@ -1,0 +1,173 @@
+📦formatounicoenlinea
+ ┃ ┣ 📂refs
+ ┃ ┃ ┣ 📂heads
+ ┃ ┃ ┃ ┗ 📜main
+ ┃ ┃ ┣ 📂remotes
+ ┃ ┃ ┃ ┗ 📂origin
+ ┃ ┃ ┃ ┃ ┗ 📜main
+ ┃ ┃ ┗ 📂tags
+ ┃ ┣ 📜.MERGE_MSG.swp
+ ┃ ┣ 📜COMMIT_EDITMSG
+ ┃ ┣ 📜config
+ ┃ ┣ 📜description
+ ┃ ┣ 📜FETCH_HEAD
+ ┃ ┣ 📜HEAD
+ ┃ ┣ 📜index
+ ┃ ┗ 📜ORIG_HEAD
+ ┣ 📂.vscode
+ ┃ ┗ 📜settings.json
+ ┣ 📂backend
+ ┃ ┣ 📂config
+ ┃ ┃ ┗ 📜db.js
+ ┃ ┣ 📂controllers
+ ┃ ┃ ┣ 📜authController.js
+ ┃ ┃ ┣ 📜datosPersonalesControllers.js
+ ┃ ┃ ┣ 📜experienciaControllers.js
+ ┃ ┃ ┣ 📜experienciaTotControllers.js
+ ┃ ┃ ┣ 📜firmaServidorControllers.js
+ ┃ ┃ ┣ 📜formacionAcademicaControllers.js
+ ┃ ┃ ┣ 📜hojaVidaController.js
+ ┃ ┃ ┣ 📜idiomaController.js
+ ┃ ┃ ┣ 📜pdfControllers.js
+ ┃ ┃ ┗ 📜recoveryController.js
+ ┃ ┣ 📂middlewares
+ ┃ ┃ ┣ 📜auth.js
+ ┃ ┃ ┣ 📜idiomasValidations.js
+ ┃ ┃ ┣ 📜requerirAdmin.js
+ ┃ ┃ ┣ 📜validateFormacion.js
+ ┃ ┃ ┗ 📜verificarJWT.js
+ ┃ ┣ 📂models
+ ┃ ┃ ┣ 📂legacy
+ ┃ ┃ ┃ ┣ 📜DatosPersonales.js
+ ┃ ┃ ┃ ┣ 📜Experiencia.js
+ ┃ ┃ ┃ ┣ 📜ExperienciaTot.js
+ ┃ ┃ ┃ ┣ 📜FirmaServidor.js
+ ┃ ┃ ┃ ┣ 📜FormacionAcademica.js
+ ┃ ┃ ┃ ┣ 📜Idioma.js
+ ┃ ┃ ┃ ┗ 📜Usuario.js
+ ┃ ┃ ┗ 📜UsuarioEmbebido.js
+ ┃ ┣ 📂routes
+ ┃ ┃ ┣ 📜datosPersonales.js
+ ┃ ┃ ┣ 📜experiencia.js
+ ┃ ┃ ┣ 📜experienciaTot.js
+ ┃ ┃ ┣ 📜firmaServidor.js
+ ┃ ┃ ┣ 📜formacionAcademica.js
+ ┃ ┃ ┣ 📜hojaVidaRoutes.js
+ ┃ ┃ ┣ 📜idiomas.js
+ ┃ ┃ ┣ 📜login.js
+ ┃ ┃ ┣ 📜pdf.js
+ ┃ ┃ ┣ 📜recovery.js
+ ┃ ┃ ┗ 📜usuarios.js
+ ┃ ┣ 📂scripts
+ ┃ ┃ ┣ 📜limpiarColeccionesAntiguas.js
+ ┃ ┃ ┗ 📜migrarAEmbebido.js
+ ┃ ┣ 📜app.js
+ ┃ ┗ 📜index.js
+ ┣ 📂frontend
+ ┃ ┣ 📂build
+ ┃ ┃ ┗ 📜index.html
+ ┃ ┣ 📂dist
+ ┃ ┃ ┣ 📂assets
+ ┃ ┃ ┃ ┣ 📜Escudo.svg
+ ┃ ┃ ┃ ┣ 📜html2canvas-DYnHhVsd.js
+ ┃ ┃ ┃ ┣ 📜icon1.png
+ ┃ ┃ ┃ ┣ 📜icon2.png
+ ┃ ┃ ┃ ┣ 📜icon3.ico
+ ┃ ┃ ┃ ┣ 📜icon4.png
+ ┃ ┃ ┃ ┣ 📜icon5.png
+ ┃ ┃ ┃ ┣ 📜icon6.png
+ ┃ ┃ ┃ ┣ 📜icon7.png
+ ┃ ┃ ┃ ┣ 📜icon8.png
+ ┃ ┃ ┃ ┣ 📜icon9.png
+ ┃ ┃ ┃ ┣ 📜index-CoOFSro0.js
+ ┃ ┃ ┃ ┣ 📜index-CxHxq5El.css
+ ┃ ┃ ┃ ┣ 📜index.es-38i7OTHk.js
+ ┃ ┃ ┃ ┗ 📜purify.es-CQJ0hv7W.js
+ ┃ ┃ ┣ 📜FORMATO_UNICO_HOJA_DE_VIDA.pdf
+ ┃ ┃ ┗ 📜index.html
+ ┃ ┣ 📂public
+ ┃ ┃ ┣ 📂assets
+ ┃ ┃ ┃ ┣ 📜Escudo.svg
+ ┃ ┃ ┃ ┣ 📜icon1.png
+ ┃ ┃ ┃ ┣ 📜icon2.png
+ ┃ ┃ ┃ ┣ 📜icon3.ico
+ ┃ ┃ ┃ ┣ 📜icon4.png
+ ┃ ┃ ┃ ┣ 📜icon5.png
+ ┃ ┃ ┃ ┣ 📜icon6.png
+ ┃ ┃ ┃ ┣ 📜icon7.png
+ ┃ ┃ ┃ ┣ 📜icon8.png
+ ┃ ┃ ┃ ┗ 📜icon9.png
+ ┃ ┃ ┣ 📜FORMATO_UNICO_HOJA_DE_VIDA.pdf
+ ┃ ┃ ┣ 📜robots.txt
+ ┃ ┃ ┗ 📜sitemap.xml
+ ┃ ┣ 📂src
+ ┃ ┃ ┣ 📂api
+ ┃ ┃ ┃ ┣ 📜axios.js
+ ┃ ┃ ┃ ┣ 📜datosAPI.js
+ ┃ ┃ ┃ ┗ 📜pdfAPI.js
+ ┃ ┃ ┣ 📂assets
+ ┃ ┃ ┃ ┣ 📜pdf-styles.css
+ ┃ ┃ ┃ ┗ 📜vue.svg
+ ┃ ┃ ┣ 📂components
+ ┃ ┃ ┃ ┣ 📜DatosPerComponent.vue
+ ┃ ┃ ┃ ┣ 📜Experiencia2Component.vue
+ ┃ ┃ ┃ ┣ 📜ExperienciaComponent.vue
+ ┃ ┃ ┃ ┣ 📜ExperienciaTotComponent.vue
+ ┃ ┃ ┃ ┣ 📜FirmaServidorComponent.vue
+ ┃ ┃ ┃ ┣ 📜FooterComponent.vue
+ ┃ ┃ ┃ ┣ 📜FormacionAcadComponent.vue
+ ┃ ┃ ┃ ┣ 📜Header2Component.vue
+ ┃ ┃ ┃ ┣ 📜HeaderComponent.vue
+ ┃ ┃ ┃ ┣ 📜IdiomasComponent.vue
+ ┃ ┃ ┃ ┣ 📜MenuComponents.vue
+ ┃ ┃ ┃ ┗ 📜RecursosHumComponent.vue
+ ┃ ┃ ┣ 📂composables
+ ┃ ┃ ┃ ┣ 📜useFormatoOficialHV.js
+ ┃ ┃ ┃ ┗ 📜useSEO.js
+ ┃ ┃ ┣ 📂helpers
+ ┃ ┃ ┃ ┗ 📜axiosInstance.js
+ ┃ ┃ ┣ 📂Layouts
+ ┃ ┃ ┃ ┣ 📜LayoutPrivado.vue
+ ┃ ┃ ┃ ┗ 📜LayoutPublico.vue
+ ┃ ┃ ┣ 📂router
+ ┃ ┃ ┃ ┗ 📜index.js
+ ┃ ┃ ┣ 📂services
+ ┃ ┃ ┣ 📂stores
+ ┃ ┃ ┃ ┣ 📜datos.js
+ ┃ ┃ ┃ ┣ 📜experienciaStore.js
+ ┃ ┃ ┃ ┣ 📜hojaVida.js
+ ┃ ┃ ┃ ┗ 📜usuarios.js
+ ┃ ┃ ┣ 📂utils
+ ┃ ┃ ┃ ┣ 📜experienciaUtils.js
+ ┃ ┃ ┃ ┣ 📜pdfUtils
+ ┃ ┃ ┃ ┗ 📜showMessage.js
+ ┃ ┃ ┣ 📂views
+ ┃ ┃ ┃ ┣ 📜Hoja1.vue
+ ┃ ┃ ┃ ┣ 📜Hoja2.vue
+ ┃ ┃ ┃ ┣ 📜Hoja2Extra.vue
+ ┃ ┃ ┃ ┣ 📜Hoja3.vue
+ ┃ ┃ ┃ ┣ 📜Home.vue
+ ┃ ┃ ┃ ┣ 📜Login.vue
+ ┃ ┃ ┃ ┣ 📜RecuperarPassword.vue
+ ┃ ┃ ┃ ┗ 📜VistaCompleta.vue
+ ┃ ┃ ┣ 📜App.vue
+ ┃ ┃ ┣ 📜main.js
+ ┃ ┃ ┗ 📜style.css
+ ┃ ┣ 📜index.html
+ ┃ ┣ 📜package-lock.json
+ ┃ ┣ 📜package.json
+ ┃ ┗ 📜vite.config.js
+ ┣ 📜.gitignore
+ ┣ 📜DOCUMENTACION_COMPLETA.md
+ ┣ 📜DOCUMENTACION_COMPLETA.pdf
+ ┣ 📜env.example
+ ┣ 📜generate tree.txt
+ ┣ 📜GUIA_SEO.md
+ ┣ 📜package-lock.json
+ ┣ 📜package.json
+ ┣ 📜Procfile
+ ┣ 📜README.md
+ ┣ 📜SEO_IMPLEMENTADO.md
+ ┣ 📜temp_doc.md
+ ┣ 📜Valeria13
+ ┗ 📜Valeria13..pub
