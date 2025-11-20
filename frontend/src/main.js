@@ -5,11 +5,13 @@ import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";
 import axios from "axios";
+import { createHead } from "@vueuse/head";
 
 
 const pinia = createPinia();
+const head = createHead();
 
-createApp(App).use(router).use(pinia).mount("#app");
+createApp(App).use(router).use(pinia).use(head).mount("#app");
 
 axios.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
