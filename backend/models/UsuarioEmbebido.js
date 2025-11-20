@@ -62,7 +62,7 @@ const usuarioEmbebidoSchema = new Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
   roles: { type: [String], default: ["usuario"] },
-  
+
   // Datos personales
   apellido1: String,
   apellido2: String,
@@ -75,34 +75,34 @@ const usuarioEmbebidoSchema = new Schema({
   libretaMilitar: String,
   numeroLibreta: String,
   dm: String,
-  
+
   fechaNacimiento: fechaNacimientoSchema,
   direccionCorrespondencia: direccionSchema,
-  
+
   // Formación académica
   gradoBasica: { type: Number, min: 1, max: 11 },
   tituloBachiller: String,
   mesGrado: String,
   anioGrado: String,
   formacionSuperior: [formacionSuperiorSchema],
-  
+
   // Experiencia laboral
   experiencias: [experienciaSchema],
-  
+
   // Resumen de experiencia (campos adicionales)
   experienciaPublica: String,
   experienciaPrivada: String,
-  
+
   // Idiomas
   idiomas: [idiomaSchema],
-  
+
   // Firma y declaraciones
   firmaServidor: String,
   firmaBase64: String, // ✅ Campo adicional para experienciaTot
   declaracionInhabilidad: { type: String, enum: ['SI', 'NO', ''] },
   ciudadDiligenciamiento: String,
   fechaDiligenciamiento: Date,
-  
+
   // Metadatos
   fechaCreacion: { type: Date, default: Date.now },
   ultimoAcceso: Date

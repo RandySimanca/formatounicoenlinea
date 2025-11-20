@@ -1,10 +1,10 @@
 // backend/routes/firmaServidor.js
 
 import express from "express";
-import { 
-  guardarFirmaServidor, 
-  obtenerFirmaServidor, 
-  eliminarFirmaServidor 
+import {
+  guardarFirmaServidor,
+  obtenerFirmaServidor,
+  eliminarFirmaServidor
 } from "../controllers/firmaServidorControllers.js";
 import verificarJWT from "../middlewares/verificarJWT.js";
 

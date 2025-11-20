@@ -22,13 +22,13 @@ export const registrarUsuario = async (req, res) => {
       return res.status(409).json({ mensaje: "El correo ya está registrado." });
     }
 
-    const nuevoUsuario = new UsuarioEmbebido({ 
-      nombre, 
-      email: email.toLowerCase(), 
-      password, 
+    const nuevoUsuario = new UsuarioEmbebido({
+      nombre,
+      email: email.toLowerCase(),
+      password,
       roles: roles || ["usuario"]
     });
-    
+
     await nuevoUsuario.save();
 
     console.log('✅ Usuario registrado exitosamente:', email);

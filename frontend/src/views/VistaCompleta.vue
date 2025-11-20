@@ -29,17 +29,19 @@
     <!-- Vista previa del formato oficial -->
     <div v-show="modoGeneracion === 'oficial'" class="vista-previa-oficial">
       <div class="controles-vista-previa">
-        <button 
-          @click="generarVistaPrevia" 
+        <button
+          @click="generarVistaPrevia"
           class="btn-previa"
           :disabled="cargandoPrevia"
         >
-          <span v-if="!cargandoPrevia">🔄 {{ urlPrevia ? 'Actualizar' : 'Generar' }} Vista Previa</span>
+          <span v-if="!cargandoPrevia"
+            >🔄 {{ urlPrevia ? "Actualizar" : "Generar" }} Vista Previa</span
+          >
           <span v-else>⏳ Generando...</span>
         </button>
-        <button 
-          v-if="urlPrevia" 
-          @click="cerrarVistaPrevia" 
+        <button
+          v-if="urlPrevia"
+          @click="cerrarVistaPrevia"
           class="btn-cerrar-previa"
         >
           ❌ Cerrar Vista Previa
@@ -47,8 +49,8 @@
       </div>
 
       <div v-if="urlPrevia" class="contenedor-iframe">
-        <iframe 
-          :src="urlPrevia" 
+        <iframe
+          :src="urlPrevia"
           class="iframe-pdf"
           title="Vista previa del PDF oficial"
         ></iframe>
@@ -57,8 +59,13 @@
       <div v-else class="mensaje-sin-previa">
         <div class="icono-documento">📄</div>
         <h3>Vista previa del formato oficial</h3>
-        <p>Haz clic en "Generar Vista Previa" para ver cómo se verá tu hoja de vida en el formato oficial del gobierno.</p>
-        <p class="nota-info">💡 La vista previa no consume tus descargas disponibles</p>
+        <p>
+          Haz clic en "Generar Vista Previa" para ver cómo se verá tu hoja de
+          vida en el formato oficial del gobierno.
+        </p>
+        <p class="nota-info">
+          💡 La vista previa no consume tus descargas disponibles
+        </p>
       </div>
     </div>
 
@@ -69,18 +76,29 @@
       :class="{ 'limite-alcanzado': limiteAlcanzado }"
       :aria-busy="generando ? 'true' : 'false'"
       @click="manejarClickBoton"
-      :title="limiteAlcanzado ? 'Click para ver opciones de desbloqueo' : 'Generar PDF'"
+      :title="
+        limiteAlcanzado
+          ? 'Click para ver opciones de desbloqueo'
+          : 'Generar PDF'
+      "
     >
-      <span v-if="!generando && !limiteAlcanzado" class="btn-icon" aria-hidden="true">📄</span>
-      <span v-else-if="limiteAlcanzado" class="btn-icon" aria-hidden="true">🔒</span>
+      <span
+        v-if="!generando && !limiteAlcanzado"
+        class="btn-icon"
+        aria-hidden="true"
+        >📄</span
+      >
+      <span v-else-if="limiteAlcanzado" class="btn-icon" aria-hidden="true"
+        >🔒</span
+      >
       <span v-else class="spinner" aria-hidden="true"></span>
       <span class="btn-text">
-        {{ 
-          limiteAlcanzado 
-            ? 'Generar PDF (Límite alcanzado)' 
-            : generando 
-              ? 'Generando...' 
-              : `Generar PDF (${descargasRestantes}/${limiteDescargas})`
+        {{
+          limiteAlcanzado
+            ? "Generar PDF (Límite alcanzado)"
+            : generando
+            ? "Generando..."
+            : `Generar PDF (${descargasRestantes}/${limiteDescargas})`
         }}
       </span>
     </button>
@@ -99,9 +117,12 @@
               <span class="limit-text">descargas utilizadas</span>
             </div>
           </div>
-          
-          <p class="main-message">Has alcanzado el límite máximo de descargas de tu hoja de vida en PDF.</p>
-          
+
+          <p class="main-message">
+            Has alcanzado el límite máximo de descargas de tu hoja de vida en
+            PDF.
+          </p>
+
           <!-- Información de identificación del usuario -->
           <div class="device-info">
             <h4>👤 Información del usuario</h4>
@@ -120,36 +141,50 @@
               </div>
             </div>
           </div>
-          
+
           <div class="unlock-section">
             <h4>🔓 Desbloquear descargas</h4>
-            <p>Ingresa el código de desbloqueo proporcionado por el administrador:</p>
-            
+            <p>
+              Ingresa el código de desbloqueo proporcionado por el
+              administrador:
+            </p>
+
             <div class="codigo-desbloqueo">
               <div class="input-wrapper">
-                <input 
-                  type="text" 
-                  id="codigo-input" 
-                  v-model="codigoDesbloqueo" 
-                  placeholder="Código de desbloqueo" 
+                <input
+                  type="text"
+                  id="codigo-input"
+                  v-model="codigoDesbloqueo"
+                  placeholder="Código de desbloqueo"
                   class="codigo-input"
                   @keyup.enter="verificarCodigo"
                 />
-                <button @click="verificarCodigo" class="btn-verificar" :disabled="!codigoDesbloqueo.trim()">
+                <button
+                  @click="verificarCodigo"
+                  class="btn-verificar"
+                  :disabled="!codigoDesbloqueo.trim()"
+                >
                   <span v-if="verificandoCodigo" class="spinner-small"></span>
                   <span v-else>Verificar</span>
                 </button>
               </div>
-              <div v-if="mensajeVerificacion" class="mensaje-verificacion" :class="{ 'error': esError, 'success': !esError }">
+              <div
+                v-if="mensajeVerificacion"
+                class="mensaje-verificacion"
+                :class="{ error: esError, success: !esError }"
+              >
                 {{ mensajeVerificacion }}
               </div>
             </div>
           </div>
-          
+
           <div class="contact-section">
             <h4>📞 Contactar administrador</h4>
-            <p>Para obtener un código de desbloqueo, contacta al administrador proporcionando tu ID de usuario:</p>
-            
+            <p>
+              Para obtener un código de desbloqueo, contacta al administrador
+              proporcionando tu ID de usuario:
+            </p>
+
             <div class="contact-info">
               <div class="contact-item">
                 <span class="contact-icon">👤</span>
@@ -165,15 +200,18 @@
               </div>
             </div>
           </div>
-          
+
           <div class="note-section">
-            <p class="note">💡 Menciona tu ID de usuario y nombre al contactar al administrador para recibir un código específico.</p>
+            <p class="note">
+              💡 Menciona tu ID de usuario y nombre al contactar al
+              administrador para recibir un código específico.
+            </p>
           </div>
         </div>
         <div class="modal-footer">
           <button @click="cerrarModal" class="btn-secondary">Cerrar</button>
           <button @click="copiarInfoCompleta" class="btn-primary">
-            {{ textoCopiado ? '✅ Copiado' : '📋 Copiar info completa' }}
+            {{ textoCopiado ? "✅ Copiado" : "📋 Copiar info completa" }}
           </button>
         </div>
       </div>
@@ -183,11 +221,13 @@
     <div class="contador-info" v-if="!limiteAlcanzado">
       <div class="contador-header">
         <span class="contador-text">Descargas disponibles</span>
-        <span class="contador-numeros">{{ descargasRestantes }}/{{ limiteDescargas }}</span>
+        <span class="contador-numeros"
+          >{{ descargasRestantes }}/{{ limiteDescargas }}</span
+        >
       </div>
       <div class="contador-barra">
-        <div 
-          class="contador-progreso" 
+        <div
+          class="contador-progreso"
           :style="{ width: `${(descargasUsadas / limiteDescargas) * 100}%` }"
         ></div>
       </div>
@@ -199,44 +239,56 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed, onMounted, watch, onBeforeUnmount } from 'vue';
-import html2pdf from 'html2pdf.js';
-import { useFormatoOficialHV } from '../composables/useFormatoOficialHV';
-import Hoja1 from './Hoja1.vue';
-import Hoja2 from './Hoja2.vue';
-import Hoja3 from './Hoja3.vue';
-import { useRoute } from 'vue-router';
-import { useUsuarioStore } from '../stores/usuarios';
-import api from '../api/axios';
+import {
+  ref,
+  nextTick,
+  computed,
+  onMounted,
+  watch,
+  onBeforeUnmount,
+} from "vue";
+import html2pdf from "html2pdf.js";
+import { useFormatoOficialHV } from "../composables/useFormatoOficialHV";
+import Hoja1 from "./Hoja1.vue";
+import Hoja2 from "./Hoja2.vue";
+import Hoja3 from "./Hoja3.vue";
+import { useRoute } from "vue-router";
+import { useUsuarioStore } from "../stores/usuarios";
+import api from "../api/axios";
 
 const documento = ref(null);
 const generando = ref(false);
-const nombre = ref('Invitado');
+const nombre = ref("Invitado");
 const route = useRoute();
 const usuarioStore = useUsuarioStore();
-const modoGeneracion = ref('oficial');
+const modoGeneracion = ref("oficial");
 
 // Variables para vista previa
 const urlPrevia = ref(null);
 const cargandoPrevia = ref(false);
 
-const { llenarFormatoOficial, descargarPDF, mapearDatosUsuario } = useFormatoOficialHV();
+const { llenarFormatoOficial, descargarPDF, mapearDatosUsuario } =
+  useFormatoOficialHV();
 
 // Sistema de contador INDIVIDUAL por usuario
 const limiteDescargas = ref(1);
 const descargasUsadas = ref(0);
 const mostrarModalLimite = ref(false);
 const textoCopiado = ref(false);
-const codigoDesbloqueo = ref('');
-const mensajeVerificacion = ref('');
+const codigoDesbloqueo = ref("");
+const mensajeVerificacion = ref("");
 const esError = ref(false);
 const verificandoCodigo = ref(false);
-const usuarioId = ref('');
-const navegadorInfo = ref('');
+const usuarioId = ref("");
+const navegadorInfo = ref("");
 
 // Computed properties
-const descargasRestantes = computed(() => limiteDescargas.value - descargasUsadas.value);
-const limiteAlcanzado = computed(() => descargasUsadas.value >= limiteDescargas.value);
+const descargasRestantes = computed(
+  () => limiteDescargas.value - descargasUsadas.value
+);
+const limiteAlcanzado = computed(
+  () => descargasUsadas.value >= limiteDescargas.value
+);
 
 // IndexedDB para persistencia individual
 let idbInstance = null;
@@ -247,14 +299,14 @@ function abrirBD() {
       resolve(idbInstance);
       return;
     }
-    const request = window.indexedDB.open('pdfLimiterDB_Individual', 2);
+    const request = window.indexedDB.open("pdfLimiterDB_Individual", 2);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      if (!db.objectStoreNames.contains('userCounters')) {
-        db.createObjectStore('userCounters', { keyPath: 'usuarioId' });
+      if (!db.objectStoreNames.contains("userCounters")) {
+        db.createObjectStore("userCounters", { keyPath: "usuarioId" });
       }
-      if (!db.objectStoreNames.contains('usersRegistry')) {
-        db.createObjectStore('usersRegistry', { keyPath: 'usuarioId' });
+      if (!db.objectStoreNames.contains("usersRegistry")) {
+        db.createObjectStore("usersRegistry", { keyPath: "usuarioId" });
       }
     };
     request.onsuccess = (event) => {
@@ -269,14 +321,14 @@ async function idbObtenerContador(usuarioIdClave) {
   try {
     const db = await abrirBD();
     return await new Promise((resolve, reject) => {
-      const tx = db.transaction('userCounters', 'readonly');
-      const store = tx.objectStore('userCounters');
+      const tx = db.transaction("userCounters", "readonly");
+      const store = tx.objectStore("userCounters");
       const getReq = store.get(usuarioIdClave);
       getReq.onsuccess = () => resolve(getReq.result || null);
       getReq.onerror = () => reject(getReq.error);
     });
   } catch (e) {
-    console.warn('IndexedDB no disponible para obtener contador:', e);
+    console.warn("IndexedDB no disponible para obtener contador:", e);
     return null;
   }
 }
@@ -285,14 +337,14 @@ async function idbGuardarContador(info) {
   try {
     const db = await abrirBD();
     await new Promise((resolve, reject) => {
-      const tx = db.transaction('userCounters', 'readwrite');
-      const store = tx.objectStore('userCounters');
+      const tx = db.transaction("userCounters", "readwrite");
+      const store = tx.objectStore("userCounters");
       const putReq = store.put(info);
       putReq.onsuccess = () => resolve();
       putReq.onerror = () => reject(putReq.error);
     });
   } catch (e) {
-    console.warn('IndexedDB no disponible para guardar contador:', e);
+    console.warn("IndexedDB no disponible para guardar contador:", e);
   }
 }
 
@@ -308,73 +360,80 @@ onBeforeUnmount(() => {
 
 // Watcher para cambios en el nombre del usuario
 watch(nombre, async (nuevoNombre, nombreAnterior) => {
-  if (nuevoNombre !== nombreAnterior && nuevoNombre !== 'Invitado') {
+  if (nuevoNombre !== nombreAnterior && nuevoNombre !== "Invitado") {
     await reinicializarUsuario();
   }
 });
 
 async function inicializarSistemaIndividual() {
-  const datos = JSON.parse(localStorage.getItem('usuario') || '{}');
+  const datos = JSON.parse(localStorage.getItem("usuario") || "{}");
   if (datos?.nombre) {
     nombre.value = datos.nombre;
   }
-  
+
   generarInfoNavegador();
   await generarUsuarioIdPersistente();
   await cargarContadorIndividual();
-  
-  console.log(`Sistema inicializado para usuario: ${nombre.value} (ID: ${usuarioId.value})`);
+
+  console.log(
+    `Sistema inicializado para usuario: ${nombre.value} (ID: ${usuarioId.value})`
+  );
 }
 
 async function reinicializarUsuario() {
   await generarUsuarioIdPersistente();
   await cargarContadorIndividual();
-  console.log(`Usuario reinicializado: ${nombre.value} (ID: ${usuarioId.value})`);
+  console.log(
+    `Usuario reinicializado: ${nombre.value} (ID: ${usuarioId.value})`
+  );
 }
 
 function generarInfoNavegador() {
   try {
     const userAgent = navigator.userAgent;
     const platform = navigator.platform;
-    
-    let browserName = 'Unknown';
-    if (userAgent.includes('Firefox')) browserName = 'Firefox';
-    else if (userAgent.includes('Chrome')) browserName = 'Chrome';
-    else if (userAgent.includes('Safari')) browserName = 'Safari';
-    else if (userAgent.includes('Edge')) browserName = 'Edge';
-    
+
+    let browserName = "Unknown";
+    if (userAgent.includes("Firefox")) browserName = "Firefox";
+    else if (userAgent.includes("Chrome")) browserName = "Chrome";
+    else if (userAgent.includes("Safari")) browserName = "Safari";
+    else if (userAgent.includes("Edge")) browserName = "Edge";
+
     navegadorInfo.value = `${platform} - ${browserName}`;
   } catch (error) {
-    navegadorInfo.value = 'Navegador desconocido';
+    navegadorInfo.value = "Navegador desconocido";
   }
 }
 
 async function generarUsuarioIdPersistente() {
   try {
     if (usuarioStore.user && usuarioStore.user.id) {
-      usuarioId.value = `STORE_${usuarioStore.user.id}_${nombre.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()}`;
+      usuarioId.value = `STORE_${usuarioStore.user.id}_${nombre.value
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .toUpperCase()}`;
       return;
     }
-    
+
     const datosBase = {
       nombre: nombre.value.toLowerCase().trim(),
       userAgent: navigator.userAgent.substring(0, 100),
       language: navigator.language,
       platform: navigator.platform,
       screenResolution: `${screen.width}x${screen.height}`,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
-    
+
     const cadenaUnica = JSON.stringify(datosBase);
     const hash = await generarHashSeguro(cadenaUnica);
-    
-    const nombreLimpio = nombre.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    const prefijo = nombreLimpio.substring(0, 4).padEnd(4, 'X');
-    
+
+    const nombreLimpio = nombre.value
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .toUpperCase();
+    const prefijo = nombreLimpio.substring(0, 4).padEnd(4, "X");
+
     usuarioId.value = `USER_${prefijo}_${hash}`;
-    
   } catch (error) {
-    console.error('Error generando ID persistente:', error);
+    console.error("Error generando ID persistente:", error);
     const fallback = `${nombre.value}_${Date.now()}`;
     usuarioId.value = await generarHashSeguro(fallback);
   }
@@ -382,15 +441,15 @@ async function generarUsuarioIdPersistente() {
 
 async function generarHashSeguro(texto) {
   let hash = 0;
-  if (texto.length === 0) return 'DEFAULT';
-  
+  if (texto.length === 0) return "DEFAULT";
+
   for (let i = 0; i < texto.length; i++) {
     const char = texto.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
-  
-  return Math.abs(hash).toString(36).toUpperCase().padStart(8, '0');
+
+  return Math.abs(hash).toString(36).toUpperCase().padStart(8, "0");
 }
 
 function obtenerClaveUsuarioEspecifica() {
@@ -402,52 +461,66 @@ function obtenerClaveBackupUsuario() {
 }
 
 async function cargarContadorIndividual() {
-  if (!usuarioId.value || !nombre.value || nombre.value === 'Invitado') {
+  if (!usuarioId.value || !nombre.value || nombre.value === "Invitado") {
     descargasUsadas.value = 0;
     limiteDescargas.value = 1;
     return;
   }
-  
+
   const claveEspecifica = obtenerClaveUsuarioEspecifica();
   const claveBackup = obtenerClaveBackupUsuario();
   let contadorCargado = false;
-  
+
   try {
     const infoIdb = await idbObtenerContador(usuarioId.value);
-    if (infoIdb && infoIdb.usuarioId === usuarioId.value && infoIdb.nombre === nombre.value) {
+    if (
+      infoIdb &&
+      infoIdb.usuarioId === usuarioId.value &&
+      infoIdb.nombre === nombre.value
+    ) {
       descargasUsadas.value = Math.max(0, infoIdb.usadas || 0);
       limiteDescargas.value = Math.max(1, infoIdb.limite || 1);
       contadorCargado = true;
-      console.log(`Contador IDB cargado: ${nombre.value} (${descargasUsadas.value}/${limiteDescargas.value})`);
+      console.log(
+        `Contador IDB cargado: ${nombre.value} (${descargasUsadas.value}/${limiteDescargas.value})`
+      );
     }
   } catch (e) {
-    console.warn('Error cargando desde IndexedDB:', e);
+    console.warn("Error cargando desde IndexedDB:", e);
   }
-  
+
   if (!contadorCargado) {
     try {
       const datos = localStorage.getItem(claveEspecifica);
       if (datos) {
         const info = JSON.parse(datos);
-        if (info.usuarioId === usuarioId.value && info.nombre === nombre.value) {
+        if (
+          info.usuarioId === usuarioId.value &&
+          info.nombre === nombre.value
+        ) {
           descargasUsadas.value = Math.max(0, info.usadas || 0);
           limiteDescargas.value = Math.max(1, info.limite || 1);
           contadorCargado = true;
-          console.log(`Contador LS cargado: ${nombre.value} (${descargasUsadas.value}/${limiteDescargas.value})`);
+          console.log(
+            `Contador LS cargado: ${nombre.value} (${descargasUsadas.value}/${limiteDescargas.value})`
+          );
           await idbGuardarContador(info);
         }
       }
     } catch (error) {
-      console.error('Error cargando contador principal:', error);
+      console.error("Error cargando contador principal:", error);
     }
   }
-  
+
   if (!contadorCargado) {
     try {
       const datosBackup = localStorage.getItem(claveBackup);
       if (datosBackup) {
         const info = JSON.parse(datosBackup);
-        if (info.usuarioId === usuarioId.value && info.nombre === nombre.value) {
+        if (
+          info.usuarioId === usuarioId.value &&
+          info.nombre === nombre.value
+        ) {
           descargasUsadas.value = Math.max(0, info.usadas || 0);
           limiteDescargas.value = Math.max(1, info.limite || 1);
           contadorCargado = true;
@@ -455,17 +528,19 @@ async function cargarContadorIndividual() {
         }
       }
     } catch (error) {
-      console.error('Error cargando backup:', error);
+      console.error("Error cargando backup:", error);
     }
   }
-  
+
   if (!contadorCargado) {
     descargasUsadas.value = 0;
     limiteDescargas.value = 1;
     await guardarContadorIndividual();
-    console.log(`Nuevo usuario inicializado: ${nombre.value} (ID: ${usuarioId.value})`);
+    console.log(
+      `Nuevo usuario inicializado: ${nombre.value} (ID: ${usuarioId.value})`
+    );
   }
-  
+
   if (descargasUsadas.value > limiteDescargas.value) {
     descargasUsadas.value = limiteDescargas.value;
     await guardarContadorIndividual();
@@ -473,10 +548,10 @@ async function cargarContadorIndividual() {
 }
 
 async function guardarContadorIndividual() {
-  if (!usuarioId.value || !nombre.value || nombre.value === 'Invitado') {
+  if (!usuarioId.value || !nombre.value || nombre.value === "Invitado") {
     return;
   }
-  
+
   const info = {
     usuarioId: usuarioId.value,
     nombre: nombre.value,
@@ -484,91 +559,109 @@ async function guardarContadorIndividual() {
     limite: limiteDescargas.value,
     ultimaDescarga: new Date().toISOString(),
     navegadorInfo: navegadorInfo.value,
-    version: '4.0_INDIVIDUAL'
+    version: "4.0_INDIVIDUAL",
   };
-  
+
   const claveEspecifica = obtenerClaveUsuarioEspecifica();
   const claveBackup = obtenerClaveBackupUsuario();
-  
+
   try {
     localStorage.setItem(claveEspecifica, JSON.stringify(info));
     localStorage.setItem(claveBackup, JSON.stringify(info));
     await idbGuardarContador(info);
-    console.log(`Contador guardado individualmente: ${nombre.value} (${descargasUsadas.value}/${limiteDescargas.value})`);
+    console.log(
+      `Contador guardado individualmente: ${nombre.value} (${descargasUsadas.value}/${limiteDescargas.value})`
+    );
   } catch (error) {
-    console.error('Error guardando contador individual:', error);
+    console.error("Error guardando contador individual:", error);
   }
 }
 
 async function obtenerDatosCompletos() {
   try {
-    console.log('📥 Obteniendo todos los datos desde la API...');
+    console.log("📥 Obteniendo todos los datos desde la API...");
 
     // ⭐ IMPORTANTE: Agregar resFirma a las llamadas en paralelo
-    const [resDatos, resFormacion, resIdiomas, resExperiencia, resFirma] = await Promise.all([
-      api.get('/datos-personales').catch(() => ({ data: {} })),
-      api.get('/formacion-academica').catch(() => ({ data: {} })),
-      api.get('/idiomas').catch(() => ({ data: { idiomas: [] } })),
-      api.get('/experiencia').catch(() => ({ data: [] })),
-      api.get('/firma-servidor').catch(() => ({ data: {} })) // ⭐ NUEVO
-    ]);
+    const [resDatos, resFormacion, resIdiomas, resExperiencia, resFirma] =
+      await Promise.all([
+        api.get("/datos-personales").catch(() => ({ data: {} })),
+        api.get("/formacion-academica").catch(() => ({ data: {} })),
+        api.get("/idiomas").catch(() => ({ data: { idiomas: [] } })),
+        api.get("/experiencia").catch(() => ({ data: [] })),
+        api.get("/firma-servidor").catch(() => ({ data: {} })), // ⭐ NUEVO
+      ]);
 
     const datosCompletos = {
       ...resDatos.data,
       gradoBasica: resFormacion.data?.gradoBasica,
-      tituloBachiller: resFormacion.data?.tituloBachiller || 'Bachiller',
-      mesGrado: resFormacion.data?.mesGrado || '',
-      anioGrado: resFormacion.data?.anioGrado || '',
-      formacionSuperior: resFormacion.data?.formacionSuperior || resFormacion.data?.educacionSuperior || [],
+      tituloBachiller: resFormacion.data?.tituloBachiller || "Bachiller",
+      mesGrado: resFormacion.data?.mesGrado || "",
+      anioGrado: resFormacion.data?.anioGrado || "",
+      formacionSuperior:
+        resFormacion.data?.formacionSuperior ||
+        resFormacion.data?.educacionSuperior ||
+        [],
       idiomas: resIdiomas.data?.idiomas || [],
       experienciaLaboral: Array.isArray(resExperiencia.data)
         ? resExperiencia.data
-        : (resExperiencia.data?.experiencia || []),
-      
+        : resExperiencia.data?.experiencia || [],
+
       // ⭐ AGREGAR DATOS DE FIRMA
-      ciudadDiligenciamiento: resFirma.data?.ciudadDiligenciamiento || '',
-      fechaDiligenciamiento: resFirma.data?.fechaDiligenciamiento || '',
+      ciudadDiligenciamiento: resFirma.data?.ciudadDiligenciamiento || "",
+      fechaDiligenciamiento: resFirma.data?.fechaDiligenciamiento || "",
       firmaServidor: resFirma.data?.firmaServidor || null,
     };
 
-    console.log('📦 Datos combinados obtenidos correctamente');
-    console.log('🖊️ Firma incluida:', datosCompletos.firmaServidor ? 'SÍ ✅' : 'NO ❌');
+    console.log("📦 Datos combinados obtenidos correctamente");
+    console.log(
+      "🖊️ Firma incluida:",
+      datosCompletos.firmaServidor ? "SÍ ✅" : "NO ❌"
+    );
     if (datosCompletos.firmaServidor) {
-      console.log('🖊️ Preview firma:', datosCompletos.firmaServidor.substring(0, 50) + '...');
+      console.log(
+        "🖊️ Preview firma:",
+        datosCompletos.firmaServidor.substring(0, 50) + "..."
+      );
     }
-    
+
     return datosCompletos;
   } catch (error) {
-    console.error('❌ Error obteniendo datos:', error);
-    throw new Error('No se pudieron cargar los datos de la base de datos');
+    console.error("❌ Error obteniendo datos:", error);
+    throw new Error("No se pudieron cargar los datos de la base de datos");
   }
 }
 
 async function generarVistaPrevia() {
   cargandoPrevia.value = true;
   try {
-    console.log('👁️ Generando vista previa del PDF oficial...');
-    
+    console.log("👁️ Generando vista previa del PDF oficial...");
+
     if (urlPrevia.value) {
       URL.revokeObjectURL(urlPrevia.value);
     }
 
     const datosCompletos = await obtenerDatosCompletos();
-    console.log('🔍 Verificando firma en vista previa:', datosCompletos.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
-    
+    console.log(
+      "🔍 Verificando firma en vista previa:",
+      datosCompletos.firmaServidor ? "Presente ✅" : "Ausente ❌"
+    );
+
     const datosFormateados = mapearDatosUsuario(datosCompletos);
-    console.log('🔍 Firma después de mapear:', datosFormateados.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
-    
+    console.log(
+      "🔍 Firma después de mapear:",
+      datosFormateados.firmaServidor ? "Presente ✅" : "Ausente ❌"
+    );
+
     const pdfDoc = await llenarFormatoOficial(datosFormateados);
-    
+
     const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
     urlPrevia.value = URL.createObjectURL(blob);
-    
-    console.log('✅ Vista previa generada correctamente');
+
+    console.log("✅ Vista previa generada correctamente");
   } catch (error) {
-    console.error('❌ Error generando vista previa:', error);
-    alert('Error al generar la vista previa. Por favor intente nuevamente.');
+    console.error("❌ Error generando vista previa:", error);
+    alert("Error al generar la vista previa. Por favor intente nuevamente.");
   } finally {
     cargandoPrevia.value = false;
   }
@@ -590,39 +683,42 @@ function manejarClickBoton() {
 }
 
 async function generarPDF() {
-  if (!nombre.value || nombre.value === 'Invitado') {
-    alert('Por favor, asegúrate de que tu nombre de usuario esté configurado correctamente.');
+  if (!nombre.value || nombre.value === "Invitado") {
+    alert(
+      "Por favor, asegúrate de que tu nombre de usuario esté configurado correctamente."
+    );
     return;
   }
-  
+
   if (limiteAlcanzado.value) {
     mostrarModalLimite.value = true;
     return;
   }
 
   generando.value = true;
-  
+
   try {
-    if (modoGeneracion.value === 'oficial') {
+    if (modoGeneracion.value === "oficial") {
       await generarPDFOficial();
     } else {
       await generarPDFHTML();
     }
-    
+
     descargasUsadas.value++;
     await guardarContadorIndividual();
-    
-    console.log(`PDF generado para ${nombre.value}. Contador: ${descargasUsadas.value}/${limiteDescargas.value}`);
-    
+
+    console.log(
+      `PDF generado para ${nombre.value}. Contador: ${descargasUsadas.value}/${limiteDescargas.value}`
+    );
+
     if (limiteAlcanzado.value) {
       setTimeout(() => {
         mostrarModalLimite.value = true;
       }, 1500);
     }
-      
   } catch (error) {
-    console.error('Error al generar PDF:', error);
-    alert('Error al generar el PDF. Por favor, inténtalo de nuevo.');
+    console.error("Error al generar PDF:", error);
+    alert("Error al generar el PDF. Por favor, inténtalo de nuevo.");
   } finally {
     generando.value = false;
   }
@@ -630,52 +726,63 @@ async function generarPDF() {
 
 async function generarPDFHTML() {
   await nextTick();
-  await new Promise(r => setTimeout(r, 150));
-  
+  await new Promise((r) => setTimeout(r, 150));
+
   const opciones = {
     margin: 0,
-    filename: 'hoja-de-vida.pdf',
-    image: { type: 'pdf', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    filename: "hoja-de-vida.pdf",
+    image: { type: "pdf", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+    jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    pagebreak: { mode: ["avoid-all", "css", "legacy"] },
   };
-  
-  const nombreUsuario = nombre.value?.trim() || 'usuario';
+
+  const nombreUsuario = nombre.value?.trim() || "usuario";
   const nombreArchivo = `hoja de vida ${nombreUsuario}.pdf`;
-  
-  await html2pdf()
-    .set(opciones)
-    .from(documento.value)
-    .save(nombreArchivo);
+
+  await html2pdf().set(opciones).from(documento.value).save(nombreArchivo);
 }
 
 async function generarPDFOficial() {
   try {
-    console.log('🚀 Iniciando generación de PDF oficial...');
-    
+    console.log("🚀 Iniciando generación de PDF oficial...");
+
     const datosCompletos = await obtenerDatosCompletos();
-    console.log('🔍 Verificando firma en PDF oficial:', datosCompletos.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
-    
+    console.log(
+      "🔍 Verificando firma en PDF oficial:",
+      datosCompletos.firmaServidor ? "Presente ✅" : "Ausente ❌"
+    );
+
     const datosFormateados = mapearDatosUsuario(datosCompletos);
-    console.log('🔍 Firma después de mapear:', datosFormateados.firmaServidor ? 'Presente ✅' : 'Ausente ❌');
-    
+    console.log(
+      "🔍 Firma después de mapear:",
+      datosFormateados.firmaServidor ? "Presente ✅" : "Ausente ❌"
+    );
+
     if (datosFormateados.firmaServidor) {
-      console.log('🖊️ Tipo de firma:', 
-        datosFormateados.firmaServidor.includes('png') ? 'PNG' : 
-        datosFormateados.firmaServidor.includes('jpeg') ? 'JPEG' : 'DESCONOCIDO');
+      console.log(
+        "🖊️ Tipo de firma:",
+        datosFormateados.firmaServidor.includes("png")
+          ? "PNG"
+          : datosFormateados.firmaServidor.includes("jpeg")
+          ? "JPEG"
+          : "DESCONOCIDO"
+      );
     }
-    
+
     const pdfDoc = await llenarFormatoOficial(datosFormateados);
-    
-    const nombreUsuario = datosFormateados.nombres?.trim() || 'usuario';
-    const apellido = datosFormateados.apellido1?.trim() || '';
-    const nombreArchivo = `Hoja_Vida_${nombreUsuario}_${apellido}.pdf`.replace(/\s+/g, '_');
-    
+
+    const nombreUsuario = datosFormateados.nombres?.trim() || "usuario";
+    const apellido = datosFormateados.apellido1?.trim() || "";
+    const nombreArchivo = `Hoja_Vida_${nombreUsuario}_${apellido}.pdf`.replace(
+      /\s+/g,
+      "_"
+    );
+
     await descargarPDF(pdfDoc, nombreArchivo);
-    console.log('✅ PDF generado y descargado exitosamente');
+    console.log("✅ PDF generado y descargado exitosamente");
   } catch (error) {
-    console.error('❌ Error generando PDF oficial:', error);
+    console.error("❌ Error generando PDF oficial:", error);
     throw error;
   }
 }
@@ -683,8 +790,8 @@ async function generarPDFOficial() {
 function cerrarModal() {
   mostrarModalLimite.value = false;
   textoCopiado.value = false;
-  codigoDesbloqueo.value = '';
-  mensajeVerificacion.value = '';
+  codigoDesbloqueo.value = "";
+  mensajeVerificacion.value = "";
   esError.value = false;
 }
 
@@ -705,81 +812,96 @@ randysimancamercado@gmail.com
 
 Por favor, proporciona un código de desbloqueo específico para este usuario.
     `.trim();
-    
+
     await navigator.clipboard.writeText(infoCompleta);
     textoCopiado.value = true;
     setTimeout(() => {
       textoCopiado.value = false;
     }, 3000);
   } catch (error) {
-    console.error('Error al copiar:', error);
+    console.error("Error al copiar:", error);
     const textoFallback = `Usuario: ${nombre.value} - ID: ${usuarioId.value} - Randy: +57 314 519 3285`;
     try {
-      const textArea = document.createElement('textarea');
+      const textArea = document.createElement("textarea");
       textArea.value = textoFallback;
       document.body.appendChild(textArea);
       textArea.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textArea);
       textoCopiado.value = true;
-      setTimeout(() => textoCopiado.value = false, 3000);
+      setTimeout(() => (textoCopiado.value = false), 3000);
     } catch (fallbackError) {
-      alert(`Usuario: ${nombre.value}\nID: ${usuarioId.value}\nTeléfono: +57 314 519 3285`);
+      alert(
+        `Usuario: ${nombre.value}\nID: ${usuarioId.value}\nTeléfono: +57 314 519 3285`
+      );
     }
   }
 }
 
 async function verificarCodigo() {
   if (!codigoDesbloqueo.value.trim()) {
-    mostrarMensajeVerificacion('Por favor ingrese un código de desbloqueo', true);
+    mostrarMensajeVerificacion(
+      "Por favor ingrese un código de desbloqueo",
+      true
+    );
     return;
   }
-  
+
   verificandoCodigo.value = true;
-  mensajeVerificacion.value = '';
-  
-  await new Promise(r => setTimeout(r, 800));
-  
+  mensajeVerificacion.value = "";
+
+  await new Promise((r) => setTimeout(r, 800));
+
   const codigoIngresado = codigoDesbloqueo.value.trim().toUpperCase();
-  
+
   const codigoEspecificoCompleto = `UNLOCK_${usuarioId.value}_2024`;
   const codigoEspecificoSimple = `USER_${usuarioId.value}`;
-  const codigoNombre = `RESET_${nombre.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()}_${usuarioId.value.slice(-4)}`;
-  
+  const codigoNombre = `RESET_${nombre.value
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toUpperCase()}_${usuarioId.value.slice(-4)}`;
+
   const codigosValidosUsuario = [
-    'RANDYADMIN1208',
-    'MASTER_RESET_2024',
+    "RANDYADMIN1208",
+    "MASTER_RESET_2024",
     codigoEspecificoCompleto,
     codigoEspecificoSimple,
-    codigoNombre
+    codigoNombre,
   ];
-  
+
   if (codigosValidosUsuario.includes(codigoIngresado)) {
     descargasUsadas.value = 0;
     await guardarContadorIndividual();
-    
-    console.log(`Desbloqueo INDIVIDUAL exitoso: ${nombre.value} (${usuarioId.value}) - Código: ${codigoIngresado}`);
-    
-    mostrarMensajeVerificacion(`¡Código válido! Descargas restablecidas para ${nombre.value} únicamente.`, false);
-    
+
+    console.log(
+      `Desbloqueo INDIVIDUAL exitoso: ${nombre.value} (${usuarioId.value}) - Código: ${codigoIngresado}`
+    );
+
+    mostrarMensajeVerificacion(
+      `¡Código válido! Descargas restablecidas para ${nombre.value} únicamente.`,
+      false
+    );
+
     setTimeout(() => {
       cerrarModal();
     }, 2000);
   } else {
-    mostrarMensajeVerificacion(`Código inválido para ${nombre.value}. Tu ID específico es: ${usuarioId.value}`, true);
+    mostrarMensajeVerificacion(
+      `Código inválido para ${nombre.value}. Tu ID específico es: ${usuarioId.value}`,
+      true
+    );
   }
-  
+
   verificandoCodigo.value = false;
-  codigoDesbloqueo.value = '';
+  codigoDesbloqueo.value = "";
 }
 
 function mostrarMensajeVerificacion(mensaje, error) {
   mensajeVerificacion.value = mensaje;
   esError.value = error;
-  
+
   if (error) {
     setTimeout(() => {
-      mensajeVerificacion.value = '';
+      mensajeVerificacion.value = "";
     }, 8000);
   }
 }
@@ -789,7 +911,9 @@ function resetearContadorUsuarioActual() {
   if (import.meta.env.DEV) {
     descargasUsadas.value = 0;
     guardarContadorIndividual();
-    console.log(`Contador reseteado INDIVIDUALMENTE para: ${nombre.value} (${usuarioId.value})`);
+    console.log(
+      `Contador reseteado INDIVIDUALMENTE para: ${nombre.value} (${usuarioId.value})`
+    );
   }
 }
 
@@ -797,12 +921,12 @@ function verInfoUsuarioActual() {
   if (import.meta.env.DEV) {
     const claveEspecifica = obtenerClaveUsuarioEspecifica();
     const datos = localStorage.getItem(claveEspecifica);
-    console.log('Usuario actual:', {
+    console.log("Usuario actual:", {
       nombre: nombre.value,
       id: usuarioId.value,
       datos: datos ? JSON.parse(datos) : null,
       descargasUsadas: descargasUsadas.value,
-      limite: limiteDescargas.value
+      limite: limiteDescargas.value,
     });
   }
 }
@@ -811,11 +935,13 @@ function limpiarSoloUsuarioActual() {
   if (import.meta.env.DEV) {
     const claveEspecifica = obtenerClaveUsuarioEspecifica();
     const claveBackup = obtenerClaveBackupUsuario();
-    
+
     localStorage.removeItem(claveEspecifica);
     localStorage.removeItem(claveBackup);
-    
-    console.log(`Datos limpiados SOLO para: ${nombre.value} (${usuarioId.value})`);
+
+    console.log(
+      `Datos limpiados SOLO para: ${nombre.value} (${usuarioId.value})`
+    );
     location.reload();
   }
 }
@@ -825,10 +951,10 @@ if (import.meta.env.DEV) {
   window.resetearUsuarioPDFActual = resetearContadorUsuarioActual;
   window.verUsuarioPDFActual = verInfoUsuarioActual;
   window.limpiarUsuarioPDFActual = limpiarSoloUsuarioActual;
-  window.usuarioPDFActual = () => ({ 
-    nombre: nombre.value, 
+  window.usuarioPDFActual = () => ({
+    nombre: nombre.value,
     id: usuarioId.value,
-    descargas: `${descargasUsadas.value}/${limiteDescargas.value}`
+    descargas: `${descargasUsadas.value}/${limiteDescargas.value}`,
   });
   window.generarCodigoParaUsuarioActual = () => `USER_${usuarioId.value}`;
 }
@@ -978,7 +1104,7 @@ if (import.meta.env.DEV) {
   cursor: pointer;
   color: #fff;
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -991,14 +1117,14 @@ if (import.meta.env.DEV) {
 
 .pdf-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
 }
 
 .pdf-button:disabled {
   opacity: 0.75;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .pdf-button.limite-alcanzado {
@@ -1030,11 +1156,11 @@ if (import.meta.env.DEV) {
   backdrop-filter: blur(10px);
   padding: 12px 16px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   font-size: 12px;
   color: #666;
   z-index: 999;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .contador-header {
@@ -1193,13 +1319,17 @@ if (import.meta.env.DEV) {
   line-height: 1.5;
 }
 
-.device-info, .unlock-section, .contact-section {
+.device-info,
+.unlock-section,
+.contact-section {
   margin-bottom: 25px;
   padding-bottom: 20px;
   border-bottom: 1px solid #eaeaea;
 }
 
-.device-info h4, .unlock-section h4, .contact-section h4 {
+.device-info h4,
+.unlock-section h4,
+.contact-section h4 {
   margin: 0 0 15px;
   color: #1f2937;
   display: flex;
@@ -1366,7 +1496,8 @@ if (import.meta.env.DEV) {
   gap: 12px;
 }
 
-.btn-secondary, .btn-primary {
+.btn-secondary,
+.btn-primary {
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 500;
@@ -1419,22 +1550,22 @@ if (import.meta.env.DEV) {
     width: 95%;
     margin: 1rem;
   }
-  
+
   .modal-footer {
     flex-direction: column;
   }
-  
+
   .contador-info {
     right: 16px;
     bottom: 80px;
   }
-  
+
   .pdf-button {
     right: 16px;
     bottom: 16px;
     min-width: 160px;
   }
-  
+
   .device-item {
     grid-template-columns: 1fr;
     gap: 5px;

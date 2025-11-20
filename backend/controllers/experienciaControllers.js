@@ -27,13 +27,13 @@ export const agregarExperiencia = async (req, res) => {
 export const obtenerExperiencias = async (req, res) => {
   try {
     const usuario = await UsuarioEmbebido.findById(req.user.uid, 'experiencias'); // ✅ corregido
-    
+
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
     // Ordenar por fecha de retiro descendente
-    const experienciasOrdenadas = usuario.experiencias.sort((a, b) => 
+    const experienciasOrdenadas = usuario.experiencias.sort((a, b) =>
       new Date(b.fechaRetiro) - new Date(a.fechaRetiro)
     );
 
@@ -47,13 +47,13 @@ export const obtenerExperiencias = async (req, res) => {
 export const actualizarExperiencia = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const usuario = await UsuarioEmbebido.findOneAndUpdate(
-      { 
+      {
         _id: req.user.uid, // ✅ corregido
         'experiencias._id': id
       },
-      { 
+      {
         $set: { 'experiencias.$': { _id: id, ...req.body } }
       },
       { new: true, select: 'experiencias' }
@@ -87,7 +87,7 @@ export const eliminarExperiencia = async (req, res) => {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
-    res.json({ 
+    res.json({
       mensaje: 'Experiencia eliminada correctamente',
       id
     });

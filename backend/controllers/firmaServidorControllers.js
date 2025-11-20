@@ -34,8 +34,8 @@ export const guardarFirmaServidor = async (req, res) => {
 
     console.log('✅ Firma guardada exitosamente para usuario:', userId);
 
-    res.status(200).json({ 
-      mensaje: 'Firma y declaraciones guardadas correctamente', 
+    res.status(200).json({
+      mensaje: 'Firma y declaraciones guardadas correctamente',
       data: {
         declaracionInhabilidad: usuario.declaracionInhabilidad,
         ciudadDiligenciamiento: usuario.ciudadDiligenciamiento,
@@ -55,10 +55,10 @@ export const obtenerFirmaServidor = async (req, res) => {
     const userId = req.user.uid;
     console.log('🔍 Obteniendo firma para usuario:', userId);
 
-    const usuario = await UsuarioEmbebido.findById(userId, 
+    const usuario = await UsuarioEmbebido.findById(userId,
       'declaracionInhabilidad ciudadDiligenciamiento fechaDiligenciamiento firmaServidor'
     );
-    
+
     if (!usuario) {
       console.error('❌ Usuario no encontrado con uid:', userId);
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
@@ -70,7 +70,7 @@ export const obtenerFirmaServidor = async (req, res) => {
     }
 
     console.log('✅ Firma obtenida para usuario:', userId);
-    
+
     res.status(200).json({
       declaracionInhabilidad: usuario.declaracionInhabilidad,
       ciudadDiligenciamiento: usuario.ciudadDiligenciamiento,
@@ -91,7 +91,7 @@ export const eliminarFirmaServidor = async (req, res) => {
     console.log('🗑️ Eliminando firma para usuario:', userId);
 
     const usuario = await UsuarioEmbebido.findById(userId);
-    
+
     if (!usuario) {
       console.error('❌ Usuario no encontrado con uid:', userId);
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
@@ -111,7 +111,7 @@ export const eliminarFirmaServidor = async (req, res) => {
     await usuario.save();
 
     console.log('✅ Firma eliminada correctamente para usuario:', userId);
-    
+
     res.status(200).json({ mensaje: 'Firma y declaraciones eliminadas exitosamente' });
 
   } catch (error) {

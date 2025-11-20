@@ -37,19 +37,31 @@
 
           <div class="form-group col-medio">
             <label>PAÍS</label>
-            <input type="text" v-model="experienciaLocal.pais" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.pais"
+              class="form-control"
+            />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group col-3">
             <label>DEPARTAMENTO</label>
-            <input type="text" v-model="experienciaLocal.departamento" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.departamento"
+              class="form-control"
+            />
           </div>
 
           <div class="form-group col-3">
             <label>MUNICIPIO</label>
-            <input type="text" v-model="experienciaLocal.municipio" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.municipio"
+              class="form-control"
+            />
           </div>
 
           <div class="form-group col-3">
@@ -65,7 +77,11 @@
         <div class="form-row">
           <div class="form-group col-3">
             <label>TELÉFONOS</label>
-            <input type="text" v-model="experienciaLocal.telefonos" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.telefonos"
+              class="form-control"
+            />
           </div>
 
           <div class="form-group col-3">
@@ -73,15 +89,30 @@
             <div style="display: flex">
               <div class="form-group" style="width: 30px; margin-right: 5px">
                 <label>DÍA</label>
-                <input type="text" v-model="experienciaLocal.fechaIngreso.dia" class="form-control" placeholder="dd" />
+                <input
+                  type="text"
+                  v-model="experienciaLocal.fechaIngreso.dia"
+                  class="form-control"
+                  placeholder="dd"
+                />
               </div>
               <div class="form-group" style="width: 30px; margin-right: 5px">
                 <label>MES</label>
-                <input type="text" v-model="experienciaLocal.fechaIngreso.mes" class="form-control" placeholder="mm" />
+                <input
+                  type="text"
+                  v-model="experienciaLocal.fechaIngreso.mes"
+                  class="form-control"
+                  placeholder="mm"
+                />
               </div>
               <div class="form-group" style="width: 60px">
                 <label>AÑO</label>
-                <input type="text" v-model="experienciaLocal.fechaIngreso.anio" class="form-control" placeholder="aaaa" />
+                <input
+                  type="text"
+                  v-model="experienciaLocal.fechaIngreso.anio"
+                  class="form-control"
+                  placeholder="aaaa"
+                />
               </div>
             </div>
           </div>
@@ -91,15 +122,30 @@
             <div style="display: flex">
               <div class="form-group" style="width: 30px; margin-right: 5px">
                 <label>DÍA</label>
-                <input type="text" v-model="experienciaLocal.fechaRetiro.dia" class="form-control" placeholder="dd" />
+                <input
+                  type="text"
+                  v-model="experienciaLocal.fechaRetiro.dia"
+                  class="form-control"
+                  placeholder="dd"
+                />
               </div>
               <div class="form-group" style="width: 30px; margin-right: 5px">
                 <label>MES</label>
-                <input type="text" v-model="experienciaLocal.fechaRetiro.mes" class="form-control" placeholder="mm" />
+                <input
+                  type="text"
+                  v-model="experienciaLocal.fechaRetiro.mes"
+                  class="form-control"
+                  placeholder="mm"
+                />
               </div>
               <div class="form-group" style="width: 60px">
                 <label>AÑO</label>
-                <input type="text" v-model="experienciaLocal.fechaRetiro.anio" class="form-control" placeholder="aaaa" />
+                <input
+                  type="text"
+                  v-model="experienciaLocal.fechaRetiro.anio"
+                  class="form-control"
+                  placeholder="aaaa"
+                />
               </div>
             </div>
           </div>
@@ -108,22 +154,38 @@
         <div class="form-row">
           <div class="form-group col-3">
             <label>CARGO O CONTRATO ACTUAL</label>
-            <input type="text" v-model="experienciaLocal.cargo" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.cargo"
+              class="form-control"
+            />
           </div>
 
           <div class="form-group col-3">
             <label>DEPENDENCIA</label>
-            <input type="text" v-model="experienciaLocal.dependencia" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.dependencia"
+              class="form-control"
+            />
           </div>
 
           <div class="form-group col-3">
             <label>DIRECCIÓN</label>
-            <input type="text" v-model="experienciaLocal.direccion" class="form-control" />
+            <input
+              type="text"
+              v-model="experienciaLocal.direccion"
+              class="form-control"
+            />
           </div>
         </div>
 
         <div class="form-group" style="margin-top: 20px">
-          <button type="submit" class="boton-guardar no-imprimir" :disabled="cargando">
+          <button
+            type="submit"
+            class="boton-guardar no-imprimir"
+            :disabled="cargando"
+          >
             {{ modoEdicion ? "Actualizar experiencia" : "Guardar experiencia" }}
           </button>
 
@@ -157,7 +219,11 @@ export default {
     },
   },
 
-  emits: ["experiencia-eliminada", "experiencias-actualizadas", "experiencia-seleccionada"],
+  emits: [
+    "experiencia-eliminada",
+    "experiencias-actualizadas",
+    "experiencia-seleccionada",
+  ],
 
   data() {
     return {
@@ -269,14 +335,18 @@ export default {
 
       try {
         // Validación de fechas
-        const valIng = this.validarFechasCampos(this.experienciaLocal.fechaIngreso);
+        const valIng = this.validarFechasCampos(
+          this.experienciaLocal.fechaIngreso
+        );
         if (!valIng.ok) {
           showError("❌ Fecha de ingreso inválida: " + valIng.msg);
           this.cargando = false;
           return;
         }
 
-        const valRet = this.validarFechasCampos(this.experienciaLocal.fechaRetiro);
+        const valRet = this.validarFechasCampos(
+          this.experienciaLocal.fechaRetiro
+        );
         if (!valRet.ok) {
           showError("❌ Fecha de retiro inválida: " + valRet.msg);
           this.cargando = false;
@@ -287,7 +357,9 @@ export default {
         const dRet = this.construirDate(this.experienciaLocal.fechaRetiro);
 
         if (dIng > dRet) {
-          showError("❌ La fecha de ingreso no puede ser mayor que la fecha de retiro.");
+          showError(
+            "❌ La fecha de ingreso no puede ser mayor que la fecha de retiro."
+          );
           this.cargando = false;
           return;
         }
@@ -300,9 +372,12 @@ export default {
 
         // ========== ACTUALIZAR ==========
         if (this.modoEdicion && this.experienciaLocal._id) {
-          await api.put(`/experiencia/${this.experienciaLocal._id}`, experienciaFormateada);
+          await api.put(
+            `/experiencia/${this.experienciaLocal._id}`,
+            experienciaFormateada
+          );
           showSuccess("✅ ¡Experiencia laboral actualizada correctamente!");
-          
+
           setTimeout(() => {
             window.location.reload();
           }, 800);
@@ -312,13 +387,15 @@ export default {
         // ========== CREAR ==========
         await api.post("/experiencia", experienciaFormateada);
         showSuccess("✅ ¡Experiencia laboral guardada correctamente!");
-        
+
         setTimeout(() => {
           window.location.reload();
         }, 800);
-
       } catch (error) {
-        console.error("❌ Error al procesar experiencia:", error.response?.data || error.message);
+        console.error(
+          "❌ Error al procesar experiencia:",
+          error.response?.data || error.message
+        );
         showError("❌ Ocurrió un error al procesar los datos.");
         this.cargando = false;
       }
@@ -353,9 +430,11 @@ export default {
         setTimeout(() => {
           window.location.reload();
         }, 800);
-
       } catch (error) {
-        console.error("❌ Error al eliminar experiencia:", error.response?.data || error.message);
+        console.error(
+          "❌ Error al eliminar experiencia:",
+          error.response?.data || error.message
+        );
         showError("❌ Ocurrió un error al eliminar la experiencia.");
         this.cargando = false;
       }

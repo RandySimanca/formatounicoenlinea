@@ -21,13 +21,13 @@ export const useExperienciaStore = defineStore('experiencia', {
           .sort((a, b) => {
             // Ordenar por fecha de retiro (más reciente primero)
             const fechaA = new Date(
-              a.fechaRetiro?.anio || 0, 
-              (a.fechaRetiro?.mes || 1) - 1, 
+              a.fechaRetiro?.anio || 0,
+              (a.fechaRetiro?.mes || 1) - 1,
               a.fechaRetiro?.dia || 1
             );
             const fechaB = new Date(
-              b.fechaRetiro?.anio || 0, 
-              (b.fechaRetiro?.mes || 1) - 1, 
+              b.fechaRetiro?.anio || 0,
+              (b.fechaRetiro?.mes || 1) - 1,
               b.fechaRetiro?.dia || 1
             );
             return fechaB - fechaA; // Descendente (más reciente primero)
@@ -60,13 +60,13 @@ export const useExperienciaStore = defineStore('experiencia', {
     ordenarExperiencias() {
       this.experiencias.sort((a, b) => {
         const fechaA = new Date(
-          a.fechaRetiro?.anio || 0, 
-          (a.fechaRetiro?.mes || 1) - 1, 
+          a.fechaRetiro?.anio || 0,
+          (a.fechaRetiro?.mes || 1) - 1,
           a.fechaRetiro?.dia || 1
         );
         const fechaB = new Date(
-          b.fechaRetiro?.anio || 0, 
-          (b.fechaRetiro?.mes || 1) - 1, 
+          b.fechaRetiro?.anio || 0,
+          (b.fechaRetiro?.mes || 1) - 1,
           b.fechaRetiro?.dia || 1
         );
         return fechaB - fechaA; // Más reciente primero

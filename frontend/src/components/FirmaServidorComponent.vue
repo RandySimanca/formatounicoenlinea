@@ -206,7 +206,7 @@ const mostrarFirma = (event) => {
         const red = data[i];
         const green = data[i + 1];
         const blue = data[i + 2];
-        
+
         // Si el pixel es muy claro (cercano a blanco), hacerlo transparente
         if (red > threshold && green > threshold && blue > threshold) {
           data[i + 3] = 0; // Canal alpha = 0 (transparente)

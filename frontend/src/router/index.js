@@ -30,7 +30,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     // Layout público (sin menú)
- 
+
     /**{
       path: "/",
       component: LayoutPublico,
@@ -48,26 +48,26 @@ const router = createRouter({
       path: "/",
       component: LayoutPublico,
       children: [
-        { 
-          path: "", 
+        {
+          path: "",
           redirect: "/login",
           meta: {
             title: "Formato Único de Hoja de Vida - Colombia",
             description: "Aplicación web para crear y generar hojas de vida en Formato Único oficial requerido por entidades públicas en Colombia."
           }
         },
-        { 
-          path: "login", 
-          name: "login", 
+        {
+          path: "login",
+          name: "login",
           component: LoginViews,
           meta: {
             title: "Iniciar Sesión - Formato Único Hoja de Vida",
             description: "Inicia sesión para acceder a tu cuenta y crear tu hoja de vida en formato único."
           }
         },
-        { 
-          path: "recuperar-password", 
-          name: "recuperar-password", 
+        {
+          path: "recuperar-password",
+          name: "recuperar-password",
           component: RecuperarPassword,
           meta: {
             title: "Recuperar Contraseña - Formato Único Hoja de Vida",
@@ -82,32 +82,32 @@ const router = createRouter({
       component: LayoutPrivado,
       beforeEnter: requireAuth, // opcional si deseas proteger con token
       children: [
-        { 
-          path: "Hoja1", 
+        {
+          path: "Hoja1",
           component: Hoja1,
           meta: {
             title: "Datos Personales y Formación - Formato Único",
             description: "Completa tus datos personales, formación académica e idiomas para tu hoja de vida."
           }
         },
-        { 
-          path: "Hoja2", 
+        {
+          path: "Hoja2",
           component: Hoja2,
           meta: {
             title: "Experiencia Laboral - Formato Único",
             description: "Registra tu experiencia laboral en sector público, privado o independiente."
           }
         },
-        { 
-          path: "Hoja2Extra", 
+        {
+          path: "Hoja2Extra",
           component: Hoja2Extra,
           meta: {
             title: "Experiencia Laboral Adicional - Formato Único",
             description: "Agrega experiencias laborales adicionales a tu hoja de vida."
           }
         },
-        { 
-          path: "Hoja3", 
+        {
+          path: "Hoja3",
           component: Hoja3,
           meta: {
             title: "Resumen y Firma - Formato Único",
@@ -115,7 +115,7 @@ const router = createRouter({
           }
         },
         {
-          path: "vistaCompleta", 
+          path: "vistaCompleta",
           component: VistaCompleta,
           meta: {
             title: "Vista Completa - Formato Único Hoja de Vida",
@@ -124,9 +124,9 @@ const router = createRouter({
         },
       ]
     },
-    
 
-    ]
+
+  ]
 });
 
 // Configurar meta tags dinámicos

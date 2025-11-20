@@ -510,10 +510,10 @@ export default {
       };
     },
     toggleRadio(valor) {
-    if (this.libretaMilitar === valor) {
-      this.libretaMilitar = ""; // desmarca si se vuelve a hacer clic
-    }
-  },
+      if (this.libretaMilitar === valor) {
+        this.libretaMilitar = ""; // desmarca si se vuelve a hacer clic
+      }
+    },
   },
 };
 </script>

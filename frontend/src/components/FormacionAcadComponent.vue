@@ -338,20 +338,26 @@ export default {
       this.tituloBachiller = this.formacion.tituloBachiller || "";
       this.mesGrado = this.formacion.mesGrado || "";
       this.anioGrado = this.formacion.anioGrado || "";
-      
+
       // ✅ Cargar formacionSuperior desde props (con fallback para compatibilidad)
-      const formaciones = this.formacion.formacionSuperior || this.formacion.educacionSuperior || [];
-      this.formacionSuperior = formaciones.length > 0 ? formaciones : [
-        {
-          modalidad: "",
-          semestres: "",
-          graduado: "",
-          titulo: "",
-          mesTermino: "",
-          anioTermino: "",
-          tarjeta: "",
-        },
-      ];
+      const formaciones =
+        this.formacion.formacionSuperior ||
+        this.formacion.educacionSuperior ||
+        [];
+      this.formacionSuperior =
+        formaciones.length > 0
+          ? formaciones
+          : [
+              {
+                modalidad: "",
+                semestres: "",
+                graduado: "",
+                titulo: "",
+                mesTermino: "",
+                anioTermino: "",
+                tarjeta: "",
+              },
+            ];
 
       this.modoEdicion = true;
       this.formacionId = this.formacion._id;
@@ -367,27 +373,31 @@ export default {
           this.tituloBachiller = datos.tituloBachiller || "";
           this.mesGrado = datos.mesGrado || "";
           this.anioGrado = datos.anioGrado || "";
-          
+
           // ✅ Cargar formacionSuperior desde API (con fallback para compatibilidad)
-          const formaciones = datos.formacionSuperior || datos.educacionSuperior || [];
-          this.formacionSuperior = formaciones.length > 0 ? formaciones : [
-            {
-              modalidad: "",
-              semestres: "",
-              graduado: "",
-              titulo: "",
-              mesTermino: "",
-              anioTermino: "",
-              tarjeta: "",
-            },
-          ];
+          const formaciones =
+            datos.formacionSuperior || datos.educacionSuperior || [];
+          this.formacionSuperior =
+            formaciones.length > 0
+              ? formaciones
+              : [
+                  {
+                    modalidad: "",
+                    semestres: "",
+                    graduado: "",
+                    titulo: "",
+                    mesTermino: "",
+                    anioTermino: "",
+                    tarjeta: "",
+                  },
+                ];
 
           this.modoEdicion = true;
           this.formacionId = datos._id;
-          
-          console.log('✅ Formación cargada:', {
+
+          console.log("✅ Formación cargada:", {
             formaciones: this.formacionSuperior.length,
-            modoEdicion: this.modoEdicion
+            modoEdicion: this.modoEdicion,
           });
         }
       } catch (error) {
@@ -422,9 +432,9 @@ export default {
         formacionSuperior: this.formacionSuperior, // Sin 's'
       };
 
-      console.log('📤 Enviando formación:', {
+      console.log("📤 Enviando formación:", {
         basica: formacion.gradoBasica,
-        superior: formacion.formacionSuperior.length
+        superior: formacion.formacionSuperior.length,
       });
 
       try {
@@ -470,69 +480,69 @@ export default {
     },
 
     async removeFormacion(index) {
-  if (this.formacionSuperior.length === 0) {
-    showError("⚠️ No hay formaciones para eliminar.");
-    return;
-  }
+      if (this.formacionSuperior.length === 0) {
+        showError("⚠️ No hay formaciones para eliminar.");
+        return;
+      }
 
-  const formacion = this.formacionSuperior[index];
+      const formacion = this.formacionSuperior[index];
 
-  // Confirmación antes de eliminar
-  const confirmacion = await showConfirm({
-    title: "Eliminar Formación",
-    text: "¿Estás seguro de que deseas eliminar esta formación superior?",
-    confirmButtonText: "Sí, eliminar",
-    cancelButtonText: "Cancelar",
-  });
+      // Confirmación antes de eliminar
+      const confirmacion = await showConfirm({
+        title: "Eliminar Formación",
+        text: "¿Estás seguro de que deseas eliminar esta formación superior?",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
 
-  if (!confirmacion) return;
+      if (!confirmacion) return;
 
-  try {
-    // 🔥 Si tiene _id, eliminar del servidor primero
-    if (formacion._id && this.modoEdicion) {
-      console.log("🗑️ Eliminando formación del servidor:", formacion._id);
-      await api.delete(`/formacion-academica/superior/${formacion._id}`);
-      console.log("✅ Formación eliminada del servidor");
-    }
+      try {
+        // 🔥 Si tiene _id, eliminar del servidor primero
+        if (formacion._id && this.modoEdicion) {
+          console.log("🗑️ Eliminando formación del servidor:", formacion._id);
+          await api.delete(`/formacion-academica/superior/${formacion._id}`);
+          console.log("✅ Formación eliminada del servidor");
+        }
 
-    // Eliminar del estado local
-    this.formacionSuperior.splice(index, 1);
+        // Eliminar del estado local
+        this.formacionSuperior.splice(index, 1);
 
-    // Si hay documento guardado, actualizar el resto de formaciones en la BD
-    if (this.modoEdicion && this.formacionId) {
-      const payload = {
-        gradoBasica: this.selectedGrado,
-        tituloBachiller: this.tituloBachiller,
-        mesGrado: this.mesGrado,
-        anioGrado: this.anioGrado,
-        formacionSuperior: this.formacionSuperior,
-      };
+        // Si hay documento guardado, actualizar el resto de formaciones en la BD
+        if (this.modoEdicion && this.formacionId) {
+          const payload = {
+            gradoBasica: this.selectedGrado,
+            tituloBachiller: this.tituloBachiller,
+            mesGrado: this.mesGrado,
+            anioGrado: this.anioGrado,
+            formacionSuperior: this.formacionSuperior,
+          };
 
-      await api.put("/formacion-academica", payload);
-      console.log("✅ Formaciones restantes actualizadas en la BD");
-    }
+          await api.put("/formacion-academica", payload);
+          console.log("✅ Formaciones restantes actualizadas en la BD");
+        }
 
-    if (this.formacionSuperior.length === 0) {
-      showSuccess(
-        "✅ Todas las formaciones eliminadas. La tabla está ahora vacía."
-      );
-    } else {
-      showSuccess(
-        `✅ Formación eliminada correctamente. Quedan ${this.formacionSuperior.length} formación(es).`
-      );
-    }
+        if (this.formacionSuperior.length === 0) {
+          showSuccess(
+            "✅ Todas las formaciones eliminadas. La tabla está ahora vacía."
+          );
+        } else {
+          showSuccess(
+            `✅ Formación eliminada correctamente. Quedan ${this.formacionSuperior.length} formación(es).`
+          );
+        }
 
-    console.log(
-      `🗑️ Formación eliminada. Total restante: ${this.formacionSuperior.length}`
-    );
-  } catch (error) {
-    console.error("❌ Error al eliminar la formación:", error);
-    showError("Error al eliminar la formación de la base de datos.");
+        console.log(
+          `🗑️ Formación eliminada. Total restante: ${this.formacionSuperior.length}`
+        );
+      } catch (error) {
+        console.error("❌ Error al eliminar la formación:", error);
+        showError("Error al eliminar la formación de la base de datos.");
 
-    // Recargar datos para mantener consistencia
-    await this.cargarDatos();
-  }
-},
+        // Recargar datos para mantener consistencia
+        await this.cargarDatos();
+      }
+    },
 
     esFormacionVacia(formacion) {
       return (
@@ -564,20 +574,20 @@ export default {
 
     manejarCambioModalidad(formacion, index) {
       // Método auxiliar para manejar cambios en modalidad
-      console.log('Modalidad cambiada:', formacion.modalidad);
+      console.log("Modalidad cambiada:", formacion.modalidad);
     },
 
     validarModalidadVacia(formacion, index) {
       // Método auxiliar para validar modalidad vacía
       if (!formacion.modalidad?.trim()) {
-        showWarning('⚠️ La modalidad no puede estar vacía');
+        showWarning("⚠️ La modalidad no puede estar vacía");
       }
     },
 
     volverASelect(formacion, index) {
       // Método auxiliar para volver al select
       formacion.modalidadPersonalizada = false;
-      formacion.modalidad = '';
+      formacion.modalidad = "";
     },
   },
 };

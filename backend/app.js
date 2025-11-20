@@ -51,7 +51,7 @@ app.use("/api/usuarios", usuariosRoute);
 app.use("/api/login", loginRoute);
 app.use("/api/datos-personales", datosPersonalesRoute);
 app.use("/api/pdf", pdfRoutes);
-app.use("/api", hojaRoutes); 
+app.use("/api", hojaRoutes);
 app.use("/api/idiomas", idiomasRoutes);
 app.use("/api/firma-servidor", firmaServidorRoutes);
 app.use("/api/recovery", recoveryRoutes);
@@ -87,7 +87,7 @@ for (const possiblePath of possiblePaths) {
 // Servir archivos estáticos si se encontró el frontend
 if (frontendPath) {
   app.use(express.static(frontendPath));
-  
+
   // Rutas específicas para SEO (antes del catch-all)
   app.get("/robots.txt", (req, res) => {
     const robotsPath = path.join(frontendPath, "robots.txt");
@@ -98,7 +98,7 @@ if (frontendPath) {
       res.status(404).send("robots.txt not found");
     }
   });
-  
+
   app.get("/sitemap.xml", (req, res) => {
     const sitemapPath = path.join(frontendPath, "sitemap.xml");
     if (fs.existsSync(sitemapPath)) {
@@ -108,7 +108,7 @@ if (frontendPath) {
       res.status(404).send("sitemap.xml not found");
     }
   });
-  
+
   // Redirigir todas las rutas no API al frontend
   app.get("*", (req, res) => {
     if (!req.path.startsWith("/api")) {
@@ -117,7 +117,7 @@ if (frontendPath) {
   });
 } else {
   console.log("⚠️ No se encontró el directorio del frontend");
-  
+
   app.get("/", (req, res) => {
     res.send(`
       <!DOCTYPE html>

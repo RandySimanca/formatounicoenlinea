@@ -6,29 +6,47 @@
       <div class="section-title">
         <span class="section-number">3</span> EXPERIENCIA LABORAL
       </div>
-      <div v-if="experienciaStore.experiencias.length === 0" class="no-experiencias-container">
+      <div
+        v-if="experienciaStore.experiencias.length === 0"
+        class="no-experiencias-container"
+      >
         <div class="no-experiencias-message">
           <i class="fas fa-briefcase icon-large"></i>
           <h3>No hay experiencias laborales registradas</h3>
-          <p>Para completar tu hoja de vida, registra tu experiencia laboral en el siguiente módulo.</p>
+          <p>
+            Para completar tu hoja de vida, registra tu experiencia laboral en
+            el siguiente módulo.
+          </p>
           <button @click="irARegistrarExperiencia" class="btn-recordatorio">
             📝 Ir a Registrar Experiencia
           </button>
         </div>
       </div>
 
-      <div v-for="(exp, i) in primerasExperiencias" :key="`primera-${exp._id || i}`" class="modulo-experiencia">
-        <ExperienciaComponent 
-          :experiencia="exp" 
+      <div
+        v-for="(exp, i) in primerasExperiencias"
+        :key="`primera-${exp._id || i}`"
+        class="modulo-experiencia"
+      >
+        <ExperienciaComponent
+          :experiencia="exp"
           @experiencias-actualizadas="actualizarExperiencias"
         />
       </div>
     </div>
 
     <!-- Páginas siguientes -->
-    <div v-for="(grupo, index) in experienciasAgrupadas" :key="`grupo-${index}`" class="carta">
-      <div v-for="(exp, i) in grupo" :key="`resto-${exp._id || i}`" class="modulo-experiencia">
-        <ExperienciaComponent 
+    <div
+      v-for="(grupo, index) in experienciasAgrupadas"
+      :key="`grupo-${index}`"
+      class="carta"
+    >
+      <div
+        v-for="(exp, i) in grupo"
+        :key="`resto-${exp._id || i}`"
+        class="modulo-experiencia"
+      >
+        <ExperienciaComponent
           :experiencia="exp"
           @experiencias-actualizadas="actualizarExperiencias"
         />
@@ -87,8 +105,12 @@ function agrupar(array, tamano) {
 }
 
 // ✅ Usar experienciasOrdenadas en lugar de experienciaStore.experiencias
-const primerasExperiencias = computed(() => experienciasOrdenadas.value.slice(0, 4));
-const experienciasAgrupadas = computed(() => agrupar(experienciasOrdenadas.value.slice(4), 4));
+const primerasExperiencias = computed(() =>
+  experienciasOrdenadas.value.slice(0, 4)
+);
+const experienciasAgrupadas = computed(() =>
+  agrupar(experienciasOrdenadas.value.slice(4), 4)
+);
 </script>
 
 <style scoped>

@@ -5,13 +5,13 @@ import UsuarioEmbebido from '../models/UsuarioEmbebido.js';
 export const obtenerHojaCompleta = async (req, res) => {
   try {
     const userId = req.user.uid;
-    
+
     // ✅ UNA SOLA CONSULTA trae TODO
     const usuario = await UsuarioEmbebido.findById(userId, '-password');
 
     if (!usuario) {
-      return res.status(404).json({ 
-        mensaje: "No se encontró información de hoja de vida." 
+      return res.status(404).json({
+        mensaje: "No se encontró información de hoja de vida."
       });
     }
 

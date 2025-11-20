@@ -1,5 +1,3 @@
-
-
 <template>
   <RouterView />
 </template>
@@ -14,12 +12,15 @@ const router = useRouter();
 useSEO();
 
 // Actualizar SEO cuando cambie la ruta
-watch(() => router.currentRoute.value, () => {
-  // Los meta tags se actualizarán automáticamente gracias a useSEO()
-}, { immediate: true });
+watch(
+  () => router.currentRoute.value,
+  () => {
+    // Los meta tags se actualizarán automáticamente gracias a useSEO()
+  },
+  { immediate: true }
+);
 </script>
 
 <style>
 /* Estilos globales opcionales */
 </style>
-

@@ -7,9 +7,9 @@ class IdiomasController {
   static async obtenerIdiomas(req, res) {
     try {
       const usuarioId = req.user.uid;
-      
+
       const usuario = await UsuarioEmbebido.findById(usuarioId, 'idiomas nombre email');
-      
+
       if (!usuario) {
         return res.status(404).json({
           success: false,
@@ -60,7 +60,7 @@ class IdiomasController {
       const { idiomas } = req.body;
 
       const usuario = await UsuarioEmbebido.findById(usuarioId);
-      
+
       if (!usuario) {
         return res.status(404).json({
           success: false,
@@ -108,7 +108,7 @@ class IdiomasController {
 
     } catch (error) {
       console.error('Error al crear idiomas:', error);
-      
+
       if (error.name === 'ValidationError') {
         return res.status(400).json({
           success: false,
@@ -173,7 +173,7 @@ class IdiomasController {
 
     } catch (error) {
       console.error('Error al actualizar idiomas:', error);
-      
+
       if (error.name === 'ValidationError') {
         return res.status(400).json({
           success: false,
@@ -231,7 +231,7 @@ class IdiomasController {
       const usuarioId = req.user.uid;
 
       const usuario = await UsuarioEmbebido.findById(usuarioId, 'idiomas');
-      
+
       if (!usuario || !usuario.idiomas || usuario.idiomas.length === 0) {
         return res.status(200).json({
           success: true,

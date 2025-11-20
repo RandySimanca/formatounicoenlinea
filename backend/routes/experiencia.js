@@ -1,6 +1,6 @@
 //backend/routes/experiencia.js
 import express from 'express';
-import { 
+import {
   agregarExperiencia,
   obtenerExperiencias,
   eliminarExperiencia,

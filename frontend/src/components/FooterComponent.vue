@@ -23,5 +23,4 @@ export default {
   text-align: center;
   border-radius: 18px;
 }
-
 </style>

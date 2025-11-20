@@ -181,7 +181,6 @@ function generarPDF() {
 }
 </script>
 
-
 <style scoped>
 /* ===== ESTILOS OPTIMIZADOS PARA UNA SOLA PÁGINA ===== */
 .section {
@@ -627,7 +626,7 @@ form {
   box-sizing: border-box;
 }
 
-  .form-control11 {
+.form-control11 {
   width: 100%;
   padding: 3px; /* Reducido */
   border: 1px solid #ccc;
@@ -685,8 +684,6 @@ form {
   background-color: #f0f0f0;
 }
 
-
-
 .compacto h3,
 .compacto h2,
 .compacto p {
@@ -730,31 +727,31 @@ form {
     page-break-after: always !important;
     box-sizing: border-box;
   }
-  
+
   .carta-compacta {
     height: 10.4in !important; /* Altura máxima aprovechable */
     overflow: hidden !important;
   }
-  
+
   .carta:last-child {
     page-break-after: auto;
   }
-  
+
   /* Optimizaciones adicionales para impresión */
   .section {
     padding: 0.2rem !important;
   }
-  
+
   .table th,
   .table td {
     font-size: 9px !important;
     padding: 1px !important;
   }
-  
+
   .form-group label {
     font-size: 9px !important;
   }
-  
+
   /* Ocultar solo al imprimir */
   .no-imprimir {
     display: none !important;

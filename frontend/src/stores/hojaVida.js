@@ -16,11 +16,11 @@ export const useHojaVidaStore = defineStore("hojaVida", {
     async cargarHojaDeVida() {
       try {
         console.log("🔄 Iniciando carga de hoja de vida...");
-        
+
         // Cargar cada sección por separado
         await Promise.allSettled([
           this.cargarDatosPersonales(),
-          this.cargarFormacionAcademica(), 
+          this.cargarFormacionAcademica(),
           this.cargarIdiomas(),
           this.cargarExperiencia()
         ]);
@@ -31,7 +31,7 @@ export const useHojaVidaStore = defineStore("hojaVida", {
           idiomas: this.idiomas.length,
           experiencia: this.experiencia.length
         });
-        
+
       } catch (error) {
         console.error("❌ Error general al cargar hoja de vida:", error);
       } finally {
