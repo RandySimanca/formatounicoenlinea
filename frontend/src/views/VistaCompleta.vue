@@ -50,10 +50,18 @@
 
       <div v-if="urlPrevia" class="contenedor-iframe">
         <iframe
+          v-if="!esMovil"
           :src="urlPrevia"
           class="iframe-pdf"
           title="Vista previa del PDF oficial"
         ></iframe>
+        <div v-else class="vista-movil-fallback">
+          <div class="icono-pdf-movil">📱</div>
+          <p>La vista previa integrada no está disponible en dispositivos móviles.</p>
+          <a :href="urlPrevia" target="_blank" class="btn-abrir-pdf">
+            📄 Abrir PDF en nueva pestaña
+          </a>
+        </div>
       </div>
 
       <div v-else class="mensaje-sin-previa">
@@ -281,6 +289,7 @@ const esError = ref(false);
 const verificandoCodigo = ref(false);
 const usuarioId = ref("");
 const navegadorInfo = ref("");
+const esMovil = ref(false);
 
 // Computed properties
 const descargasRestantes = computed(
@@ -349,14 +358,21 @@ async function idbGuardarContador(info) {
 }
 
 onMounted(async () => {
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
   await inicializarSistemaIndividual();
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener("resize", checkMobile);
   if (urlPrevia.value) {
     URL.revokeObjectURL(urlPrevia.value);
   }
 });
+
+function checkMobile() {
+  esMovil.value = window.innerWidth <= 768;
+}
 
 // Watcher para cambios en el nombre del usuario
 watch(nombre, async (nuevoNombre, nombreAnterior) => {
@@ -1570,5 +1586,37 @@ if (import.meta.env.DEV) {
     grid-template-columns: 1fr;
     gap: 5px;
   }
+}
+
+.vista-movil-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.icono-pdf-movil {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.btn-abrir-pdf {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-abrir-pdf:hover {
+  background: #2563eb;
 }
 </style>
