@@ -447,22 +447,22 @@ export function useFormatoOficialHV() {
       tiempoExperiencia: {
         servidorPublico: {
           anos: tiemposCalculados.publico.anios,
-          meses: tiemposCalculados.publico.meses,
+          meses: tiemposCalculados.publico.mesesDecimales,
         },
         sectorPrivado: {
           anos: tiemposCalculados.privado.anios,
-          meses: tiemposCalculados.privado.meses,
+          meses: tiemposCalculados.privado.mesesDecimales,
         },
         independiente: {
           anos: tiemposCalculados.independiente.anios,
-          meses: tiemposCalculados.independiente.meses,
+          meses: tiemposCalculados.independiente.mesesDecimales,
         },
         total: {
           anos: tiemposCalculados.total.anios,
-          meses: tiemposCalculados.total.meses,
+          meses: tiemposCalculados.total.mesesDecimales,
         },
       },
-      
+
       declaracionInhabilidad: normalizarInhabilidad(usuarioLocal.declaracionInhabilidad),
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",
