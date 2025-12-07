@@ -19,9 +19,20 @@ export function calcularDuracionExperiencia(fechaIngreso, fechaRetiro) {
   let totalMeses = (fin.getFullYear() - inicio.getFullYear()) * 12;
   totalMeses += fin.getMonth() - inicio.getMonth();
 
-  // Ajustar si el día de retiro es menor que el día de ingreso
-  if (fin.getDate() < inicio.getDate()) {
+  // Calcular los días adicionales para redondeo
+  let diasAdicionales = 0;
+  if (fin.getDate() >= inicio.getDate()) {
+    diasAdicionales = fin.getDate() - inicio.getDate();
+  } else {
     totalMeses--;
+    // Calcular días del mes anterior
+    const ultimoDiaMesAnterior = new Date(fin.getFullYear(), fin.getMonth(), 0).getDate();
+    diasAdicionales = (ultimoDiaMesAnterior - inicio.getDate()) + fin.getDate();
+  }
+
+  // Redondear: si hay 15 días o más, sumar un mes adicional
+  if (diasAdicionales >= 15) {
+    totalMeses++;
   }
 
   // Asegurar que no sea negativo
@@ -85,7 +96,7 @@ export function calcularTiemposTotales(experiencias) {
 
   experiencias.forEach((exp, index) => {
     const duracion = calcularDuracionExperiencia(exp.fechaIngreso, exp.fechaRetiro);
-    
+
     console.log(`📊 Experiencia ${index + 1}:`, {
       empresa: exp.empresa,
       tipo: exp.tipoEntidad || exp.tipo,
@@ -143,14 +154,14 @@ export function calcularTiemposTotales(experiencias) {
  */
 export function formatearTiempo(anios, meses) {
   const partesTexto = [];
-  
+
   if (anios > 0) {
     partesTexto.push(`${anios} año${anios !== 1 ? 's' : ''}`);
   }
-  
+
   if (meses > 0) {
     partesTexto.push(`${meses} mes${meses !== 1 ? 'es' : ''}`);
   }
-  
+
   return partesTexto.length > 0 ? partesTexto.join(' y ') : '0 meses';
 }
