@@ -446,21 +446,20 @@ export function useFormatoOficialHV() {
 
       tiempoExperiencia: {
         servidorPublico: {
-          anos: String(tiemposCalculados.publico.anios),
-          // Los meses ya vienen redondeados a enteros desde calcularTiemposTotales
-          meses: String(tiemposCalculados.publico.meses),
+          anos: String(Math.floor(tiemposCalculados.publico.anios)),
+          meses: String(Math.floor(tiemposCalculados.publico.meses)),
         },
         sectorPrivado: {
-          anos: String(tiemposCalculados.privado.anios),
-          meses: String(tiemposCalculados.privado.meses),
+          anos: String(Math.floor(tiemposCalculados.privado.anios)),
+          meses: String(Math.floor(tiemposCalculados.privado.meses)),
         },
         independiente: {
-          anos: String(tiemposCalculados.independiente.anios),
-          meses: String(tiemposCalculados.independiente.meses),
+          anos: String(Math.floor(tiemposCalculados.independiente.anios)),
+          meses: String(Math.floor(tiemposCalculados.independiente.meses)),
         },
         total: {
-          anos: String(tiemposCalculados.total.anios),
-          meses: String(tiemposCalculados.total.meses),
+          anos: String(Math.floor(tiemposCalculados.total.anios)),
+          meses: String(Math.floor(tiemposCalculados.total.meses)),
         },
       },
 
