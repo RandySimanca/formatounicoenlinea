@@ -446,23 +446,23 @@ export function useFormatoOficialHV() {
 
       tiempoExperiencia: {
         servidorPublico: {
-          anos: String(Math.floor(tiemposCalculados.publico.anios)),
-          meses: String(Math.floor(tiemposCalculados.publico.meses)),
+          anos: tiemposCalculados.publico.anios,
+          meses: tiemposCalculados.publico.meses,
         },
         sectorPrivado: {
-          anos: String(Math.floor(tiemposCalculados.privado.anios)),
-          meses: String(Math.floor(tiemposCalculados.privado.meses)),
+          anos: tiemposCalculados.privado.anios,
+          meses: tiemposCalculados.privado.meses,
         },
         independiente: {
-          anos: String(Math.floor(tiemposCalculados.independiente.anios)),
-          meses: String(Math.floor(tiemposCalculados.independiente.meses)),
+          anos: tiemposCalculados.independiente.anios,
+          meses: tiemposCalculados.independiente.meses,
         },
         total: {
-          anos: String(Math.floor(tiemposCalculados.total.anios)),
-          meses: String(Math.floor(tiemposCalculados.total.meses)),
+          anos: tiemposCalculados.total.anios,
+          meses: tiemposCalculados.total.meses,
         },
       },
-
+      
       declaracionInhabilidad: normalizarInhabilidad(usuarioLocal.declaracionInhabilidad),
       ciudadDiligenciamiento: usuarioLocal.ciudadDiligenciamiento || "",
       fechaDiligenciamiento: usuarioLocal.fechaDiligenciamiento || "",

@@ -1,112 +1,156 @@
 // frontend/src/utils/experienciaUtils.js
-// Función compartida para calcular duración de experiencias
-// Esta función asegura que el formulario web y el PDF usen exactamente la misma lógica
 
 /**
- * Calcula la duración entre dos fechas en años y meses
+ * Calcula la duración de una experiencia laboral en años y meses
  * @param {Date|string|Object} fechaIngreso - Fecha de ingreso
  * @param {Date|string|Object} fechaRetiro - Fecha de retiro
- * @returns {Object} { anios: number, meses: number } - Años y meses con decimales
+ * @returns {Object} { anios, meses, totalMeses }
  */
 export function calcularDuracionExperiencia(fechaIngreso, fechaRetiro) {
-  // Normalizar fechas a objetos Date
-  let desde, hasta;
+  const inicio = normalizarFecha(fechaIngreso);
+  const fin = normalizarFecha(fechaRetiro);
 
-  if (fechaIngreso) {
-    if (typeof fechaIngreso === 'string') {
-      desde = new Date(fechaIngreso);
-    } else if (fechaIngreso instanceof Date) {
-      desde = fechaIngreso;
-    } else if (fechaIngreso.anio || fechaIngreso.año) {
-      desde = new Date(
-        fechaIngreso.anio || fechaIngreso.año || 2000,
-        (fechaIngreso.mes || 1) - 1,
-        fechaIngreso.dia || 1
-      );
-    } else {
-      return { anios: 0, meses: 0 };
-    }
-  } else {
-    return { anios: 0, meses: 0 };
+  if (!inicio || !fin) {
+    console.warn('⚠️ Fechas inválidas:', { fechaIngreso, fechaRetiro });
+    return { anios: 0, meses: 0, totalMeses: 0 };
   }
 
-  if (fechaRetiro) {
-    if (typeof fechaRetiro === 'string') {
-      hasta = new Date(fechaRetiro);
-    } else if (fechaRetiro instanceof Date) {
-      hasta = fechaRetiro;
-    } else if (fechaRetiro.anio || fechaRetiro.año) {
-      hasta = new Date(
-        fechaRetiro.anio || fechaRetiro.año || new Date().getFullYear(),
-        (fechaRetiro.mes || new Date().getMonth() + 1) - 1,
-        fechaRetiro.dia || new Date().getDate()
-      );
-    } else {
-      return { anios: 0, meses: 0 };
-    }
-  } else {
-    return { anios: 0, meses: 0 };
+  // Calcular diferencia en meses totales
+  let totalMeses = (fin.getFullYear() - inicio.getFullYear()) * 12;
+  totalMeses += fin.getMonth() - inicio.getMonth();
+
+  // Ajustar si el día de retiro es menor que el día de ingreso
+  if (fin.getDate() < inicio.getDate()) {
+    totalMeses--;
   }
 
-  // Validar fechas
-  if (isNaN(desde.getTime()) || isNaN(hasta.getTime()) || hasta < desde) {
-    return { anios: 0, meses: 0 };
-  }
+  // Asegurar que no sea negativo
+  totalMeses = Math.max(0, totalMeses);
 
-  // Calcular diferencia en días (sin Math.ceil ni +1 para mantener consistencia)
-  const diffTime = hasta.getTime() - desde.getTime();
-  const totalDias = diffTime / (1000 * 60 * 60 * 24);
-
-  // Asumimos 30 días por mes exactos (igual que en el formulario web)
-  const totalMeses = totalDias / 30;
   const anios = Math.floor(totalMeses / 12);
-  const meses = Number((totalMeses % 12).toFixed(2)); // Siempre 2 decimales para consistencia
+  const meses = totalMeses % 12;
 
-  return { anios, meses };
+  return { anios, meses, totalMeses };
 }
 
 /**
- * Calcula los tiempos totales de experiencia por tipo
+ * Normaliza diferentes formatos de fecha a objeto Date
+ */
+function normalizarFecha(fecha) {
+  if (!fecha) return null;
+
+  // Si ya es Date
+  if (fecha instanceof Date) {
+    return isNaN(fecha.getTime()) ? null : fecha;
+  }
+
+  // Si es string ISO
+  if (typeof fecha === 'string') {
+    const d = new Date(fecha);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // Si es objeto { dia, mes, anio }
+  if (typeof fecha === 'object' && fecha.dia && fecha.mes && fecha.anio) {
+    const d = new Date(
+      parseInt(fecha.anio),
+      parseInt(fecha.mes) - 1,
+      parseInt(fecha.dia)
+    );
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  return null;
+}
+
+/**
+ * Calcula el tiempo total de experiencia por tipo
  * @param {Array} experiencias - Array de experiencias laborales
- * @returns {Object} { publico: {anios, meses}, privado: {anios, meses}, independiente: {anios, meses}, total: {anios, meses} }
+ * @returns {Object} Tiempos calculados por tipo
  */
 export function calcularTiemposTotales(experiencias) {
-  let totalPublicoMeses = 0;
-  let totalPrivadoMeses = 0;
-  let totalIndependienteMeses = 0;
+  if (!Array.isArray(experiencias)) {
+    console.warn('⚠️ experiencias no es un array:', experiencias);
+    return {
+      publico: { anios: 0, meses: 0, totalMeses: 0 },
+      privado: { anios: 0, meses: 0, totalMeses: 0 },
+      independiente: { anios: 0, meses: 0, totalMeses: 0 },
+      total: { anios: 0, meses: 0, totalMeses: 0 }
+    };
+  }
 
-  experiencias.forEach(exp => {
-    if (!exp.fechaIngreso || !exp.fechaRetiro) return;
+  let totalMesesPublico = 0;
+  let totalMesesPrivado = 0;
+  let totalMesesIndependiente = 0;
 
-    const { anios, meses } = calcularDuracionExperiencia(exp.fechaIngreso, exp.fechaRetiro);
-    const totalMesesExp = anios * 12 + meses;
+  experiencias.forEach((exp, index) => {
+    const duracion = calcularDuracionExperiencia(exp.fechaIngreso, exp.fechaRetiro);
+    
+    console.log(`📊 Experiencia ${index + 1}:`, {
+      empresa: exp.empresa,
+      tipo: exp.tipoEntidad || exp.tipo,
+      duracion: `${duracion.anios} años, ${duracion.meses} meses (${duracion.totalMeses} meses totales)`
+    });
 
-    const tipo = (exp.tipoEntidad || exp.tipo || "").toLowerCase();
+    const tipo = (exp.tipoEntidad || exp.tipo || '').toLowerCase();
 
-    if (tipo === "publica" || tipo === "pública") {
-      totalPublicoMeses += totalMesesExp;
-    } else if (tipo === "privada") {
-      totalPrivadoMeses += totalMesesExp;
-    } else if (tipo === "independiente") {
-      totalIndependienteMeses += totalMesesExp;
+    if (tipo === 'publica' || tipo === 'público' || tipo === 'servidor público') {
+      totalMesesPublico += duracion.totalMeses;
+    } else if (tipo === 'privada' || tipo === 'privado' || tipo === 'empleado del sector privado') {
+      totalMesesPrivado += duracion.totalMeses;
+    } else if (tipo === 'independiente' || tipo === 'trabajador independiente') {
+      totalMesesIndependiente += duracion.totalMeses;
     }
   });
 
-  // Convertir meses decimales a años y meses (redondeando meses a enteros)
-  const convertirMesesDecimales = (totalMesesDecimal) => {
-    const anios = Math.floor(totalMesesDecimal / 12);
-    const mesesRestantes = totalMesesDecimal % 12;
-    // Redondear a entero: < 0.5 hacia abajo, >= 0.5 hacia arriba
-    const meses = Math.round(mesesRestantes);
-    return { anios, meses };
+  const totalMesesGeneral = totalMesesPublico + totalMesesPrivado + totalMesesIndependiente;
+
+  const resultado = {
+    publico: {
+      anios: Math.floor(totalMesesPublico / 12),
+      meses: totalMesesPublico % 12,
+      totalMeses: totalMesesPublico
+    },
+    privado: {
+      anios: Math.floor(totalMesesPrivado / 12),
+      meses: totalMesesPrivado % 12,
+      totalMeses: totalMesesPrivado
+    },
+    independiente: {
+      anios: Math.floor(totalMesesIndependiente / 12),
+      meses: totalMesesIndependiente % 12,
+      totalMeses: totalMesesIndependiente
+    },
+    total: {
+      anios: Math.floor(totalMesesGeneral / 12),
+      meses: totalMesesGeneral % 12,
+      totalMeses: totalMesesGeneral
+    }
   };
 
-  const publico = convertirMesesDecimales(totalPublicoMeses);
-  const privado = convertirMesesDecimales(totalPrivadoMeses);
-  const independiente = convertirMesesDecimales(totalIndependienteMeses);
-  const totalMesesDecimal = totalPublicoMeses + totalPrivadoMeses + totalIndependienteMeses;
-  const total = convertirMesesDecimales(totalMesesDecimal);
+  console.log('📊 RESUMEN FINAL:', {
+    publico: `${resultado.publico.anios}a ${resultado.publico.meses}m (${resultado.publico.totalMeses}m)`,
+    privado: `${resultado.privado.anios}a ${resultado.privado.meses}m (${resultado.privado.totalMeses}m)`,
+    independiente: `${resultado.independiente.anios}a ${resultado.independiente.meses}m (${resultado.independiente.totalMeses}m)`,
+    total: `${resultado.total.anios}a ${resultado.total.meses}m (${resultado.total.totalMeses}m)`
+  });
 
-  return { publico, privado, independiente, total };
+  return resultado;
 }
 
+/**
+ * Formatea el tiempo para mostrar
+ */
+export function formatearTiempo(anios, meses) {
+  const partesTexto = [];
+  
+  if (anios > 0) {
+    partesTexto.push(`${anios} año${anios !== 1 ? 's' : ''}`);
+  }
+  
+  if (meses > 0) {
+    partesTexto.push(`${meses} mes${meses !== 1 ? 'es' : ''}`);
+  }
+  
+  return partesTexto.length > 0 ? partesTexto.join(' y ') : '0 meses';
+}

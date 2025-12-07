@@ -94,15 +94,17 @@ const totalAnios = computed(() => {
   return Math.floor(totalMeses / 12);
 });
 
+
 const totalMeses = computed(() => {
   const totalMeses =
     publico.anios * 12 + publico.meses +
     privado.anios * 12 + privado.meses +
     independiente.anios * 12 + independiente.meses;
-  // Redondear a entero: < 0.5 hacia abajo, >= 0.5 hacia arriba
-  const mesesRestantes = totalMeses % 12;
-  return Math.round(mesesRestantes);
-});
+  // Retornar los meses restantes SIN redondear
+  return totalMeses % 12;
+}
+);
+
 </script>
 
 
