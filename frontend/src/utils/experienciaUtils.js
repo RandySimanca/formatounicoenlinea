@@ -15,29 +15,45 @@ export function calcularDuracionExperiencia(fechaIngreso, fechaRetiro) {
     return { anios: 0, meses: 0, mesesDecimales: 0, totalMeses: 0, totalMesesDecimales: 0 };
   }
 
-  // Calcular la diferencia total en días
-  const unDia = 24 * 60 * 60 * 1000; // milisegundos en un día
-  const diasTotales = Math.round((fin - inicio) / unDia);
+  // Calcular diferencia en meses completos
+  let totalMeses = (fin.getFullYear() - inicio.getFullYear()) * 12;
+  totalMeses += fin.getMonth() - inicio.getMonth();
 
-  // Convertir días a meses decimales (usando 30.44 días promedio por mes)
-  const DIAS_POR_MES = 30.44;
-  const totalMesesDecimales = diasTotales / DIAS_POR_MES;
+  // Calcular días adicionales para fracción de mes
+  let diasAdicionales = 0;
+  let diasDelMes = 0;
+
+  if (fin.getDate() >= inicio.getDate()) {
+    // Caso simple: el día final es mayor o igual al día inicial
+    diasAdicionales = fin.getDate() - inicio.getDate();
+    diasDelMes = new Date(fin.getFullYear(), fin.getMonth() + 1, 0).getDate();
+  } else {
+    // El día final es menor, restamos un mes y calculamos días
+    totalMeses--;
+    const mesAnterior = new Date(fin.getFullYear(), fin.getMonth(), 0);
+    const diasMesAnterior = mesAnterior.getDate();
+    diasAdicionales = (diasMesAnterior - inicio.getDate() + 1) + fin.getDate();
+    diasDelMes = diasMesAnterior + new Date(fin.getFullYear(), fin.getMonth() + 1, 0).getDate();
+  }
+
+  // Convertir días adicionales a fracción de mes
+  const fraccionMes = diasAdicionales / diasDelMes;
+  const totalMesesDecimales = totalMeses + fraccionMes;
 
   // Calcular años y meses decimales
   const anios = Math.floor(totalMesesDecimales / 12);
-  const mesesDecimales = parseFloat((totalMesesDecimales % 12).toFixed(1)); // 1 decimal
+  const mesesDecimales = parseFloat((totalMesesDecimales % 12).toFixed(1));
 
   // También calcular versión redondeada para compatibilidad
   const totalMesesRedondeados = Math.round(totalMesesDecimales);
-  const aniosRedondeados = Math.floor(totalMesesRedondeados / 12);
   const mesesRedondeados = totalMesesRedondeados % 12;
 
   return {
     anios,
-    meses: mesesRedondeados, // Para PDF (redondeado)
-    mesesDecimales, // Para mostrar en la app
-    totalMeses: totalMesesRedondeados, // Para PDF
-    totalMesesDecimales // Para cálculos precisos
+    meses: mesesRedondeados,
+    mesesDecimales,
+    totalMeses: totalMesesRedondeados,
+    totalMesesDecimales
   };
 }
 
