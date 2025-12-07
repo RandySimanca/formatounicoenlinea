@@ -25,9 +25,9 @@ export function calcularDuracionExperiencia(fechaIngreso, fechaRetiro) {
 
   // Calcular años y meses decimales
   const anios = Math.floor(totalMesesDecimales / 12);
-  const mesesDecimales = parseFloat((totalMesesDecimales % 12).toFixed(2));
+  const mesesDecimales = parseFloat((totalMesesDecimales % 12).toFixed(1)); // 1 decimal
 
-  // También calcular versión redondeada para el PDF
+  // También calcular versión redondeada para compatibilidad
   const totalMesesRedondeados = Math.round(totalMesesDecimales);
   const aniosRedondeados = Math.floor(totalMesesRedondeados / 12);
   const mesesRedondeados = totalMesesRedondeados % 12;
