@@ -116,29 +116,29 @@ export function calcularTiemposTotales(experiencias) {
   const resultado = {
     publico: {
       anios: Math.floor(totalMesesDecimalesPublico / 12),
-      meses: Math.round(totalMesesDecimalesPublico % 12), // Redondeado para PDF
-      mesesDecimales: parseFloat((totalMesesDecimalesPublico % 12).toFixed(2)), // Decimal para app
+      meses: Math.round(totalMesesDecimalesPublico % 12), // Redondeado para compatibilidad
+      mesesDecimales: parseFloat((totalMesesDecimalesPublico % 12).toFixed(1)), // 1 decimal
       totalMeses: Math.round(totalMesesDecimalesPublico),
       totalMesesDecimales: totalMesesDecimalesPublico
     },
     privado: {
       anios: Math.floor(totalMesesDecimalesPrivado / 12),
       meses: Math.round(totalMesesDecimalesPrivado % 12),
-      mesesDecimales: parseFloat((totalMesesDecimalesPrivado % 12).toFixed(2)),
+      mesesDecimales: parseFloat((totalMesesDecimalesPrivado % 12).toFixed(1)), // 1 decimal
       totalMeses: Math.round(totalMesesDecimalesPrivado),
       totalMesesDecimales: totalMesesDecimalesPrivado
     },
     independiente: {
       anios: Math.floor(totalMesesDecimalesIndependiente / 12),
       meses: Math.round(totalMesesDecimalesIndependiente % 12),
-      mesesDecimales: parseFloat((totalMesesDecimalesIndependiente % 12).toFixed(2)),
+      mesesDecimales: parseFloat((totalMesesDecimalesIndependiente % 12).toFixed(1)), // 1 decimal
       totalMeses: Math.round(totalMesesDecimalesIndependiente),
       totalMesesDecimales: totalMesesDecimalesIndependiente
     },
     total: {
       anios: Math.floor(totalMesesDecimalesGeneral / 12),
       meses: Math.round(totalMesesDecimalesGeneral % 12),
-      mesesDecimales: parseFloat((totalMesesDecimalesGeneral % 12).toFixed(2)),
+      mesesDecimales: parseFloat((totalMesesDecimalesGeneral % 12).toFixed(1)), // 1 decimal
       totalMeses: Math.round(totalMesesDecimalesGeneral),
       totalMesesDecimales: totalMesesDecimalesGeneral
     }

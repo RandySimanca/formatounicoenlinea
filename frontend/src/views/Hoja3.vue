@@ -95,9 +95,9 @@ const totalMeses = computed(() => {
     publico.anios * 12 + publico.meses +
     privado.anios * 12 + privado.meses +
     independiente.anios * 12 + independiente.meses;
-  // Retornar los meses restantes con decimales
+  // Retornar los meses restantes con 1 decimal
   const mesesRestantes = totalMesesDecimal % 12;
-  return parseFloat(mesesRestantes.toFixed(2));
+  return parseFloat(mesesRestantes.toFixed(1));
 }
 );
 
