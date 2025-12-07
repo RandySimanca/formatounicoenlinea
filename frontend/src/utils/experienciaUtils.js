@@ -1,10 +1,10 @@
 // frontend/src/utils/experienciaUtils.js
 
 /**
- * Calcula la duración de una experiencia laboral en años y meses
+ * Calcula la duración de una experiencia laboral en años y meses (con decimales)
  * @param {Date|string|Object} fechaIngreso - Fecha de ingreso
  * @param {Date|string|Object} fechaRetiro - Fecha de retiro
- * @returns {Object} { anios, meses, totalMeses }
+ * @returns {Object} { anios, meses, mesesDecimales, totalMeses, totalMesesDecimales }
  */
 export function calcularDuracionExperiencia(fechaIngreso, fechaRetiro) {
   const inicio = normalizarFecha(fechaIngreso);
@@ -12,36 +12,33 @@ export function calcularDuracionExperiencia(fechaIngreso, fechaRetiro) {
 
   if (!inicio || !fin) {
     console.warn('⚠️ Fechas inválidas:', { fechaIngreso, fechaRetiro });
-    return { anios: 0, meses: 0, totalMeses: 0 };
+    return { anios: 0, meses: 0, mesesDecimales: 0, totalMeses: 0, totalMesesDecimales: 0 };
   }
 
-  // Calcular diferencia en meses totales
-  let totalMeses = (fin.getFullYear() - inicio.getFullYear()) * 12;
-  totalMeses += fin.getMonth() - inicio.getMonth();
+  // Calcular la diferencia total en días
+  const unDia = 24 * 60 * 60 * 1000; // milisegundos en un día
+  const diasTotales = Math.round((fin - inicio) / unDia);
 
-  // Calcular los días adicionales para redondeo
-  let diasAdicionales = 0;
-  if (fin.getDate() >= inicio.getDate()) {
-    diasAdicionales = fin.getDate() - inicio.getDate();
-  } else {
-    totalMeses--;
-    // Calcular días del mes anterior
-    const ultimoDiaMesAnterior = new Date(fin.getFullYear(), fin.getMonth(), 0).getDate();
-    diasAdicionales = (ultimoDiaMesAnterior - inicio.getDate()) + fin.getDate();
-  }
+  // Convertir días a meses decimales (usando 30.44 días promedio por mes)
+  const DIAS_POR_MES = 30.44;
+  const totalMesesDecimales = diasTotales / DIAS_POR_MES;
 
-  // Redondear: si hay 15 días o más, sumar un mes adicional
-  if (diasAdicionales >= 15) {
-    totalMeses++;
-  }
+  // Calcular años y meses decimales
+  const anios = Math.floor(totalMesesDecimales / 12);
+  const mesesDecimales = parseFloat((totalMesesDecimales % 12).toFixed(2));
 
-  // Asegurar que no sea negativo
-  totalMeses = Math.max(0, totalMeses);
+  // También calcular versión redondeada para el PDF
+  const totalMesesRedondeados = Math.round(totalMesesDecimales);
+  const aniosRedondeados = Math.floor(totalMesesRedondeados / 12);
+  const mesesRedondeados = totalMesesRedondeados % 12;
 
-  const anios = Math.floor(totalMeses / 12);
-  const meses = totalMeses % 12;
-
-  return { anios, meses, totalMeses };
+  return {
+    anios,
+    meses: mesesRedondeados, // Para PDF (redondeado)
+    mesesDecimales, // Para mostrar en la app
+    totalMeses: totalMesesRedondeados, // Para PDF
+    totalMesesDecimales // Para cálculos precisos
+  };
 }
 
 /**
@@ -83,16 +80,16 @@ export function calcularTiemposTotales(experiencias) {
   if (!Array.isArray(experiencias)) {
     console.warn('⚠️ experiencias no es un array:', experiencias);
     return {
-      publico: { anios: 0, meses: 0, totalMeses: 0 },
-      privado: { anios: 0, meses: 0, totalMeses: 0 },
-      independiente: { anios: 0, meses: 0, totalMeses: 0 },
-      total: { anios: 0, meses: 0, totalMeses: 0 }
+      publico: { anios: 0, meses: 0, mesesDecimales: 0, totalMeses: 0, totalMesesDecimales: 0 },
+      privado: { anios: 0, meses: 0, mesesDecimales: 0, totalMeses: 0, totalMesesDecimales: 0 },
+      independiente: { anios: 0, meses: 0, mesesDecimales: 0, totalMeses: 0, totalMesesDecimales: 0 },
+      total: { anios: 0, meses: 0, mesesDecimales: 0, totalMeses: 0, totalMesesDecimales: 0 }
     };
   }
 
-  let totalMesesPublico = 0;
-  let totalMesesPrivado = 0;
-  let totalMesesIndependiente = 0;
+  let totalMesesDecimalesPublico = 0;
+  let totalMesesDecimalesPrivado = 0;
+  let totalMesesDecimalesIndependiente = 0;
 
   experiencias.forEach((exp, index) => {
     const duracion = calcularDuracionExperiencia(exp.fechaIngreso, exp.fechaRetiro);
@@ -100,50 +97,58 @@ export function calcularTiemposTotales(experiencias) {
     console.log(`📊 Experiencia ${index + 1}:`, {
       empresa: exp.empresa,
       tipo: exp.tipoEntidad || exp.tipo,
-      duracion: `${duracion.anios} años, ${duracion.meses} meses (${duracion.totalMeses} meses totales)`
+      duracion: `${duracion.anios} años, ${duracion.mesesDecimales} meses (${duracion.totalMesesDecimales.toFixed(2)} meses totales)`
     });
 
     const tipo = (exp.tipoEntidad || exp.tipo || '').toLowerCase();
 
     if (tipo === 'publica' || tipo === 'público' || tipo === 'servidor público') {
-      totalMesesPublico += duracion.totalMeses;
+      totalMesesDecimalesPublico += duracion.totalMesesDecimales;
     } else if (tipo === 'privada' || tipo === 'privado' || tipo === 'empleado del sector privado') {
-      totalMesesPrivado += duracion.totalMeses;
+      totalMesesDecimalesPrivado += duracion.totalMesesDecimales;
     } else if (tipo === 'independiente' || tipo === 'trabajador independiente') {
-      totalMesesIndependiente += duracion.totalMeses;
+      totalMesesDecimalesIndependiente += duracion.totalMesesDecimales;
     }
   });
 
-  const totalMesesGeneral = totalMesesPublico + totalMesesPrivado + totalMesesIndependiente;
+  const totalMesesDecimalesGeneral = totalMesesDecimalesPublico + totalMesesDecimalesPrivado + totalMesesDecimalesIndependiente;
 
   const resultado = {
     publico: {
-      anios: Math.floor(totalMesesPublico / 12),
-      meses: totalMesesPublico % 12,
-      totalMeses: totalMesesPublico
+      anios: Math.floor(totalMesesDecimalesPublico / 12),
+      meses: Math.round(totalMesesDecimalesPublico % 12), // Redondeado para PDF
+      mesesDecimales: parseFloat((totalMesesDecimalesPublico % 12).toFixed(2)), // Decimal para app
+      totalMeses: Math.round(totalMesesDecimalesPublico),
+      totalMesesDecimales: totalMesesDecimalesPublico
     },
     privado: {
-      anios: Math.floor(totalMesesPrivado / 12),
-      meses: totalMesesPrivado % 12,
-      totalMeses: totalMesesPrivado
+      anios: Math.floor(totalMesesDecimalesPrivado / 12),
+      meses: Math.round(totalMesesDecimalesPrivado % 12),
+      mesesDecimales: parseFloat((totalMesesDecimalesPrivado % 12).toFixed(2)),
+      totalMeses: Math.round(totalMesesDecimalesPrivado),
+      totalMesesDecimales: totalMesesDecimalesPrivado
     },
     independiente: {
-      anios: Math.floor(totalMesesIndependiente / 12),
-      meses: totalMesesIndependiente % 12,
-      totalMeses: totalMesesIndependiente
+      anios: Math.floor(totalMesesDecimalesIndependiente / 12),
+      meses: Math.round(totalMesesDecimalesIndependiente % 12),
+      mesesDecimales: parseFloat((totalMesesDecimalesIndependiente % 12).toFixed(2)),
+      totalMeses: Math.round(totalMesesDecimalesIndependiente),
+      totalMesesDecimales: totalMesesDecimalesIndependiente
     },
     total: {
-      anios: Math.floor(totalMesesGeneral / 12),
-      meses: totalMesesGeneral % 12,
-      totalMeses: totalMesesGeneral
+      anios: Math.floor(totalMesesDecimalesGeneral / 12),
+      meses: Math.round(totalMesesDecimalesGeneral % 12),
+      mesesDecimales: parseFloat((totalMesesDecimalesGeneral % 12).toFixed(2)),
+      totalMeses: Math.round(totalMesesDecimalesGeneral),
+      totalMesesDecimales: totalMesesDecimalesGeneral
     }
   };
 
   console.log('📊 RESUMEN FINAL:', {
-    publico: `${resultado.publico.anios}a ${resultado.publico.meses}m (${resultado.publico.totalMeses}m)`,
-    privado: `${resultado.privado.anios}a ${resultado.privado.meses}m (${resultado.privado.totalMeses}m)`,
-    independiente: `${resultado.independiente.anios}a ${resultado.independiente.meses}m (${resultado.independiente.totalMeses}m)`,
-    total: `${resultado.total.anios}a ${resultado.total.meses}m (${resultado.total.totalMeses}m)`
+    publico: `${resultado.publico.anios}a ${resultado.publico.mesesDecimales}m (${resultado.publico.totalMesesDecimales.toFixed(2)}m)`,
+    privado: `${resultado.privado.anios}a ${resultado.privado.mesesDecimales}m (${resultado.privado.totalMesesDecimales.toFixed(2)}m)`,
+    independiente: `${resultado.independiente.anios}a ${resultado.independiente.mesesDecimales}m (${resultado.independiente.totalMesesDecimales.toFixed(2)}m)`,
+    total: `${resultado.total.anios}a ${resultado.total.mesesDecimales}m (${resultado.total.totalMesesDecimales.toFixed(2)}m)`
   });
 
   return resultado;

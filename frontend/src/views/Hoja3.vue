@@ -4,13 +4,8 @@
     <Header2Component />
 
     <div class="">
-      <ExperienciaTotComponent
-        :publico="publico"
-        :privado="privado"
-        :independiente="independiente"
-        :totalAnios="totalAnios"
-        :totalMeses="totalMeses"
-      />
+      <ExperienciaTotComponent :publico="publico" :privado="privado" :independiente="independiente"
+        :totalAnios="totalAnios" :totalMeses="totalMeses" />
 
       <!-- ✅ REMOVIDA la clase compoFirma -->
       <FirmaServidorComponent />
@@ -76,14 +71,14 @@ async function cargarExperiencias() {
 function recalcularTotales() {
   // Usar la función compartida para calcular tiempos totales
   const tiempos = calcularTiemposTotales(experiencias.value);
-  
-  // Actualizar los objetos reactivos
+
+  // Actualizar los objetos reactivos con valores decimales
   publico.anios = tiempos.publico.anios;
-  publico.meses = tiempos.publico.meses;
+  publico.meses = tiempos.publico.mesesDecimales; // Usar decimales
   privado.anios = tiempos.privado.anios;
-  privado.meses = tiempos.privado.meses;
+  privado.meses = tiempos.privado.mesesDecimales; // Usar decimales
   independiente.anios = tiempos.independiente.anios;
-  independiente.meses = tiempos.independiente.meses;
+  independiente.meses = tiempos.independiente.mesesDecimales; // Usar decimales
 }
 
 const totalAnios = computed(() => {
@@ -96,12 +91,13 @@ const totalAnios = computed(() => {
 
 
 const totalMeses = computed(() => {
-  const totalMeses =
+  const totalMesesDecimal =
     publico.anios * 12 + publico.meses +
     privado.anios * 12 + privado.meses +
     independiente.anios * 12 + independiente.meses;
-  // Retornar los meses restantes SIN redondear
-  return totalMeses % 12;
+  // Retornar los meses restantes con decimales
+  const mesesRestantes = totalMesesDecimal % 12;
+  return parseFloat(mesesRestantes.toFixed(2));
 }
 );
 
