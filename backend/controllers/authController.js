@@ -1,6 +1,7 @@
 //backend/controllers/authController.js
 import jwt from "jsonwebtoken";
 import UsuarioEmbebido from "../models/UsuarioEmbebido.js";
+import { enviarCorreoBienvenida } from "../services/emailService.js";
 
 /**
  * Controlador para manejar el registro y login de usuarios.
@@ -33,7 +34,19 @@ export const registrarUsuario = async (req, res) => {
 
     console.log('✅ Usuario registrado exitosamente:', email);
 
-    res.status(201).json({ mensaje: "Usuario registrado exitosamente." });
+    // 🎉 ENVIAR CORREO DE BIENVENIDA (sin bloquear la respuesta)
+    enviarCorreoBienvenida({
+      email: nuevoUsuario.email,
+      nombre: nuevoUsuario.nombre,
+      numDocumento: nuevoUsuario.numDocumento || ""
+    }).catch(error => {
+      // Solo logueamos el error, no afecta el registro
+      console.error("⚠️ No se pudo enviar correo de bienvenida:", error);
+    });
+
+    res.status(201).json({ 
+      mensaje: "Usuario registrado exitosamente. ¡Revisa tu correo!" 
+    });
   } catch (err) {
     console.error("Error en registro:", err.message);
     res.status(500).json({ mensaje: "Error interno del servidor." });
