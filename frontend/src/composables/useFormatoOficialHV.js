@@ -1,5 +1,6 @@
 // src/composables/useFormatoOficialHV.js
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+//import { PDFDocument, rgb } from "pdf-lib"; // ❌ Quitar StandardFonts
+import fontkit from '@pdf-lib/fontkit'; // ✅ Agregar fontkit
 import { calcularTiemposTotales } from "../utils/experienciaUtils";
 
 export function useFormatoOficialHV() {
@@ -39,7 +40,28 @@ export function useFormatoOficialHV() {
         await crearFormatoDesdeCero(pdfDoc);
       }
 
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      pdfDoc.registerFontkit(fontkit);
+      const fontUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf';
+      
+      let font;
+      try {
+        const fontBytes = await fetch(fontUrl).then(res => {
+          if (!res.ok) throw new Error('Error cargando fuente');
+          return res.arrayBuffer();
+        });
+        font = await pdfDoc.embedFont(fontBytes);
+        console.log("✅ Fuente Unicode cargada correctamente");
+      } catch (fontError) {
+        console.warn("⚠️ No se pudo cargar fuente Unicode, usando fuente estándar");
+        // Fallback: usar Helvetica estándar (puede causar problemas con caracteres especiales)
+        const { StandardFonts } = await import('pdf-lib');
+        font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      }
+
+      
+
+
+      //const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const fontSize = 9;
       const fontSizeSmall = 7;
@@ -47,15 +69,44 @@ export function useFormatoOficialHV() {
       const write = (page, text, x, y, size = fontSize, fontType = font) => {
         if (text === undefined || text === null || text === "") return;
         const { height } = page.getSize();
-        const textoFinal = String(text).substring(0, 50);
-        page.drawText(textoFinal, {
-          x,
-          y: height - y,
-          size,
-          font: fontType,
-          color: rgb(0, 0, 0),
-        });
+
+
+        // ✅ Sanitizar texto: remover caracteres no compatibles
+        let textoLimpio = String(text)
+          .replace(/[^\x00-\xFF]/g, '') // Remover caracteres fuera de ASCII extendido
+          .substring(0, 50);
+        
+        // Si el texto quedó vacío después de sanitizar, usar el original truncado
+        if (!textoLimpio.trim()) {
+          textoLimpio = String(text).substring(0, 50);
+        }
+        
+        try {
+          page.drawText(textoLimpio, {
+            x,
+            y: height - y,
+            size,
+            font: fontType,
+            color: rgb(0, 0, 0),
+          });
+        } catch (error) {
+          console.warn(`⚠️ No se pudo escribir texto en (${x}, ${y}):`, error.message);
+          // Intentar escribir solo caracteres ASCII básicos como último recurso
+          const textoASCII = String(text).replace(/[^\x20-\x7E]/g, '?').substring(0, 50);
+          try {
+            page.drawText(textoASCII, {
+              x,
+              y: height - y,
+              size,
+              font: fontType,
+              color: rgb(0, 0, 0),
+            });
+          } catch (finalError) {
+            console.error('❌ Error fatal escribiendo texto:', finalError);
+          }
+        }
       };
+
 
       const pages = pdfDoc.getPages();
 

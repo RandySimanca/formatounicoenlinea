@@ -9,6 +9,7 @@
     "heroku-postbuild": "cd frontend && npm install --production=false && npm run build"
   },
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
