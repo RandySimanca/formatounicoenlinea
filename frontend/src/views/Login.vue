@@ -115,11 +115,23 @@
       </form>
 
       <div class="form-footer">
-        <p>
-          {{ modoRegistro ? "¿Ya tienes una cuenta?" : "¿No tienes cuenta?" }}
-          <button @click="modoRegistro = !modoRegistro" class="toggle-btn">
-            {{ modoRegistro ? "Iniciar sesión" : "Crear cuenta gratis" }}
-          </button>
+        <p v-if="!modoRegistro">¿No tienes cuenta?</p>
+        <button
+          @click="modoRegistro = !modoRegistro"
+          :class="{
+            'submit-btn': !modoRegistro,
+            'toggle-btn': modoRegistro,
+            'register-cta-btn': !modoRegistro,
+          }"
+          :style="{ 'margin-top': !modoRegistro ? '1rem' : '0' }"
+        >
+          {{ modoRegistro ? "Iniciar sesión" : "Crear cuenta gratis" }}
+        </button>
+        <p v-if="modoRegistro" class="switch-link">
+          ¿Ya tienes una cuenta?
+          <a @click.prevent="modoRegistro = false" class="toggle-link"
+            >Inicia sesión</a
+          >
         </p>
       </div>
 
