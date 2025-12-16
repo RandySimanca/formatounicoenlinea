@@ -1,4 +1,5 @@
 // backend/services/emailService.js
+//importar mpdemailer
 import nodemailer from "nodemailer";
 
 // Configurar el transporter una sola vez
