@@ -9,7 +9,7 @@
         </div>
         <p class="tagline">Construye tu futuro profesional</p>
       </div>
-      
+
       <div class="contact-info">
         <h3>¿Necesitas ayuda?</h3>
         <div class="contact-item">
@@ -19,13 +19,18 @@
             <p>randysimancamercado@gmail.com</p>
           </div>
         </div>
-        <div class="contact-item">
+        <a
+          class="contact-item whatsapp-link"
+          href="https://wa.me/573145193285"
+          target="_blank"
+          title="Haz clic para chatear por WhatsApp"
+        >
           <span class="icon">💬</span>
           <div>
-            <strong>WhatsApp</strong>
+            <strong>WhatsApp (¡Haz clic!)</strong>
             <p>+57 314 519 3285</p>
           </div>
-        </div>
+        </a>
 
         <div class="contact-item user-counter-compact">
           <span class="icon counter-icon-small">👥</span>
@@ -38,7 +43,7 @@
           </div>
         </div>
       </div>
-    </div> 
+    </div>
 
     <!-- Formulario de login -->
     <div class="login-card">
@@ -162,19 +167,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import api from '../api/axios';
-import { useHojaVidaStore } from '../stores/hojaVida';
-import Swal from 'sweetalert2'; // ✅ Importar SweetAlert2
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import api from "../api/axios";
+import { useHojaVidaStore } from "../stores/hojaVida";
+import Swal from "sweetalert2"; // ✅ Importar SweetAlert2
 
 const router = useRouter();
 const hojaStore = useHojaVidaStore();
 
-const email = ref('');
-const password = ref('');
-const nombre = ref('');
-const error = ref('');
+const email = ref("");
+const password = ref("");
+const nombre = ref("");
+const error = ref("");
 const loading = ref(false);
 const modoRegistro = ref(false);
 
@@ -183,19 +188,19 @@ const totalUsuarios = ref(0);
 const cargandoStats = ref(false);
 
 const totalFormateado = computed(() => {
-  return new Intl.NumberFormat('es-CO').format(totalUsuarios.value);
+  return new Intl.NumberFormat("es-CO").format(totalUsuarios.value);
 });
 
 const cargarContadorUsuarios = async () => {
   cargandoStats.value = true;
   try {
-    const response = await api.get('/usuarios/count');
-    
+    const response = await api.get("/usuarios/count");
+
     if (response.data?.success) {
       totalUsuarios.value = response.data.total;
     }
   } catch (error) {
-    console.error('Error cargando contador:', error);
+    console.error("Error cargando contador:", error);
     totalUsuarios.value = 0;
   } finally {
     cargandoStats.value = false;
@@ -204,25 +209,26 @@ const cargarContadorUsuarios = async () => {
 
 // ✅ Función para detectar si es móvil en orientación vertical
 const esMovilVertical = () => {
-  const esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
+  const esMovil =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
   const esVertical = window.innerHeight > window.innerWidth;
   const anchoMovil = window.innerWidth <= 768;
-  
+
   return esMovil && esVertical && anchoMovil;
 };
 
 // ✅ Función para mostrar SweetAlert de bienvenida
 const mostrarBienvenida = (nombreUsuario) => {
   const esMobilVertical = esMovilVertical();
-  
+
   let htmlContent = `
     <div style="text-align: center;">
       <h2 style="color: #667eea; margin-bottom: 10px;">¡Bienvenido/a ${nombreUsuario}!</h2>
       <p style="color: #718096; margin-bottom: 15px;">Has ingresado exitosamente a tu perfil.</p>
   `;
-  
+
   if (esMobilVertical) {
     htmlContent += `
       <div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); 
@@ -238,42 +244,42 @@ const mostrarBienvenida = (nombreUsuario) => {
       </div>
     `;
   }
-  
+
   htmlContent += `</div>`;
-  
+
   Swal.fire({
     html: htmlContent,
-    icon: 'success',
-    confirmButtonText: 'Entendido',
-    confirmButtonColor: '#667eea',
+    icon: "success",
+    confirmButtonText: "Entendido",
+    confirmButtonColor: "#667eea",
     //timer: esMobilVertical ? 8000 : 5000, // Más tiempo si hay mensaje de orientación
     timerProgressBar: true,
     allowOutsideClick: false,
     customClass: {
-      popup: 'swal-bienvenida',
-      confirmButton: 'swal-btn-entendido'
-    }
+      popup: "swal-bienvenida",
+      confirmButton: "swal-btn-entendido",
+    },
   });
 };
 
 const handleLogin = async () => {
-  error.value = '';
+  error.value = "";
   if (!email.value || !password.value) {
-    error.value = 'Por favor completa todos los campos';
+    error.value = "Por favor completa todos los campos";
     return;
   }
 
   loading.value = true;
   try {
-    const res = await api.post('/login', {
+    const res = await api.post("/login", {
       email: email.value,
       password: password.value,
     });
 
     const { token, usuario } = res.data;
-    localStorage.setItem('token', token);
-    localStorage.setItem('usuario', JSON.stringify(usuario));
-    
+    localStorage.setItem("token", token);
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+
     await hojaStore.cargarHojaDeVida();
 
     // ✅ Mostrar SweetAlert de bienvenida antes de redirigir
@@ -281,38 +287,41 @@ const handleLogin = async () => {
 
     // Redirigir después de un pequeño delay para que se vea el SweetAlert
     setTimeout(() => {
-      router.push(usuario.roles.includes('admin') ? '/admin' : '/panel/Hoja1');
+      router.push(usuario.roles.includes("admin") ? "/admin" : "/panel/Hoja1");
     }, 1000);
-
   } catch (e) {
-    console.error('Error de login:', e);
-    error.value = e.response?.data?.mensaje || 'Error de conexión. Verifica tus credenciales.';
+    console.error("Error de login:", e);
+    error.value =
+      e.response?.data?.mensaje ||
+      "Error de conexión. Verifica tus credenciales.";
   } finally {
     loading.value = false;
   }
 };
 
 const handleRegister = async () => {
-  error.value = '';
+  error.value = "";
   if (!email.value || !password.value || !nombre.value) {
-    error.value = 'Por favor completa todos los campos para continuar';
+    error.value = "Por favor completa todos los campos para continuar";
     return;
   }
 
   loading.value = true;
   try {
-    await api.post('/usuarios', {
+    await api.post("/usuarios", {
       email: email.value,
       password: password.value,
       nombre: nombre.value,
-      roles: ['usuario'],
+      roles: ["usuario"],
     });
 
     modoRegistro.value = false;
-    error.value = '🎉 ¡Registro exitoso! Ahora puedes iniciar sesión.';
+    error.value = "🎉 ¡Registro exitoso! Ahora puedes iniciar sesión.";
   } catch (e) {
-    console.error('Error de registro:', e);
-    error.value = e.response?.data?.mensaje || 'Error al crear la cuenta. Intenta nuevamente.';
+    console.error("Error de registro:", e);
+    error.value =
+      e.response?.data?.mensaje ||
+      "Error al crear la cuenta. Intenta nuevamente.";
   } finally {
     loading.value = false;
   }
@@ -332,7 +341,7 @@ onMounted(() => {
   display: flex;
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Panel de contacto */
@@ -460,8 +469,13 @@ onMounted(() => {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Formulario de login */
@@ -666,7 +680,7 @@ onMounted(() => {
 }
 
 .main-ad::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -779,14 +793,14 @@ onMounted(() => {
   .login-wrapper {
     flex-direction: column;
   }
-  
+
   .contact-panel {
     max-width: none;
     padding: 2rem;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
+
   .login-card {
     max-width: none;
     padding: 2rem;
@@ -799,16 +813,16 @@ onMounted(() => {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     max-height: 400px;
   }
-  
+
   .logo {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .logo h1 {
     font-size: 2rem;
   }
-  
+
   .form-header h2 {
     font-size: 1.5rem;
   }
@@ -820,12 +834,12 @@ onMounted(() => {
   .ads-panel {
     padding: 1.5rem;
   }
-  
+
   .additional-links {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .separator {
     display: none;
   }
