@@ -1,5 +1,5 @@
 // src/composables/useFormatoOficialHV.js
-//import { PDFDocument, rgb } from "pdf-lib"; // ❌ Quitar StandardFonts
+import { PDFDocument, rgb } from "pdf-lib"; // ❌ Quitar StandardFonts
 import fontkit from '@pdf-lib/fontkit'; // ✅ Agregar fontkit
 import { calcularTiemposTotales } from "../utils/experienciaUtils";
 
