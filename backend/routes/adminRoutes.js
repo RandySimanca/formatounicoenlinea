@@ -1,23 +1,18 @@
 // backend/routes/adminRoutes.js
-import express from 'express';
-import { enviarCampanaNavidad } from '../controllers/emailController.js';
 
-// CORRECCIÓN 1: Importamos el valor por defecto (sin llaves) y le damos el nombre del archivo
-import verificarJWT from '../middlewares/verificarJWT.js'; 
-
-const router = express.Router();
-
-// Middleware para verificar que el rol sea admin
 const esAdmin = (req, res, next) => {
-    // Usamos .uid y .roles porque así los definiste en verificarJWT.js
-    if (req.user && req.user.roles && req.user.roles.includes('admin')) {
+    // Imprimimos para depurar en los logs de Heroku
+    console.log("Roles del usuario:", req.user?.roles);
+
+    const roles = req.user?.roles || [];
+    
+    // Verificamos si incluye 'Administrador' (exacto como está en tu token)
+    if (roles.includes('Administrador') || roles.includes('admin')) {
         next();
     } else {
-        res.status(403).json({ mensaje: "Acceso denegado: Se requieren permisos de administrador" });
+        res.status(403).json({ 
+            mensaje: "Acceso denegado: Se requieren permisos de administrador",
+            sus_roles: roles // Esto nos ayudará a ver qué recibió
+        });
     }
 };
-
-// CORRECCIÓN 2: Usar el nombre correcto de la función 'enviarCampanaNavidad'
-router.post('/campana/navidad', verificarJWT, esAdmin, enviarCampanaNavidad);
-
-export default router;
