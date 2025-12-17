@@ -6,7 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import cors from "cors"; // ✅ Importar cors
-import recoveryRoutes from "./routes/recovery.js";
+
 
 // --- Importar rutas API ---
 import formacionAcademicaRoutes from "./routes/formacionAcademica.js";
@@ -19,6 +19,8 @@ import experienciaTotRoutes from "./routes/experienciaTot.js";
 import pdfRoutes from "./routes/pdf.js";
 import idiomasRoutes from "./routes/idiomas.js";
 import firmaServidorRoutes from "./routes/firmaServidor.js";
+import recoveryRoutes from "./routes/recovery.js";
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -54,6 +56,7 @@ app.use("/api/pdf", pdfRoutes);
 app.use("/api", hojaRoutes);
 app.use("/api/idiomas", idiomasRoutes);
 app.use("/api/firma-servidor", firmaServidorRoutes);
+app.use('/api/admin', adminRoutes);
 app.use("/api/recovery", recoveryRoutes);
 
 // --- Configuración de frontend MEJORADA ---
