@@ -1,4 +1,4 @@
-import Usuario from '../models/Usuario.js'; // Asegúrate de que la ruta a tu modelo sea correcta
+import Usuario from '../models/UsuarioEmbebido.js'; // Asegúrate de que la ruta a tu modelo sea correcta
 import { enviarCorreoUnico } from '../services/emailService.js'; 
 
 export const enviarCampanaNavidad = async (req, res) => {
