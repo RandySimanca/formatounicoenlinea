@@ -16,3 +16,5 @@ const esAdmin = (req, res, next) => {
         });
     }
 };
+
+export default router;
