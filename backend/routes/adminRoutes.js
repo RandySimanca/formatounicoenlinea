@@ -8,7 +8,7 @@ import verificarJWT from '../middlewares/verificarJWT.js';
 const router = express.Router();
 
 // Middleware para verificar que el rol sea admin
-const esAdmin = (req: any, res: any, next: any) => {
+const esAdmin = (req, res, next) => {
     // Usamos .uid y .roles porque así los definiste en verificarJWT.js
     if (req.user && req.user.roles && req.user.roles.includes('admin')) {
         next();
