@@ -184,8 +184,27 @@ Soporte Técnico
   }
 };
 
+export const enviarCorreoUnico = async (email, asunto, htmlContent) => {
+  const mailOptions = {
+    from: `"Formato Único Hoja de Vida" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: asunto,
+    html: htmlContent
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`📧 Correo de campaña enviado a ${email}`);
+    return { success: true };
+  } catch (error) {
+    console.error(`❌ Error enviando a ${email}:`, error.message);
+    return { success: false, error: error.message };
+  }
+};
+
 export default {
   enviarCorreoBienvenida,
   enviarCodigoRecuperacion,
+  enviarCorreoUnico,
   transporter
 };
