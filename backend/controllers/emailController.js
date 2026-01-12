@@ -15,15 +15,12 @@ export const enviarCampanaNavidad = async (req, res) => {
             const htmlContent = `
                 <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 30px; border-radius: 12px; background-color: #ffffff;">
                     <h2 style="color: #d32f2f; text-align: center;">¡Hola, ${usuario.nombre}! 🎅</h2>
-                    
                     <p style="font-size: 16px; text-align: center;">
                         En esta época de unión y gratitud, todo el equipo de <strong>Formato Único en Línea</strong> quiere agradecerte por confiar en nosotros durante este año.
                     </p>
-                    
                     <p style="font-size: 18px; font-weight: bold; text-align: center; color: #1b5e20; margin: 25px 0;">
                         ¡Te deseamos una Feliz Navidad y un próspero año 2026 lleno de salud, éxitos y nuevas oportunidades!
                     </p>
-
                     <div style="text-align: center; margin: 30px 0;">
                         <p style="font-size: 15px; color: #555;">Sigue gestionando tus procesos en nuestra plataforma:</p>
                         <a href="https://formatounicoenlinea-a17641bda7dd.herokuapp.com/login" 
@@ -31,7 +28,6 @@ export const enviarCampanaNavidad = async (req, res) => {
                            Ir a Formato Único en Línea
                         </a>
                     </div>
-                    
                     <div style="border-top: 2px solid #f0f0f0; margin-top: 30px; padding-top: 20px;">
                         <p style="color: #555; margin: 0; font-size: 15px;">
                             Atentamente,<br>
@@ -48,14 +44,15 @@ export const enviarCampanaNavidad = async (req, res) => {
 
         const resultados = await Promise.allSettled(promesasEnvio);
         
-        const exitosos = resultados.filter(r => r.status === 'fulfilled').length;
-        const fallidos = resultados.filter(r => r.status === 'rejected').length;
+        // CORRECCIÓN AQUÍ: Contamos correctamente
+        const finalExitos = resultados.filter(r => r.status === 'fulfilled').length;
+        const finalFallidos = resultados.filter(r => r.status === 'rejected').length;
 
-        console.log(`✅ Campaña enviada. Éxito: ${exitos}, Fallos: ${fallidos}`);
+        console.log(`✅ Resumen: ${finalExitos} exitosos, ${finalFallidos} fallidos.`);
 
         res.status(200).json({ 
-            mensaje: "Campaña enviada con éxito", 
-            enviados: exitosos 
+            mensaje: "Campaña procesada", 
+            detalles: { enviados: finalExitos, errores: finalFallidos } 
         });
 
     } catch (error) {
