@@ -20,118 +20,33 @@ import pdfRoutes from "./routes/pdf.js";
 import idiomasRoutes from "./routes/idiomas.js";
 import firmaServidorRoutes from "./routes/firmaServidor.js";
 import recoveryRoutes from "./routes/recovery.js";
-import adminRoutes from './routes/adminRoutes.js';
-
-dotenv.config();
-const app = express();
-
-// --- Middleware CORS (antes de rutas) ---
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:4000',
-  process.env.CORS_ORIGIN
-].filter(Boolean);
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // permitir peticiones sin origen (como apps móviles o curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
-
-// --- Middleware global ---
-app.use(express.json());
-
-// --- Conexión MongoDB Mejorada ---
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
-
-if (!MONGODB_URI) {
-  console.error("❌ ERROR: No se encontró MONGODB_URI en las variables de entorno");
-} else {
-  mongoose.connect(MONGODB_URI)
-    .then(() => console.log("✅ MongoDB conectado"))
-    .catch((err) => console.error("❌ Error en MongoDB:", err.message));
-}
-
-// --- Rutas API ---
-app.use("/api/formacion-academica", formacionAcademicaRoutes);
-app.use("/api/experiencia", experienciaRoutes);
-app.use("/api/experiencia-tot", experienciaTotRoutes);
-app.use("/api/usuarios", usuariosRoute);
-app.use("/api/login", loginRoute);
-app.use("/api/datos-personales", datosPersonalesRoute);
-app.use("/api/pdf", pdfRoutes);
-app.use("/api", hojaRoutes);
-app.use("/api/idiomas", idiomasRoutes);
-app.use("/api/firma-servidor", firmaServidorRoutes);
-app.use('/api/admin', adminRoutes);
-app.use("/api/recovery", recoveryRoutes);
-
-// --- Configuración de frontend MEJORADA ---
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const possiblePaths = [
-  path.resolve(__dirname, "../frontend/dist"),
-  path.resolve(__dirname, "./frontend/dist"),
-  path.resolve(__dirname, "../dist"),
-  path.resolve(__dirname, "./dist"),
-  path.resolve(process.cwd(), "frontend/dist"),
-  path.resolve(process.cwd(), "dist")
-];
-
-let frontendPath = null;
-
-// Buscar la ruta correcta
-for (const possiblePath of possiblePaths) {
-  try {
-    if (fs.existsSync(possiblePath) && fs.existsSync(path.join(possiblePath, "index.html"))) {
-      frontendPath = possiblePath;
-      console.log(`✅ Frontend encontrado en: ${frontendPath}`);
-      break;
-    }
-  } catch (error) {
-    console.log(`❌ Ruta no válida: ${possiblePath}`);
+// Rutas específicas para SEO (antes del catch-all)
+app.get("/robots.txt", (req, res) => {
+  const robotsPath = path.join(frontendPath, "robots.txt");
+  if (fs.existsSync(robotsPath)) {
+    res.type("text/plain");
+    res.sendFile(robotsPath);
+  } else {
+    res.status(404).send("robots.txt not found");
   }
-}
+});
 
-// Servir archivos estáticos si se encontró el frontend
-if (frontendPath) {
-  app.use(express.static(frontendPath));
+app.get("/sitemap.xml", (req, res) => {
+  const sitemapPath = path.join(frontendPath, "sitemap.xml");
+  if (fs.existsSync(sitemapPath)) {
+    res.type("application/xml");
+    res.sendFile(sitemapPath);
+  } else {
+    res.status(404).send("sitemap.xml not found");
+  }
+});
 
-  // Rutas específicas para SEO (antes del catch-all)
-  app.get("/robots.txt", (req, res) => {
-    const robotsPath = path.join(frontendPath, "robots.txt");
-    if (fs.existsSync(robotsPath)) {
-      res.type("text/plain");
-      res.sendFile(robotsPath);
-    } else {
-      res.status(404).send("robots.txt not found");
-    }
-  });
-
-  app.get("/sitemap.xml", (req, res) => {
-    const sitemapPath = path.join(frontendPath, "sitemap.xml");
-    if (fs.existsSync(sitemapPath)) {
-      res.type("application/xml");
-      res.sendFile(sitemapPath);
-    } else {
-      res.status(404).send("sitemap.xml not found");
-    }
-  });
-
-  // Redirigir todas las rutas no API al frontend
-  app.get("*", (req, res) => {
-    if (!req.path.startsWith("/api")) {
-      res.sendFile(path.join(frontendPath, "index.html"));
-    }
-  });
+// Redirigir todas las rutas no API al frontend
+app.get("*", (req, res) => {
+  if (!req.path.startsWith("/api")) {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  }
+});
 } else {
   console.log("⚠️ No se encontró el directorio del frontend");
 
