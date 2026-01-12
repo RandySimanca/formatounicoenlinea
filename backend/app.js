@@ -19,6 +19,27 @@ import experienciaTotRoutes from "./routes/experienciaTot.js";
 import pdfRoutes from "./routes/pdf.js";
 import idiomasRoutes from "./routes/idiomas.js";
 import firmaServidorRoutes from "./routes/firmaServidor.js";
+// backend/app.js
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+import cors from "cors"; // ✅ Importar cors
+
+
+// --- Importar rutas API ---
+import formacionAcademicaRoutes from "./routes/formacionAcademica.js";
+import experienciaRoutes from "./routes/experiencia.js";
+import hojaRoutes from "./routes/hojaVidaRoutes.js";
+import usuariosRoute from "./routes/usuarios.js";
+import loginRoute from "./routes/login.js";
+import datosPersonalesRoute from "./routes/datosPersonales.js";
+import experienciaTotRoutes from "./routes/experienciaTot.js";
+import pdfRoutes from "./routes/pdf.js";
+import idiomasRoutes from "./routes/idiomas.js";
+import firmaServidorRoutes from "./routes/firmaServidor.js";
 import recoveryRoutes from "./routes/recovery.js";
 import adminRoutes from './routes/adminRoutes.js';
 
@@ -26,8 +47,22 @@ dotenv.config();
 const app = express();
 
 // --- Middleware CORS (antes de rutas) ---
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:4000',
+  process.env.CORS_ORIGIN
+].filter(Boolean);
+
 app.use(cors({
-  origin: 'http://localhost:5173', // tu frontend local
+  origin: function (origin, callback) {
+    // permitir peticiones sin origen (como apps móviles o curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
@@ -138,8 +173,15 @@ if (frontendPath) {
 // --- Configurar puerto ---
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-  console.log("🌐 Modo: API + Frontend");
+  console.log(`🚀 Servidor iniciado con éxito`);
+  console.log(`📡 Puerto: ${PORT}`);
+  console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 MongoDB URI presente: ${!!MONGODB_URI}`);
+  if (frontendPath) {
+    console.log(`📁 Sirviendo frontend desde: ${frontendPath}`);
+  } else {
+    console.warn("⚠️ Advertencia: No se encontró el directorio del frontend");
+  }
 });
 
 export default app;
