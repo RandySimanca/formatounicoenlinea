@@ -19,27 +19,6 @@ import experienciaTotRoutes from "./routes/experienciaTot.js";
 import pdfRoutes from "./routes/pdf.js";
 import idiomasRoutes from "./routes/idiomas.js";
 import firmaServidorRoutes from "./routes/firmaServidor.js";
-// backend/app.js
-import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-import cors from "cors"; // ✅ Importar cors
-
-
-// --- Importar rutas API ---
-import formacionAcademicaRoutes from "./routes/formacionAcademica.js";
-import experienciaRoutes from "./routes/experiencia.js";
-import hojaRoutes from "./routes/hojaVidaRoutes.js";
-import usuariosRoute from "./routes/usuarios.js";
-import loginRoute from "./routes/login.js";
-import datosPersonalesRoute from "./routes/datosPersonales.js";
-import experienciaTotRoutes from "./routes/experienciaTot.js";
-import pdfRoutes from "./routes/pdf.js";
-import idiomasRoutes from "./routes/idiomas.js";
-import firmaServidorRoutes from "./routes/firmaServidor.js";
 import recoveryRoutes from "./routes/recovery.js";
 import adminRoutes from './routes/adminRoutes.js';
 
