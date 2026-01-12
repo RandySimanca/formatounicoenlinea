@@ -1,0 +1,14 @@
+services:
+  # Backend (API en Node.js)
+  - type: web
+    name: formatounicoenlinea-api
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js  # o tu archivo principal del backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+
+ 

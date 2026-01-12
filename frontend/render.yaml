@@ -1,0 +1,16 @@
+ # Frontend (Vue.js)
+  - type: web
+    name: formatounicoenlinea
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://formatounicoenlinea-api.onrender.com  # URL de tu backend
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable

@@ -7,8 +7,15 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": "http://localhost:3000",
-    },
+    }
   },
-
-  
-});
+  build: {
+    outDir: 'dist'
+  },
+  // Usa variable de entorno en producción
+  define: {
+    'import.meta.env.VITE_API_URL': JSON.stringify(
+      process.env.VITE_API_URL || 'http://localhost:3000'
+    )
+  }
+})
