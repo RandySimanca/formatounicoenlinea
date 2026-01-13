@@ -116,6 +116,21 @@ app.listen(PORT, "0.0.0.0", () => {
   } else {
     console.warn("⚠️ Advertencia: No se encontró el directorio del frontend");
   }
+
+  // --- Keep-Alive Mechanism ---
+  // Ping al servidor cada 14 minutos para evitar que Render lo duerma
+  const SERVER_URL = process.env.SERVER_URL || 'https://formatounicoenlinea.onrender.com';
+
+  // Solo activar en producción o si se fuerza explícitamente
+  if (process.env.NODE_ENV === 'production' || process.env.KEEP_ALIVE === 'true') {
+    console.log(`⏰ Keep-alive activado para: ${SERVER_URL}`);
+    setInterval(() => {
+      console.log('🔄 Enviando ping de keep-alive...');
+      fetch(SERVER_URL)
+        .then(res => console.log(`✅ Ping exitoso: ${res.status}`))
+        .catch(err => console.error(`❌ Error en ping: ${err.message}`));
+    }, 14 * 60 * 1000); // 14 minutos
+  }
 });
 
 export default app;
