@@ -111,8 +111,7 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`📡 Puerto: ${PORT}`);
   console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 MongoDB URI presente: ${!!MONGODB_URI}`);
-  console.log(`📧 Email User presente: ${!!process.env.EMAIL_USER}`);
-  console.log(`📧 Email Pass presente: ${!!process.env.EMAIL_PASS}`);
+  console.log(`📧 Email Bridge URL presente: ${!!process.env.EMAIL_BRIDGE_URL}`);
 
   if (fs.existsSync(frontendPath)) {
     console.log(`📁 Sirviendo frontend desde: ${frontendPath}`);
