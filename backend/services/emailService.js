@@ -5,15 +5,17 @@ import nodemailer from "nodemailer";
 // Configurar el transporter una sola vez
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // true para puerto 465, false para otros puertos
+  port: 587,
+  secure: false, // false para puerto 587 (STARTTLS)
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  connectionTimeout: 10000, // 10 segundos
-  greetingTimeout: 10000,   // 10 segundos
+  connectionTimeout: 15000, // Aumentamos a 15 segundos
+  greetingTimeout: 15000,
 });
+
+console.log("📧 Configuración de correo: smtp.gmail.com:587 (STARTTLS)");
 
 /**
  * Envía correo de bienvenida al registrar nuevo usuario
