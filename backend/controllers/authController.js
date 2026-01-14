@@ -41,11 +41,12 @@ export const registrarUsuario = async (req, res) => {
       numDocumento: nuevoUsuario.numDocumento || ""
     }).catch(error => {
       // Solo logueamos el error, no afecta el registro
-      console.error("⚠️ No se pudo enviar correo de bienvenida:", error);
+      console.error("⚠️ No se pudo enviar correo de bienvenida:");
+      console.error("Error:", error);
     });
 
-    res.status(201).json({ 
-      mensaje: "Usuario registrado exitosamente. ¡Revisa tu correo!" 
+    res.status(201).json({
+      mensaje: "Usuario registrado exitosamente. ¡Revisa tu correo!"
     });
   } catch (err) {
     console.error("Error en registro:", err.message);

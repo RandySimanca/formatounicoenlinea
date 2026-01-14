@@ -9,6 +9,8 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  connectionTimeout: 10000, // 10 segundos
+  greetingTimeout: 10000,   // 10 segundos
 });
 
 /**
@@ -97,7 +99,10 @@ Soporte Técnico
     console.log(`📧 Correo de bienvenida enviado a ${usuario.email}`);
     return { success: true };
   } catch (error) {
-    console.error("❌ Error al enviar correo de bienvenida:", error.message);
+    console.error("❌ Error al enviar correo de bienvenida:");
+    console.error("Mensaje:", error.message);
+    console.error("Código:", error.code);
+    console.error("Comando:", error.command);
     return { success: false, error: error.message };
   }
 };
@@ -179,7 +184,10 @@ Soporte Técnico
     console.log(`📧 Correo de recuperación enviado a ${email}`);
     return { success: true };
   } catch (error) {
-    console.error("❌ Error al enviar correo de recuperación:", error.message);
+    console.error("❌ Error al enviar correo de recuperación:");
+    console.error("Mensaje:", error.message);
+    console.error("Código:", error.code);
+    console.error("Comando:", error.command);
     return { success: false, error: error.message };
   }
 };

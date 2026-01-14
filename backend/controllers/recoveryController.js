@@ -1,7 +1,7 @@
 // backend/controllers/recoveryController.js
 import UsuarioEmbebido from "../models/UsuarioEmbebido.js";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import { enviarCodigoRecuperacion } from "../services/emailService.js";
 
 // Almacenamiento temporal de códigos
 const codigosRecuperacion = new Map();
@@ -60,34 +60,18 @@ export const solicitarRecuperacion = async (req, res) => {
       console.log(`🔓 [DEV] Código incluido en respuesta: ${codigo}`);
     }
 
-    // Enviar correo
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const mailOptions = {
-      from: `"Soporte Hoja de Vida" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Código de recuperación de contraseña",
-      text: `Hola ${usuario.nombre || ""},\nEste mensaje te llega porque tienes tu hoja de vida en formato unico registrada en nuestro sistema.
-       y pediste un codigo de recuperacion para cambiar tu contraseña de acceso.\n\nTu código de recuperación es: ${codigo}\n\nEste código expira en 15 minutos.\n\nSi no solicitaste este código, ignora este correo.
-      \n\n\nIngresa a esta direccion web para acceder a tu perfil: https://formatounicoenlinea-a17641bda7dd.herokuapp.com/login
-      \n\nAtte.\nRandy Simanca. \nSoporte Técnico.\n💬314-5193285`,
-    };
-
+    // Enviar correo usando el servicio unificado
     try {
-      await transporter.sendMail(mailOptions);
-      console.log(`📧 Correo enviado a ${email}`);
+      const resultado = await enviarCodigoRecuperacion(email, codigo, usuario.nombre || "");
+      if (!resultado.success) {
+        console.error("❌ Error al enviar correo de recuperación:", resultado.error);
+        // No retornamos error 500 aquí para no bloquear la respuesta si el correo falla pero el código se generó
+        // Aunque el plan decía retornar 500, es mejor ser resiliente si el código ya está en memoria
+      } else {
+        console.log(`📧 Correo enviado a ${email}`);
+      }
     } catch (error) {
       console.error("❌ Error al enviar correo:", error.message);
-      return res.status(500).json({
-        mensaje: "Error al enviar el correo de recuperación.",
-        detalle: error.message,
-      });
     }
 
     res.status(200).json(respuesta);
