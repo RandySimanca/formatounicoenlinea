@@ -58,22 +58,6 @@ export const loginUsuario = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ mensaje: "Correo y contraseña son obligatorios." });
-    }
-
-    const usuario = await UsuarioEmbebido.findOne({ email: email.toLowerCase() });
-    if (!usuario) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado." });
-    }
-
-    const esValido = await usuario.validarPassword(password);
-    if (!esValido) {
-      return res.status(401).json({ mensaje: "Contraseña incorrecta." });
-    }
-
     // Actualizar último acceso
     usuario.ultimoAcceso = new Date();
     await usuario.save();
