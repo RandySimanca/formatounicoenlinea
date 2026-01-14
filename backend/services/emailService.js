@@ -26,14 +26,21 @@ const enviarViaPuente = async (opciones) => {
       })
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    console.log(`📡 Respuesta del Puente (Status ${response.status})`);
 
-    if (data.status === "success") {
-      console.log(`✅ Correo enviado exitosamente vía Puente a ${opciones.to}`);
-      return { success: true };
-    } else {
-      console.error("❌ Error del Puente de Google:", data.message);
-      return { success: false, error: data.message };
+    try {
+      const data = JSON.parse(text);
+      if (data.status === "success") {
+        console.log(`✅ Correo enviado exitosamente vía Puente a ${opciones.to}`);
+        return { success: true };
+      } else {
+        console.error("❌ Error del Puente de Google:", data.message);
+        return { success: false, error: data.message };
+      }
+    } catch (e) {
+      console.error("❌ El Puente no devolvió JSON. Respuesta recibida:", text.substring(0, 100) + "...");
+      return { success: false, error: "Respuesta no válida del servidor de Google" };
     }
   } catch (error) {
     console.error("❌ Error de red al conectar con el Puente:", error.message);
