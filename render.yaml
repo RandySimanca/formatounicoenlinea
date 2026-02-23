@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: formatounicoenlinea
+    env: node
+    plan: free
+    buildCommand: npm install && cd frontend && npm install --production=false && npm run build
+    startCommand: node backend/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: EMAIL_BRIDGE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://formatounicoenlinea.onrender.com

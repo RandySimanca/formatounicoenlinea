@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- Página principal / Login -->
+  <url>
+    <loc>https://formatounicoenlinea.com/</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Página de login -->
+  <url>
+    <loc>https://formatounicoenlinea.com/login</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Página de recuperación de contraseña -->
+  <url>
+    <loc>https://formatounicoenlinea.com/recuperar-password</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>
+
+<!-- 
+NOTA IMPORTANTE: 
+- Actualiza la URL base (https://formatounicoenlinea.com/) con tu dominio real
+- Actualiza las fechas <lastmod> con la fecha actual o fecha de última modificación
+- Agrega más URLs si creas páginas públicas adicionales
+- Las páginas privadas (/panel/*) no se incluyen en el sitemap porque requieren autenticación
+-->
+

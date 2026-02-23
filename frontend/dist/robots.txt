@@ -1,0 +1,28 @@
+# robots.txt para Formato Único de Hoja de Vida
+
+# Permitir acceso a todos los rastreadores
+User-agent: *
+Allow: /
+
+# Permitir acceso a las páginas públicas
+Allow: /login
+Allow: /recuperar-password
+
+# Bloquear acceso a las páginas privadas (requieren autenticación)
+Disallow: /panel
+
+# Bloquear acceso a archivos del sistema y API
+Disallow: /api/
+Disallow: /node_modules/
+Disallow: /.git/
+
+# Sitemap
+Sitemap: https://formatounicoenlinea.com/sitemap.xml
+
+# Rastreadores específicos
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
