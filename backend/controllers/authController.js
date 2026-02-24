@@ -58,6 +58,21 @@ export const loginUsuario = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({ mensaje: "Email y contraseña son obligatorios." });
+    }
+
+    const usuario = await UsuarioEmbebido.findOne({ email: email.toLowerCase() });
+
+    if (!usuario) {
+      return res.status(401).json({ mensaje: "Credenciales inválidas." });
+    }
+
+    const passwordValido = await usuario.validarPassword(password);
+    if (!passwordValido) {
+      return res.status(401).json({ mensaje: "Credenciales inválidas." });
+    }
+
     // Actualizar último acceso
     usuario.ultimoAcceso = new Date();
     await usuario.save();
