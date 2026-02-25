@@ -103,7 +103,7 @@ export const enviarCodigoRecuperacion = async (email, codigo, nombreUsuario = ""
   const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
         <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <h2 style="color: #e74c3c; margin-bottom: 20px;">🔐 Recuperación de Contraseña</h2>
+          <h2 style="color: #e74c3c; margin-bottom: 20px;"> Recuperación de Contraseña</h2>
           <p style="color: #555; line-height: 1.6;">Hola ${nombreUsuario},</p>
           <p style="color: #555; line-height: 1.6;">Recibimos una solicitud para restablecer la contraseña de tu cuenta.</p>
           <div style="background-color: #fff3cd; padding: 20px; border-radius: 5px; margin: 25px 0; text-align: center;">
@@ -119,7 +119,7 @@ export const enviarCodigoRecuperacion = async (email, codigo, nombreUsuario = ""
           </div>
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           <p style="color: #555; margin-top: 20px;">
-            Atentamente,<br><strong>Randy Simanca</strong><br>Soporte Técnico<br>💬 314-5193285
+            Atentamente,<br><strong>Randy Simanca</strong><br>Soporte Técnico<br>314-5193285
           </p>
         </div>
       </div>
