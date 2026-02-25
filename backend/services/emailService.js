@@ -75,7 +75,7 @@ export const enviarCorreoBienvenida = async (usuario) => {
             <li>✅ Descargar tu hoja de vida en formato PDF oficial</li>
           </ul>
           <div style="text-align: center; margin-top: 30px;">
-            <a href="https://formatounicoenlinea-a17641bda7dd.herokuapp.com/login" 
+            <a href="https://formatounicoenlinea.onrender.com/login" 
                style="background-color: #3498db; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
               Ingresar a mi cuenta
             </a>
