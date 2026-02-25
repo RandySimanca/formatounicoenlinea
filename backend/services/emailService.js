@@ -27,8 +27,10 @@ const enviarViaPuente = async (opciones) => {
       })
     });
 
+   
+
     const text = await response.text();
-    console.log("📡 RESPUESTA COMPLETA:", text);
+    console.log("📡 RESPUESTA COMPLETA DEL PUENTE:", text);
     //console.log(`📡 Respuesta del Puente (Status ${response.status})`);
 
     try {
