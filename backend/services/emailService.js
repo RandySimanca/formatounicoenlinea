@@ -15,6 +15,7 @@ const enviarViaPuente = async (opciones) => {
   try {
     const response = await fetch(bridgeUrl, {
       method: "POST",
+      redirect: "follow",
       headers: {
         "Content-Type": "application/json",
       },
@@ -27,7 +28,8 @@ const enviarViaPuente = async (opciones) => {
     });
 
     const text = await response.text();
-    console.log(`📡 Respuesta del Puente (Status ${response.status})`);
+    console.log("📡 RESPUESTA COMPLETA:", text);
+    //console.log(`📡 Respuesta del Puente (Status ${response.status})`);
 
     try {
       const data = JSON.parse(text);
