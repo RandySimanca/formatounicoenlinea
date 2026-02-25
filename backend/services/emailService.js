@@ -64,8 +64,8 @@ export const enviarCorreoBienvenida = async (usuario) => {
             Tu cuenta ha sido creada exitosamente en nuestro sistema de <strong>Formato Único de Hoja de Vida</strong>.
           </p>
           <div style="background-color: #e8f4f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p style="margin: 5px 0; color: #333;"><strong>📧 Email registrado:</strong> ${usuario.email}</p>
-            <p style="margin: 5px 0; color: #333;"><strong>📄 Documento:</strong> ${usuario.numDocumento || 'No especificado'}</p>
+            <p style="margin: 5px 0; color: #333;"><strong>Email registrado:</strong> ${usuario.email}</p>
+            <p style="margin: 5px 0; color: #333;"><strong> Documento:</strong> ${usuario.numDocumento || 'No especificado'}</p>
           </div>
           <h3 style="color: #2c3e50; margin-top: 25px;">¿Qué puedes hacer ahora?</h3>
           <ul style="color: #555; line-height: 1.8;">
@@ -82,7 +82,7 @@ export const enviarCorreoBienvenida = async (usuario) => {
           </div>
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
           <p style="color: #555; margin-top: 20px;">
-            Atentamente,<br><strong>Randy Simanca</strong><br>Soporte Técnico<br>💬 314-5193285
+            Atentamente,<br><strong>Randy Simanca</strong><br>Soporte Técnico<br>314-5193285
           </p>
         </div>
       </div>
