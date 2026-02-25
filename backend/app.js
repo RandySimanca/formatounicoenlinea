@@ -53,6 +53,16 @@ app.use("/api/idiomas", idiomasRoutes);
 app.use("/api/firma-servidor", firmaServidorRoutes);
 app.use("/api/recovery", recoveryRoutes);
 
+// --- Endpoint de salud (para monitoreo externo tipo UptimeRobot) ---
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: Math.floor(process.uptime()) + 's',
+    env: process.env.NODE_ENV || 'development'
+  });
+});
+
 // --- Servir archivos estáticos del frontend ---
 const frontendPath = path.join(__dirname, "../frontend/dist");
 
@@ -119,16 +129,21 @@ app.listen(PORT, "0.0.0.0", () => {
     console.warn("⚠️ Advertencia: No se encontró el directorio del frontend");
   }
 
-  // --- Keep-Alive Mechanism ---
+  // --- Keep-Alive Interno (respaldo) ---
+  // NOTA: En Render plan gratuito, este ping interno NO evita el sleep.
+  // Para evitar el sleep real, usar UptimeRobot apuntando a /health
+  // URL: https://formatounicoenlinea.onrender.com/health
   const SERVER_URL = process.env.SERVER_URL || 'https://formatounicoenlinea.onrender.com';
+  const HEALTH_URL = `${SERVER_URL}/health`;
   if (process.env.NODE_ENV === 'production' || process.env.KEEP_ALIVE === 'true') {
-    console.log(`⏰ Keep-alive activado para: ${SERVER_URL}`);
+    console.log(`⏰ Keep-alive interno activado para: ${HEALTH_URL}`);
+    console.log(`💡 Para evitar el sleep en Render, configura UptimeRobot en: ${HEALTH_URL}`);
     setInterval(() => {
-      console.log('🔄 Enviando ping de keep-alive...');
-      fetch(SERVER_URL)
-        .then(res => console.log(`✅ Ping exitoso: ${res.status}`))
-        .catch(err => console.error(`❌ Error en ping: ${err.message}`));
-    }, 14 * 60 * 1000); // 14 minutos
+      fetch(HEALTH_URL)
+        .then(res => res.json())
+        .then(data => console.log(`✅ Keep-alive OK: ${data.timestamp}`))
+        .catch(err => console.error(`❌ Error en keep-alive: ${err.message}`));
+    }, 14 * 60 * 1000); // cada 14 minutos
   }
 });
 
