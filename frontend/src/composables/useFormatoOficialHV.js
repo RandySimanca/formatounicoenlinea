@@ -227,9 +227,27 @@ export function useFormatoOficialHV() {
       console.log("💼 Procesando experiencia laboral (normalizada):", experiencias);
 
       if (experiencias.length > 0 && pages[1]) {
-        //const experienciasPorPagina = 4;
-        const experienciasPorPagina = 3;
-        const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
+        // ── MODO ACTIVO: hoja 1 arranca desde el 2do módulo, hojas 2+ desde el 1ro ──────────────
+        // Hoja 1: salta el 1er módulo → caben 3 experiencias (bloques 2, 3, 4)
+        // Hojas 2+: usa los 4 módulos desde el principio
+        const bloquesP1    = [{ yBase: 373 }, { yBase: 504 }, { yBase: 633 }];
+        const bloquesResto = [{ yBase: 240 }, { yBase: 373 }, { yBase: 504 }, { yBase: 633 }];
+
+        const capP1    = bloquesP1.length;    // 3
+        const capResto = bloquesResto.length; // 4
+
+        // Cálculo de páginas con capacidad mixta (3 en hoja 1 + 4 en las siguientes)
+        const totalPaginasExperiencia = experiencias.length <= capP1
+          ? 1
+          : 1 + Math.ceil((experiencias.length - capP1) / capResto);
+
+        // ── MODO ALTERNATIVO: todas las hojas arrancan desde el 1er módulo (4 exp. por página) ──
+        // Para activar: comentar el bloque de arriba y descomentar las 3 líneas siguientes.
+        // const bloquesUniforme     = [{ yBase: 240 }, { yBase: 373 }, { yBase: 504 }, { yBase: 633 }];
+        // const experienciasPorPagina = bloquesUniforme.length; // 4
+        // const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
+        // ─────────────────────────────────────────────────────────────────────────────────────────
+
         console.log(`📄 Se necesitan ${totalPaginasExperiencia} páginas para ${experiencias.length} experiencias`);
 
         const formatoBaseBytes = await fetch(urlFormato).then(r => r.arrayBuffer());
@@ -244,16 +262,30 @@ export function useFormatoOficialHV() {
 
         const updatedPages = pdfDoc.getPages();
 
-        const bloques = [
-          //{ yBase: 240 },
-          { yBase: 373 },
-          { yBase: 504 },
-          { yBase: 633 },
-        ];
-
         experiencias.forEach((exp, idx) => {
-          const paginaIndex = 1 + Math.floor(idx / experienciasPorPagina);
-          const posicion = idx % experienciasPorPagina;
+          let paginaIndex, posicion, bloques;
+
+          // ── MODO ACTIVO: lógica diferenciada por página ──────────────────────────────────────
+          if (idx < capP1) {
+            // Primeras 3 experiencias → hoja 1, arrancan desde el 2do módulo
+            paginaIndex = 1;
+            posicion    = idx;
+            bloques     = bloquesP1;
+          } else {
+            // El resto → hojas 2, 3, … usando los 4 módulos desde el principio
+            const idxResto = idx - capP1;
+            paginaIndex    = 2 + Math.floor(idxResto / capResto);
+            posicion       = idxResto % capResto;
+            bloques        = bloquesResto;
+          }
+
+          // ── MODO ALTERNATIVO: lógica uniforme (todas las hojas iguales) ─────────────────────
+          // Para activar: comentar el bloque if/else de arriba y descomentar las 3 líneas siguientes.
+          // const paginaIndex = 1 + Math.floor(idx / experienciasPorPagina);
+          // const posicion    = idx % experienciasPorPagina;
+          // const bloques     = bloquesUniforme;
+          // ────────────────────────────────────────────────────────────────────────────────────
+
           const { yBase } = bloques[posicion];
           const page = updatedPages[paginaIndex];
 
