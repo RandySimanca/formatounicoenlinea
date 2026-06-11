@@ -227,7 +227,8 @@ export function useFormatoOficialHV() {
       console.log("💼 Procesando experiencia laboral (normalizada):", experiencias);
 
       if (experiencias.length > 0 && pages[1]) {
-        const experienciasPorPagina = 4;
+        //const experienciasPorPagina = 4;
+        const experienciasPorPagina = 3;
         const totalPaginasExperiencia = Math.ceil(experiencias.length / experienciasPorPagina);
         console.log(`📄 Se necesitan ${totalPaginasExperiencia} páginas para ${experiencias.length} experiencias`);
 
@@ -244,7 +245,7 @@ export function useFormatoOficialHV() {
         const updatedPages = pdfDoc.getPages();
 
         const bloques = [
-          { yBase: 240 },
+          //{ yBase: 240 },
           { yBase: 373 },
           { yBase: 504 },
           { yBase: 633 },
