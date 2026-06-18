@@ -42,7 +42,7 @@ export default connectDB;
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://randysimancamercado2:Valeria1324@clustermiapp.z0bbfnk.mongodb.net/baseDeDatosHV?retryWrites=true&w=majority');
+    await mongoose.connect('mongodb+srv://randysimancamercado2:Contraseña4@clustermiapp.z0bbfnk.mongodb.net/baseDeDatosHV?retryWrites=true&w=majority');
     console.log('Servidor corriendo en el puerto 3000 con exito //db.js');
     console.log('✅ MongoDB Atlas conectado');
   } catch (err) {
