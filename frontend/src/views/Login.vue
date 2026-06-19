@@ -147,6 +147,31 @@
     <!-- Panel publicitario -->
     <div class="ads-panel">
       <div class="ads-container">
+         <div class="main-ad">
+          <div class="ad-header">
+            <h3>🛠️ Herramientas Gratuitas</h3>
+            <span class="ad-badge" style="background: #e2e8f0; color: #4a5568;">GRATIS</span>
+          </div>
+          <div class="ad-content">
+            <p>Genera documentos laborales sin registro y descárgalos en PDF.</p>
+            <div class="tools-links">
+              <router-link to="/herramientas/carta-de-experiencia-laboral" class="tool-link">
+                📄 Carta de Experiencia Laboral
+              </router-link>
+              <router-link to="/herramientas/carta-de-renuncia" class="tool-link">
+                📝 Carta de Renuncia
+              </router-link>
+              <router-link to="/herramientas/referencia-personal" class="tool-link">
+                🤝 Referencia Personal
+              </router-link>
+              <router-link to="/herramientas/derecho-de-peticion-laboral" class="tool-link">
+                ⚖️ Derecho de Petición
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+        
         <div class="main-ad">
           <div class="ad-header">
             <h3>🚀 Impulsa tu carrera</h3>
@@ -167,12 +192,7 @@
           </div>
         </div>
 
-        <div class="external-ad">
-          <div class="ad-placeholder">
-            <p>Espacio publicitario</p>
-            <small>320x250</small>
-          </div>
-        </div>
+       
       </div>
     </div>
   </div>
@@ -772,32 +792,47 @@ onMounted(() => {
   font-size: 0.8rem;
 }
 
-.external-ad {
+.free-tools-card {
   background: white;
-  border: 2px dashed #e2e8f0;
-  border-radius: 10px;
-  min-height: 200px;
+  border: 1px solid #e2e8f0;
+  color: #2d3748;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.free-tools-card .ad-header h3 {
+  color: #2d3748;
+}
+
+.free-tools-card .ad-content p {
+  color: #718096;
+}
+
+.tools-links {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #a0aec0;
-  transition: all 0.3s ease;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.external-ad:hover {
-  border-color: #cbd5e0;
+.tool-link {
+  display: block;
+  padding: 0.75rem 1rem;
   background: #f7fafc;
-}
-
-.ad-placeholder p {
-  margin: 0 0 0.5rem 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #4a5568;
+  text-decoration: none;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
-.ad-placeholder small {
-  font-size: 0.8rem;
+.tool-link:hover {
+  background: #ebf4ff;
+  border-color: #c3dafe;
+  color: #4c51bf;
+  transform: translateX(4px);
 }
 
 /* Responsive */

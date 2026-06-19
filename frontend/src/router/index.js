@@ -9,6 +9,13 @@ import RecuperarPassword from "../views/RecuperarPassword.vue";
 // Vistas públicas
 import LoginViews from "../views/Login.vue";
 
+// Herramientas públicas (sin login, con SEO)
+import LayoutHerramientas from "../Layouts/LayoutHerramientas.vue";
+import CartaExperiencia from "../views/publicos/CartaExperiencia.vue";
+import CartaRenuncia from "../views/publicos/CartaRenuncia.vue";
+import ReferenciaPersonal from "../views/publicos/ReferenciaPersonal.vue";
+import DerechoPeticion from "../views/publicos/DerechoPeticion.vue";
+
 // Vistas privadas
 import Home from "../views/Home.vue";
 import Hoja1 from "../views/Hoja1.vue";
@@ -125,6 +132,52 @@ const router = createRouter({
       ]
     },
 
+    {
+      path: "/herramientas",
+      component: LayoutHerramientas,
+      children: [
+        {
+          path: "carta-de-experiencia-laboral",
+          name: "carta-experiencia",
+          component: CartaExperiencia,
+          meta: {
+            title: "Carta de Experiencia Laboral — Generador Gratuito | Formato Único en Línea",
+            description: "Genera gratis tu carta de experiencia laboral en PDF. Solo llena el formulario y descarga el documento listo para firmar. Sin registro.",
+            keywords: "carta de experiencia laboral, certificación laboral colombia, carta de trabajo colombia, generar carta experiencia pdf, certificado de experiencia laboral"
+          }
+        },
+        {
+          path: "carta-de-renuncia",
+          name: "carta-renuncia",
+          component: CartaRenuncia,
+          meta: {
+            title: "Carta de Renuncia — Generador Gratuito | Formato Único en Línea",
+            description: "Genera gratis tu carta de renuncia laboral en PDF. Llena el formulario y descarga el documento listo para entregar. Sin registro.",
+            keywords: "carta de renuncia colombia, modelo carta de renuncia, formato carta renuncia trabajo, generar carta renuncia pdf, renuncia voluntaria colombia"
+          }
+        },
+        {
+          path: "referencia-personal",
+          name: "referencia-personal",
+          component: ReferenciaPersonal,
+          meta: {
+            title: "Carta de Referencia Personal — Generador Gratuito | Formato Único en Línea",
+            description: "Genera gratis tu carta de referencia personal en PDF. Llena el formulario y descarga el documento listo para firmar. Sin registro.",
+            keywords: "carta de referencia personal colombia, modelo referencia personal, formato carta referencia, referencia personal pdf, carta de recomendación personal colombia"
+          }
+        },
+        {
+          path: "derecho-de-peticion-laboral",
+          name: "derecho-peticion",
+          component: DerechoPeticion,
+          meta: {
+            title: "Derecho de Petición Laboral — Generador Gratuito | Formato Único en Línea",
+            description: "Genera gratis tu derecho de petición laboral en PDF conforme al artículo 23 de la Constitución de Colombia. Sin registro, descarga inmediata.",
+            keywords: "derecho de peticion laboral colombia, modelo derecho de peticion trabajo, formato derecho peticion empleado, generar derecho peticion pdf, reclamacion laboral colombia"
+          }
+        }
+      ]
+    }
 
   ]
 });
