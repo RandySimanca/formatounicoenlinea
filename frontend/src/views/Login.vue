@@ -19,12 +19,8 @@
             <p>randysimancamercado@gmail.com</p>
           </div>
         </div>
-        <a
-          class="contact-item whatsapp-link"
-          href="https://wa.me/573145193285"
-          target="_blank"
-          title="Haz clic para chatear por WhatsApp"
-        >
+        <a class="contact-item whatsapp-link" href="https://wa.me/573145193285" target="_blank"
+          title="Haz clic para chatear por WhatsApp">
           <span class="icon">💬</span>
           <div>
             <strong>WhatsApp (¡Haz clic!)</strong>
@@ -61,38 +57,18 @@
       <form @submit.prevent="modoRegistro ? handleRegister() : handleLogin()">
         <div class="input-group">
           <label for="email">Correo electrónico</label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            placeholder="tu@email.com"
-            autocomplete="email"
-            required
-          />
+          <input id="email" v-model="email" type="email" placeholder="tu@email.com" autocomplete="email" required />
         </div>
 
         <div class="input-group">
           <label for="password">Contraseña</label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            placeholder="••••••••"
-            autocomplete="current-password"
-            required
-          />
+          <input id="password" v-model="password" type="password" placeholder="••••••••" autocomplete="current-password"
+            required />
         </div>
 
         <div v-if="modoRegistro" class="input-group">
           <label for="nombre">Nombre completo</label>
-          <input
-            id="nombre"
-            v-model="nombre"
-            type="text"
-            placeholder="Juan Pérez"
-            autocomplete="name"
-            required
-          />
+          <input id="nombre" v-model="nombre" type="text" placeholder="Juan Pérez" autocomplete="name" required />
         </div>
 
         <button type="submit" :disabled="loading" class="submit-btn">
@@ -103,8 +79,8 @@
                 ? "Creando cuenta..."
                 : "Ingresando..."
               : modoRegistro
-              ? "Crear mi cuenta"
-              : "Iniciar sesión"
+                ? "Crear mi cuenta"
+                : "Iniciar sesión"
           }}
         </button>
 
@@ -116,22 +92,16 @@
 
       <div class="form-footer">
         <p v-if="!modoRegistro">¿No tienes cuenta?</p>
-        <button
-          @click="modoRegistro = !modoRegistro"
-          :class="{
-            'submit-btn': !modoRegistro,
-            'toggle-btn': modoRegistro,
-            'register-cta-btn': !modoRegistro,
-          }"
-          :style="{ 'margin-top': !modoRegistro ? '1rem' : '0' }"
-        >
+        <button @click="modoRegistro = !modoRegistro" :class="{
+          'submit-btn': !modoRegistro,
+          'toggle-btn': modoRegistro,
+          'register-cta-btn': !modoRegistro,
+        }" :style="{ 'margin-top': !modoRegistro ? '1rem' : '0' }">
           {{ modoRegistro ? "Iniciar sesión" : "Crear cuenta gratis" }}
         </button>
         <p v-if="modoRegistro" class="switch-link">
           ¿Ya tienes una cuenta?
-          <a @click.prevent="modoRegistro = false" class="toggle-link"
-            >Inicia sesión</a
-          >
+          <a @click.prevent="modoRegistro = false" class="toggle-link">Inicia sesión</a>
         </p>
       </div>
 
@@ -147,7 +117,7 @@
     <!-- Panel publicitario -->
     <div class="ads-panel">
       <div class="ads-container">
-         <div class="main-ad">
+        <div class="main-ad">
           <div class="ad-header">
             <h3>🛠️ Herramientas Gratuitas</h3>
             <span class="ad-badge" style="background: #e2e8f0; color: #4a5568;">GRATIS</span>
@@ -171,7 +141,7 @@
           </div>
         </div>
 
-        
+
         <div class="main-ad">
           <div class="ad-header">
             <h3>🚀 Impulsa tu carrera</h3>
@@ -192,7 +162,7 @@
           </div>
         </div>
 
-       
+
       </div>
     </div>
   </div>
@@ -380,15 +350,15 @@ onMounted(() => {
 .contact-panel {
   flex: 1;
   max-width: 500px;
-  padding: 3rem;
+  padding: 0.5rem 3rem 3rem 3rem;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   color: white;
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
+ }
 
 .contact-header {
   text-align: center;
@@ -501,10 +471,12 @@ onMounted(() => {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 0.5;
   }
+
   50% {
     opacity: 1;
   }
@@ -515,10 +487,10 @@ onMounted(() => {
   flex: 1;
   max-width: 500px;
   background: white;
-  padding: 3rem;
+  padding: 0.5rem 3rem 3rem 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -688,7 +660,7 @@ onMounted(() => {
   flex: 1;
   max-width: 400px;
   background: #f8fafc;
-  padding: 2rem;
+  padding: 0.5rem 2rem 2rem 2rem;
   overflow-y: auto;
   border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -876,6 +848,7 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
+
   .contact-panel,
   .login-card,
   .ads-panel {
