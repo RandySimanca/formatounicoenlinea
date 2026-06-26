@@ -2,7 +2,15 @@
   <form @submit.prevent="guardarExperiencia">
     <div class="section">
       <div class="form-group">
-        <label>EMPLEO ACTUAL O CONTRATO ANTERIOR</label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <label style="margin: 0;">EMPLEO ACTUAL O CONTRATO ANTERIOR</label>
+          <div class="checkbox-group no-imprimir" style="display: flex; align-items: center; gap: 8px; background: #f0f4f8; padding: 5px 10px; border-radius: 5px; border: 1px solid #cce5ff;">
+            <input type="checkbox" v-model="experienciaLocal.imprimir" :id="'imprimir-' + (experienciaLocal._id || 'nuevo')" />
+            <label :for="'imprimir-' + (experienciaLocal._id || 'nuevo')" style="margin: 0; cursor: pointer; color: #004085; font-weight: bold;">
+              Incluir en el documento impreso
+            </label>
+          </div>
+        </div>
 
         <div class="form-row">
           <div class="form-group col-amplio">
@@ -241,6 +249,7 @@ export default {
         cargo: "",
         dependencia: "",
         direccion: "",
+        imprimir: true,
         datosPrecargados: false,
       },
       cargando: false,
@@ -319,6 +328,7 @@ export default {
         _id: exp._id || null,
         fechaIngreso: this.normalizarFecha(exp.fechaIngreso),
         fechaRetiro: this.normalizarFecha(exp.fechaRetiro),
+        imprimir: exp.imprimir !== false,
         datosPrecargados: true,
       };
 

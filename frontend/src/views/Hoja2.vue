@@ -3,8 +3,16 @@
     <!-- Primera página -->
     <div class="carta">
       <Header2Component />
-      <div class="section-title">
-        <span class="section-number">3</span> EXPERIENCIA LABORAL
+      <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; padding-right: 20px;">
+        <div><span class="section-number">3</span> EXPERIENCIA LABORAL</div>
+        <div v-if="experienciaStore.experiencias.length > 0" class="bulk-actions no-imprimir">
+          <button @click="marcarTodas(true)" :disabled="cargandoBulk" class="btn-bulk" title="Incluir todas en la impresión">
+            ☑️ Seleccionar todas
+          </button>
+          <button @click="marcarTodas(false)" :disabled="cargandoBulk" class="btn-bulk btn-bulk-danger" title="Excluir todas de la impresión">
+            ☐ Deseleccionar todas
+          </button>
+        </div>
       </div>
       <div
         v-if="experienciaStore.experiencias.length === 0"
@@ -62,6 +70,8 @@ import { useHojaVidaStore } from "../stores/hojaVida";
 import { useExperienciaStore } from "../stores/experienciaStore.js";
 import Header2Component from "../components/Header2Component.vue";
 import ExperienciaComponent from "../components/ExperienciaComponent.vue";
+import api from "../api/axios";
+import { showSuccess, showError } from "../utils/showMessage.js";
 
 const hojaStore = useHojaVidaStore();
 const experienciaStore = useExperienciaStore();
@@ -96,6 +106,41 @@ function irARegistrarExperiencia() {
   router.push("/panel/Hoja2Extra");
 }
 
+const cargandoBulk = ref(false);
+
+async function marcarTodas(estado) {
+  if (cargandoBulk.value) return;
+  cargandoBulk.value = true;
+  try {
+    const convertirFecha = (f) => {
+      if (!f || !f.dia || !f.mes || !f.anio) return null;
+      return new Date(parseInt(f.anio), parseInt(f.mes) - 1, parseInt(f.dia));
+    };
+
+    const promesas = experienciasOrdenadas.value.map(exp => {
+      if (exp.imprimir === estado) return Promise.resolve();
+      const obj = { 
+        ...exp, 
+        imprimir: estado,
+        fechaIngreso: convertirFecha(exp.fechaIngreso),
+        fechaRetiro: convertirFecha(exp.fechaRetiro)
+      };
+      return api.put(`/experiencia/${exp._id}`, obj);
+    });
+    await Promise.all(promesas);
+    showSuccess(`✅ Se han ${estado ? 'seleccionado' : 'deseleccionado'} todas las experiencias`);
+    await actualizarExperiencias();
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
+  } catch (error) {
+    console.error("❌ Error al marcar todas:", error);
+    showError("❌ Hubo un error al actualizar las experiencias");
+  } finally {
+    cargandoBulk.value = false;
+  }
+}
+
 function agrupar(array, tamano) {
   const resultado = [];
   for (let i = 0; i < array.length; i += tamano) {
@@ -125,5 +170,36 @@ const experienciasAgrupadas = computed(() =>
   .modulo-experiencia {
     margin-bottom: 1rem;
   }
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-bulk {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e0;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+  transition: all 0.2s ease;
+}
+
+.btn-bulk:hover:not(:disabled) {
+  background: #edf2f7;
+  transform: translateY(-1px);
+}
+
+.btn-bulk:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-bulk-danger {
+  color: #c53030;
 }
 </style>

@@ -449,7 +449,9 @@ export function useFormatoOficialHV() {
       return "NO";
     };
 
-    const experienciasMapeadas = (usuarioLocal.experienciaLaboral || usuarioLocal.experiencias || []).map(exp => ({
+    const experienciasMapeadas = (usuarioLocal.experienciaLaboral || usuarioLocal.experiencias || [])
+      .filter(exp => exp.imprimir !== false)
+      .map(exp => ({
       empresa: exp.empresa || "",
       tipo: exp.tipoEntidad ? exp.tipoEntidad.toLowerCase() : (exp.tipo || ""),
       pais: exp.pais || "Colombia",

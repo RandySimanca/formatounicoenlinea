@@ -35,7 +35,8 @@ const experienciaSchema = new Schema({
   fechaRetiro: Date,
   cargo: String,
   dependencia: String,
-  direccion: String
+  direccion: String,
+  imprimir: { type: Boolean, default: true }
 }, { _id: true });
 
 const formacionSuperiorSchema = new Schema({

@@ -70,7 +70,8 @@ async function cargarExperiencias() {
 
 function recalcularTotales() {
   // Usar la función compartida para calcular tiempos totales
-  const tiempos = calcularTiemposTotales(experiencias.value);
+  const experienciasImprimir = experiencias.value.filter(e => e.imprimir !== false);
+  const tiempos = calcularTiemposTotales(experienciasImprimir);
 
   // Actualizar los objetos reactivos con valores decimales
   publico.anios = tiempos.publico.anios;
